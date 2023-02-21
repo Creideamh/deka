@@ -8,6 +8,11 @@
 .env
 .env.backup
 .env.production
+.editorconfig
+.env
+.gitattributes
+.phpunit.xml
+.deb
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
