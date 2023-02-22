@@ -456,6 +456,7 @@ class EternityController extends Controller
         $customer = Customer::find($id);
         $members = family_member::where('application_id', $apps->id)->get();
         $medicals = medical_info::where('application_id', $apps->id)->get();
+        $healths = health_info::where('application_id', $apps->id)->get();
 
         return view(
             'eternity-plus.edit-eternity',
@@ -464,7 +465,8 @@ class EternityController extends Controller
                 'apps' => $apps,
                 'customer' => $customer,
                 'members' => $members,
-                'medical_info' => $medicals
+                'medical_info' => $medicals,
+                'health_info' => $healths
             ]
 
         );

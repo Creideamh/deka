@@ -57,7 +57,7 @@ $(".if_yes_edit_checked").click(function () {
     }
 });
 
-$(".proposed_edit").hide();
+// $(".proposed_edit").hide();
 $(".form-check-input").click(function () {
     if ($('input[name="medical_health_status"]:checked').val() === "Yes") {
         $(".proposed_edit").hide(300);

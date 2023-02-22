@@ -408,6 +408,26 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @forelse ($health_info as $health => $health_item)
+                                        <tr>
+                                            <td>
+                                                <input type="text" name="proposed_family_member[]" id="proposed_family_member_{{$health}}" value="{{ $health_item->surname }}, {{ $health_item->firstname }}" class="form-control">
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" id="illness_injury_{{$health}}" name="illness_injury[]" value="{{ $health_item->illness_injury }}" style="width: 100%;">
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" id="hospital_{{$health}}" name="hospital[]" value="{{ $health_item->hospital }}">
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" id="duration_{{$health}}" name="duration[]" value="{{ $health_item->duration }}">
+                                            <td>
+                                                <input type="text" class="form-control" id="present_condition_{{$health}}" name="present_condition[]" value="{{ $health_item->present_condition}}">    
+                                            </td>
+                                        </tr>
+                                        @empty
+                                            <p> no health information available</p>
+                                        @endforelse
                                     </tbody>
                                     <tfoot>
                                         <tr>
