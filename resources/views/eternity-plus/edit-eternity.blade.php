@@ -516,7 +516,51 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-    
+                                    @forelse ($beneficiaries as $beneficiary => $beneficiary_row)
+                                        <tr>
+                                            <td>
+                                                <input type="text" name="beneficiary_name[]" id="beneficiary_name_{{$beneficiary}}" value="{{ $beneficiary_row->surname }}, {{ $beneficiary_row->firstname }}" class="form-control">  
+                                            </td>
+                                            <td>
+                                                <select name="beneficiary_gender[]" id="beneficiary_gender_{{$beneficiary}}" class="form-control beneficiary_gender_1 select2 select2bs5">
+                                                    <option value="{{ $beneficiary_row->gender }}" selected>
+                                                        @if ($beneficiary_row->beneficiary_gender == 'M')
+                                                            Male
+                                                        @elseif ($beneficiary_row->beneficiary_gender == 'F')
+                                                            Female
+                                                        @endif
+                                                    </option>
+                                                    <option value=""></option>
+                                                    <option value="M">Male</option>
+                                                    <option value="F">Female</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control flatpickr-input" value="{{$beneficiary_row->beneficiary_date}}" id="beneficiary_date_{{$beneficiary}}" onchange="displayTrust('1')" name="beneficiary_date[]" readonly="readonly">
+                                            </td>
+                                            <td>
+                                                <select name="beneficiary_relationship[]" id="beneficiary_relationship_{{$beneficiary}}" class="form-control beneficiarySelect1 select2bs5">
+                                                    <option value="{{ $beneficiary_row->beneficiary_relationship }}" selected>{{ $beneficiary_row->beneficiary_relationship }}</option>
+                                                    <option value=""></option>
+                                                    <option value="Spouse">Spouse</option>
+                                                    <option value="Father">Father</option><option value="Mother">Mother</option>
+                                                    <option value="Child">Child</option><option value="Brother">Brother</option>
+                                                    <option value="Sister">Sister</option>
+                                                </select>
+                                            </td>   
+                                            <td>
+                                                <input type="number" min="0.0" max="100.00" onchange="checkPercentage('1')" step="any" class="form-control" id="beneficiary_benefit_{{$beneficiary}}" name="beneficiary_benefit[]" value="{{$beneficiary_row->benefit_percentage}}">
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" id="beneficiary_contact_{{$beneficiary}}" name="beneficiary_contact[]" value="{{$beneficiary_row->beneficiary_contact}}">
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger" id="browButton_1" onclick="removeBrow('1')"><i class="ti-close"></i></button>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <p> Data not available </p>
+                                    @endforelse
                                 </tbody>
                                 <tfoot>
                                     <tr>
@@ -670,16 +714,18 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
+                                    
                                     <label for="">Sub Agent Name</label>
-                                    <input type="text" name="agent_name" id="agent_name" value="{{ Auth::user()->lastname }}, {{ Auth::user()->firstname }}" hidden class="form-control" >
-                                    <input type="text" value="{{ Auth::user()->lastname }}, {{ Auth::user()->firstname }}" disabled class="form-control" >
-                                    <input type="hidden" name="subagent_name" id="subagent_name" value="{{ Auth::user()->id }}" class="form-control">
+                                    <input type="text" name="agent_name" id="agent_name" value="{{ $user[0]->lastname }}, {{ $user[0]->firstname }}" hidden class="form-control" >
+                                    <input type="text" value="{{ $user[0]->lastname }}, {{ $user[0]->firstname }}" disabled class="form-control" >
+                                    <input type="hidden" name="subagent_name" id="subagent_name" value="{{ $user[0]->id }}" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="">Sub Agent Code</label>
                                     <select name="subagent_code" id="subagent_code" class="form-control select2 select2bs5">
+                                        <option value="{{$intermInfo[0]->subagent_code}}">{{$intermInfo[0]->subagent_code}}</option>
                                         <!-- Branch codes should display based on Bank --> 
                                         <option value=""></option>
                                         <option value="3009">3009</option>
@@ -722,7 +768,7 @@
                             </div>
                                 <div class="col-md-3">
                                 <label for="istPremiumDate">Date to Deduction</label>
-                                <input type="text" class="form-control" name="subagent_deduction_date" id="subagent_deduction_date" value="<?=date('Y-m-d');?>" readonly>
+                                <input type="text" class="form-control" name="subagent_deduction_date" id="subagent_deduction_date" value="{{$intermInfo[0]->date_to_deduction}}" readonly>
                             </div>
                         </div>
                     </div>
@@ -793,6 +839,7 @@
                                 <div class="form-group">
                                     <label for="Title">Title</label>
                                     <select name="premium_title" id="premium_title" class="form-control select2 select2bs5" >
+                                        <option value="{{$premium_payer[0]->title}}">{{$premium_payer[0]->premium_title}}</option>
                                         <option value=""></option>
                                         <option value="Mr">Mr</option>
                                         <option value="Mrs">Mrs</option>
@@ -803,19 +850,19 @@
                                 <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="Surname">Surname</label>
-                                    <input type="text" name="premium_surname" id="premium_surname" class="form-control" >
+                                    <input type="text" name="premium_surname" value="{{$premium_payer[0]->premium_surname}}" id="premium_surname" class="form-control" >
                                 </div>
                                 </div>
                                 <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="Firstname">Firstname</label>
-                                    <input type="text" name="premium_firstname" id="premium_firstname" class="form-control" >
+                                    <input type="text" name="premium_firstname" value="{{$premium_payer[0]->premium_firstname}}" id="premium_firstname"  class="form-control" >
                                 </div>
                                 </div>
                                 <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="DOB">Date of Birth</label>
-                                    <input type="date" name="premium_birthdate" id="premium_birthdate" class="form-control" >
+                                    <input type="date" name="premium_birthdate" value="{{$premium_payer[0]->premium_birthdate}}"  id="premium_birthdate" class="form-control" >
                                 </div>
                                 </div>                          
                         </div>
@@ -823,19 +870,19 @@
                                 <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="MobileNumber">Mobile Number</label>
-                                    <input type="text" name="premium_mobile_number" id="premium_mobile_number" class="form-control" >
+                                    <input type="text" name="premium_mobile_number" value="{{$premium_payer[0]->premium_mobile_number }}" id="premium_mobile_number"  class="form-control" >
                                 </div>
                                 </div>
                                 <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="Email">Email Address</label>
-                                    <input type="email" name="premium_email" value="" class="form-control" id="premium_email">
+                                    <input type="email" name="premium_email" value="{{$premium_payer[0]->premium_email}}" class="form-control" id="premium_email">
                                 </div>
                                 </div>
                                 <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="TIN">Tin Number</label>
-                                    <input type="text" name="premium_tin" value="" id="premium_tin" class="form-control">
+                                    <input type="text" name="premium_tin" value="{{$premium_payer[0]->premium_tin_number}}"  id="premium_tin" class="form-control">
                                 </div>
                                 </div>
                         </div>
@@ -843,13 +890,13 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                 <label for="">Risk Premium GHS</label>
-                                <input type="number" min="0.0." max="10000.00"  step="any" name="premium_risk" value="" id="premium_risk" class="form-control" >
+                                <input type="number" min="0.0." max="10000.00"  step="any" name="premium_risk" value="{{$payment[0]->premium_risk}}" id="premium_risk" class="form-control" >
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                 <label for="">Saving Premium GHS</label>
-                                <input type="number" min="0.0." max="10000.00"  step="any" name="premium_savings" value="" id="premium_savings" class="form-control" >
+                                <input type="number" min="0.0." max="10000.00"  step="any" name="premium_savings" value="{{$payment[0]->premium_savings}}" id="premium_savings" class="form-control" >
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -861,7 +908,7 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                 <label for="">Total Premium GHS</label>
-                                <input type="number" min="0.0." max="10000.00"  step="any" name="premium_total" id="premium_total" class="form-control" >
+                                <input type="number" min="0.0." max="10000.00"  step="any" value="{{$payment[0]->premium_total}}" name="premium_total" id="premium_total" class="form-control" >
                                 </div>
                             </div>
                         </div>
@@ -870,6 +917,7 @@
                                 <div class="form-group">
                                 <label for="">Payment Frequency</label>
                                 <select name="premium_frequency" id="premium_frequency" class="form-control select2 select2bs5">
+                                    <option value="{{$payment[0]->premium_frequency}}">{{$payment[0]->premium_frequency}}</option>
                                     <option value=""></option>
                                     <option value="monthly">Monthly</option>
                                     <option value="quarterly">Quarterly</option>
@@ -887,7 +935,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                 <label for="">Deduction Start Date</label>
-                                <input type="text" name="premium_deduction" id="premium_deduction" class="form-control" >
+                                <input type="text" name="premium_deduction" value="{{$payment[0]->premium_deduction}}" id="premium_deduction" class="form-control" >
                                 </div>
                             </div>
                             </div>
@@ -899,6 +947,7 @@
                                 <div class="form-group">
                                     <label for="">Premium Increase Option</label>
                                     <select name="premium_increase" id="premium_increase" class="form-control select2 select2bs5">
+                                        <option value="{{$payment[0]->premium_increase}}" selected>{{$payment[0]->premium_increase}}</option>
                                         <option value=""></option>
                                         <option value="20">20%</option>
                                         <option value="30">30%</option>
@@ -910,8 +959,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-    
+        </div>    
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -923,16 +971,17 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                   <label for="">Account Holder Name</label>
-                                  <input type="text" name="account_holder" value="" class="form-control" id="account_holder"  >
+                                  <input type="text" name="account_holder" value="{{$debit_info[0]->debit_order_surname}} , {{ $debit_info[0]->debit_order_firstname}}" class="form-control" id="account_holder"  >
                                 </div>
                               </div>
                               <div class="col-md-4">
                                 <label for="">Account Number</label>
-                                <input type="text" name="account_number" id="account_number" class="form-control" >
+                                <input type="text" name="account_number" value="{{$debit_info[0]->account_number}}" id="account_number" class="form-control" >
                               </div>
                               <div class="col-md-4">
                                 <label for="">Account Type</label>
                                 <select name="account_type" id="account_type" class="form-control" >
+                                  <option value="{{$debit_info[0]->account_type}}">{{$debit_info[0]->account_type}}</option>
                                   <option value=""></option>
                                   <option value="Gold">Gold</option>
                                   <option value="Platinum">Platinum</option>
@@ -947,6 +996,7 @@
                                 <div class="form-group">
                                   <label for="">Bank Name</label>
                                   <select name="bank_name" id="bank_name" class="form-control select2">
+                                    <option value="{{$debit_info[0]->bank_name}}">{{$debit_info[0]->bank_name}}</option>
                                     <option value=""></option>
                                     <option value="FirstNationalBank" selected>First National Bank GH</option>
                                   </select>
@@ -956,6 +1006,7 @@
                                 <div class="form-group">
                                   <label for="">Bank Branch</label>
                                   <select name="bank_branch" id="bank_branch" class="form-control select2 select2bs5">
+                                    <option value="{{$debit_info[0]->bank_branch}}">{{$debit_info[0]->bank_branch}}</option>
                                     <option value=""></option>
                                     <option value="330101">Junction Shopping Centre Branch</option>
                                     <option value="330102">Accra Branch</option>

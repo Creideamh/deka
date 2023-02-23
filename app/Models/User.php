@@ -55,4 +55,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(application::class);
     }
+
+    public function intermediary()
+    {
+        return $this->hasOne(Intermediary::class);
+    }
 }

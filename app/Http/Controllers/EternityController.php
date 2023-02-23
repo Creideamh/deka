@@ -15,6 +15,7 @@ use App\Models\medical_info;
 use App\Models\premium_payer;
 use App\Models\premium_payment;
 use App\Models\trustee;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -454,9 +455,16 @@ class EternityController extends Controller
         $countries = Country::all();
         $apps = application::find($id);
         $customer = Customer::find($id);
+        $user = User::where('id', $apps->user_id)->with('intermediary')->get();
         $members = family_member::where('application_id', $apps->id)->get();
         $medicals = medical_info::where('application_id', $apps->id)->get();
         $healths = health_info::where('application_id', $apps->id)->get();
+        $beneficiaries = beneficiary::where('application_id', $apps->id)->get();
+        $premium_payer = premium_payer::where('application_id', $apps->id)->get();
+        $premium_payment = premium_payment::where('application_id', $apps->id)->get();
+        $debit_order = debit_order::where('application_id', $apps->id)->get();
+        $intermediary = intermediary::where('application_id', $apps->id)->get();
+
 
         return view(
             'eternity-plus.edit-eternity',
@@ -466,7 +474,13 @@ class EternityController extends Controller
                 'customer' => $customer,
                 'members' => $members,
                 'medical_info' => $medicals,
-                'health_info' => $healths
+                'health_info' => $healths,
+                'beneficiaries' => $beneficiaries,
+                'premium_payer' => $premium_payer,
+                'payment' => $premium_payment,
+                'debit_info' => $debit_order,
+                'intermInfo' => $intermediary,
+                'user' => $user
             ]
 
         );
