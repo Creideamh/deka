@@ -167,6 +167,47 @@ function removeBrow(tr_id) {
     $("#beneficiaries tbody tr#brow_" + tr_id).remove();
 }
 
+function deleteBenef(id) {
+    $.ajax({
+        url:
+            location.protocol +
+            "//" +
+            location.hostname +
+            ":8000/delete-beneficiary",
+        type: "POST",
+        data: { beneficiary_id: id },
+        dataType: "json",
+        success: function (data) {
+            // setting the rate value into the rate input field
+            if (data.code == 1) {
+                var Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                });
+                Toast.fire({
+                    icon: "success",
+                    title: "   Beneficiary removed successfully",
+                });
+
+                removeBrow(id);
+            } else {
+                var Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                });
+                Toast.fire({
+                    icon: "error",
+                    title: "   Failed to remove beneficiary",
+                });
+            }
+        }, // /success
+    }); // /aj
+}
+
 $(".trustee_card").hide();
 function displayTrust(row_id) {
     // get beneficiary to set trustees table

@@ -74,7 +74,7 @@ class EternityController extends Controller
             ->addColumn('actions', function ($rows) {
                 return '
                     <a class="btn btn-success btn-sm" href="eternity-plus/edit-policy/' . $rows['id'] . '"><i class="fas fa-pen-square"></i></a>   
-                    <a class="btn btn-danger btn-sm" data-id="' . $rows['id'] . '" id="deleteUserBtn"><i class="ti-trash"></i></a>   
+                    <a class="btn btn-danger href="eternity-plus/delete-policy/' . $rows['id'] . '" btn-sm" data-id="' . $rows['id'] . '" id="deletePolicyBtn"><i class="ti-trash"></i></a>   
                     <a class="btn btn-primary btn-sm" data-id="' . $rows['id'] . '" id="pwdResetBtn"><i class="ti-key"></i></a>   
                 ';
             })
@@ -113,6 +113,50 @@ class EternityController extends Controller
             return response()->json(['code' => 1, 'details' => $query]);
         } else {
             return response()->json(['code' => 0, 'msg' => 'Something went wrong']);
+        }
+    }
+
+    public function deleteBeneficiary(Request $request)
+    {
+        $id = $request->beneficiary_id;
+        $beneficiary = beneficiary::find($id);
+
+        if ($beneficiary->delete()) {
+            return response()->json(['code' => 1, 'msg' => 'Beneficiary deleted successfully']);
+        } else {
+            return response()->json(['code' => 0, 'msg' => 'Something went wrong']);
+        }
+    }
+
+    public function deleteHealth(Request $request)
+    {
+        $id = $request->health_id;
+        $healthID = health_info::find($id);
+
+        if ($healthID->delete()) {
+            return response()->json(['code' => 1, 'msg' => 'Health Info deleted successfully']);
+        } else {
+            return response()->json(['code' => 0, 'msg' => 'Something went wrong']);
+        }
+    }
+
+    public function deleteMember(Request $request)
+    {
+        $id = $request->member_id;
+        $memberID  = family_member::find($id);
+
+        $amnt = $memberID->standard_premium + $memberID->optional_premium;
+        $appl = application::find($memberID->application_id);
+        $monthly_risk_premium_update = $appl->monthly_risk_premium - $amnt;
+
+        $appl->monthly_risk_premium = $monthly_risk_premium_update;
+
+        if ($memberID->relationship === 'Main Life') {
+            return response()->json(['code' => 0, 'msg' => 'Cannot delete the main life member']);
+        } else {
+            $appl->save();
+            $memberID->delete();
+            return response()->json(['code' => 1, 'msg' => 'Family member deleted successfully']);
         }
     }
 
@@ -411,7 +455,6 @@ class EternityController extends Controller
         /***
          * Debit Order
          */
-
         $debit_order = new debit_order(); // next updates should have debit_deduction name as model name
         $names = explode(" ", $request->account_holder);
         $surname = $names[0];
@@ -454,7 +497,7 @@ class EternityController extends Controller
     {
         $countries = Country::all();
         $apps = application::find($id);
-        $customer = Customer::find($id);
+        $customer = Customer::find($apps->customer_id);
         $user = User::where('id', $apps->user_id)->with('intermediary')->get();
         $members = family_member::where('application_id', $apps->id)->get();
         $medicals = medical_info::where('application_id', $apps->id)->get();
@@ -482,7 +525,6 @@ class EternityController extends Controller
                 'intermInfo' => $intermediary,
                 'user' => $user
             ]
-
         );
     }
 
@@ -495,7 +537,322 @@ class EternityController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+
+        $validate = Validator::make($request->all(), [
+            "title" => "required",
+            "surname" => "required|string",
+            "firstname" => "requried|string",
+            "birthdate" => "required|date",
+            "birthplace"  => "required|string",
+            "gender"     => "required|string",
+            "occupation" => "required|string",
+            "marital_status" => "required|string",
+            "nationality"   => "required|string",
+            "phone_number"  => "required|string",
+            "email"         => "required|email",
+            "postal_address" => "required|string",
+            "tin_number"    => "required|string|max:15|min:10",
+            "form_of_identification"      => "required|string",
+            "id_number" => "required|string",
+            'existing_policy' => 'required',
+            'existing_policy_number' => 'required|string',
+            'medical_health_status' => 'required',
+            "subagent_name"   => "required|string",
+            "subagent_code"   => "required",
+            "branch"        => "required|string",
+            "ist_premium_date" => "required|date",
+            "champion_signature" => "required",
+            "premium_tin" => "required",
+            "premium_email" => "required|email",
+            "premium_mobile_number" => "required",
+            "premium_birthdate" => "required|date",
+            "premium_firstname" => "required",
+            "premium_surname" => "required",
+            "premium_title"  => "required",
+            "account_holder" => "required|string",
+            "account_number" => "required|numeric|digits_between:11,11",
+            "bank_branch"    => "required",
+            "branch_name"    => "required",
+        ]);
+
+
+        // appliaction id 
+        $app_id = $request->app_id;
+
+        // Customer update
+        $customer_id = $request->customer_id;
+        $customer = Customer::find($customer_id);
+
+        $customer->title = $request->title;
+        $customer->surname = $request->surname;
+        $customer->firstname = $request->firstname;
+        $customer->birthdate = $request->birthdate;
+        $customer->birthplace  = $request->birthplace;
+        $customer->gender   = $request->gender;
+        $customer->occupation = $request->occupation;
+        $customer->marital_status = $request->marital_status;
+        $customer->nationality  = $request->nationality;
+        $customer->phone_number = $request->phone_number;
+        $customer->email = $request->email_address;
+        $customer->home_address = $request->home_address;
+        $customer->postal_address = $request->postal_address;
+        $customer->tin_number = $request->tin_number;
+        $customer->id_number  = $request->identity_number;
+        $customer->form_of_identification = $request->form_of_identification;
+        $customer->upload_document = 1;
+        $customer->user_id = Auth::user()->id;
+
+        if (!$customer->save()) {
+            return response()->json(['code' => 0, 'errors' => $validate->errors()->toArray()]);
+        }
+
+        /**
+         * Store in family members Table
+         */
+        $member_id = $request->family_member_id;
+        $family_member = family_member::find($member_id);
+
+        for ($i = 0; $i < count($request->fullname); $i++) {
+
+
+            //get firstname and lastname => fullname 
+            $names = explode(" ", $request->fullname[$i]);
+            $firstname_of_member = $names[0];
+            $surname_of_member  = $names[1];
+
+            $family_member->firstname    = $firstname_of_member;
+            $family_member->surname      = $surname_of_member;
+            $family_member->gender       = $request->gender_of_member[$i];
+            $family_member->birthdate    = $request->birthdate_of_member[$i];
+            $family_member->relationship = $request->relationship_of_member[$i];
+            $family_member->standard_premium     = $request->standard_premium[$i];
+            $family_member->optional_premium     = $request->optional_premium[$i];
+            $family_member->optional_benefit = $request->optional_benefits[$i];
+            $family_member->application_id = $app_id;
+
+            if (!$family_member->save()) {
+                return response()->json(['code' => 0, 'errors' => $validate->errors()->toArray()]);
+            }
+        }
+
+
+        /** Update application table with monthly_risk_premium and proposed_sum data */
+        /** Reasons for doing this: prevent having one application have the same fields with same data for family_members*/
+        $query = application::find($app_id)->update([
+            'proposed_sum' => $request->benefits,
+            'monthly_risk_premium' => $request->monthly_premium
+        ]);
+
+        if ($query === false) {
+            return response()->json(['code' => 0, 'msg' => 'failed to update necessary field(s)']);
+        }
+
+        /** Medical Information */
+        $medicals = medical_info::find($medical_id)->update([
+            'existing_policy' => $request->existing_policy,
+            'existing_policy_number' => !empty($request->existing_policy_number) ? $request->existing_policy_number : 'n/a',
+            'life_insurance_status' => $request->existing_life_insurance,
+            'refusal_reasons' => !empty($request->refusal) ? $request->refusal : 'n/a',
+            'medical_health_status' => $request->medical_health_status,
+            'application_id' => $app_id
+        ]);
+
+        if ($query === false) {
+            return response()->json(['code' => 0, 'msg' => 'failed to update medical information']);
+        }
+
+        /**
+         * Health information
+         */
+        $healthID = health_info::where('application_id', $app_id);
+
+        if (!empty($request->proposed_family_member) && !empty($healthID)) {
+
+            for ($i = 0; $i < count($request->proposed_family_member); $i++) {
+
+                $names = explode(" ", $request->proposed_family_member[$i]);
+                $surname = $names[0];
+                $firstname = $names[1];
+
+                $healthInfo = health_info::find($healthID->id);
+
+                $healthInfo->surname = $surname;
+                $healthInfo->firstname = $firstname;
+                $healthInfo->illness_injury = $request->illness_injury[$i];
+                $healthInfo->hospital = $request->hospital[$i];
+                $healthInfo->duration = $request->duration[$i];
+                $healthInfo->present_condition = $request->present_condition[$i];
+                $healthInfo->application_id = $app_id;
+
+                if (!$healthInfo->save()) {
+                    return response()->json(['code' => 0, 'msg' => 'failed to update health information']);
+                }
+            }
+        } elseif (!empty($request->proposed_family_member)) {
+
+            for ($i = 0; $i < count($request->proposed_family_member); $i++) {
+
+                $names = explode(" ", $request->proposed_family_member[$i]);
+                $surname = $names[0];
+                $firstname = $names[1];
+
+                $healthInfo = new health_info();
+
+                $healthInfo->surname = $surname;
+                $healthInfo->firstname = $firstname;
+                $healthInfo->illness_injury = $request->illness_injury[$i];
+                $healthInfo->hospital = $request->hospital[$i];
+                $healthInfo->duration = $request->duration[$i];
+                $healthInfo->present_condition = $request->present_condition[$i];
+                $healthInfo->application_id = $app_id;
+
+                if (!$healthInfo->save()) {
+                    return response()->json(['code' => 0, 'msg' => 'failed to update health information']);
+                }
+            }
+        }
+
+        /**
+         * Store data in Beneficiaries Table
+         */
+        for ($i = 0; $i < count($request->beneficiary_name); $i++) {
+
+            $names = explode(" ", $request->beneficiary_name[$i]);
+            $surname = $names[0];
+            $firstname = $names[1];
+
+            $beneficiary = new beneficiary();
+            $beneficiary->surname = $surname;
+            $beneficiary->firstname = $firstname;
+            $beneficiary->beneficiary_gender = $request->beneficiary_gender[$i];
+            $beneficiary->beneficiary_date = $request->beneficiary_date[$i];
+            $beneficiary->beneficiary_relationship = $request->beneficiary_relationship[$i];
+            $beneficiary->benefit_percentage = $request->beneficiary_benefit[$i];
+            $beneficiary->beneficiary_contact = $request->beneficiary_contact[$i];
+            $beneficiary->application_id = $app_id;
+
+            if (!$beneficiary->save()) {
+                return response()->json(['code' => 0, 'errors' => $validate->errors()->toArray()]);
+            }
+        }
+
+        /** Trustee */
+        if (!empty($request->trustee_name)) {
+
+            $trustee = new trustee();
+            $names = explode(" ", $request->trustee_name);
+            $surname = $names[0];
+            $firstname = $names[1];
+            $trustee->surname = $surname;
+            $trustee->firstname = $firstname;
+            $trustee->trustee_gender = $request->trustee_gender;
+            $trustee->trustee_birthdate = $request->trustee_birthdate;
+            $trustee->trustee_relationship = $request->trustee_relationship;
+            $trustee->trustee_address  = $request->trustee_address;
+            $trustee->trustee_contact  = $request->trustee_contact;
+            $trustee->application_id = $app_id;
+
+            if (!$trustee->save()) {
+                return response()->json(['code' => 0, 'errors' => $validate->errors()->toArray()]);
+            }
+        }
+
+
+        $query = application::find($app_id)->update([
+            'signature_date' => $request->declarant_date
+        ]);
+
+
+        if ($query === false) {
+            return response()->json(['code' => 0, 'msg' => 'failed to update necessary field(s)']);
+        }
+
+        /**
+         * Store data in Intermediary Table 
+         */
+
+        $intermediary  = new intermediary();
+
+        $intermediary->user_id = Auth::user()->id;
+        $intermediary->subagent_code = $request->subagent_code;
+        $intermediary->date_to_deduction = $request->subagent_deduction_date;
+        $intermediary->application_id = $app_id;
+
+        if (!$intermediary->save()) {
+            return response()->json(['code' => 0, 'msg' => 'Trace: intermediaries data has error']);
+        }
+
+
+        /**
+         *  Premium Payer
+         */
+
+
+        $premium_payer = new premium_payer();
+
+        $premium_payer->premium_title = $request->premium_title;
+        $premium_payer->premium_firstname = $request->premium_firstname;
+        $premium_payer->premium_surname   = $request->premium_surname;
+        $premium_payer->premium_birthdate = $request->premium_birthdate;
+        $premium_payer->premium_mobile_number = $request->premium_mobile_number;
+        $premium_payer->premium_tin_number     = $request->premium_tin;
+        $premium_payer->premium_email   = $request->premium_email;
+        $premium_payer->application_id = $app_id;
+        $premium_payer->user_id = Auth::user()->id;
+
+        if ($premium_payer->save()) {
+            $premium_payer_id =  $premium_payer->id;
+        } else {
+            return response()->json(['code' => 0, 'msg' => 'System error encountered, contact System Admin']);
+        }
+
+
+        /**
+         * Premium Payment
+         */
+        $payment = new premium_payment();
+
+        $payment->premium_risk = $request->premium_risk;
+        $payment->premium_savings  = $request->premium_savings;
+        $payment->premium_fee       = $request->premium_fee;
+        $payment->premium_total    = $request->premium_total;
+        $payment->premium_frequency = $request->premium_frequency;
+        $payment->premium_mode      = $request->premium_mode;
+        $payment->premium_increase   = $request->premium_increase;
+        $payment->premium_deduction = $request->premium_deduction;
+        $payment->application_id   = $application_id;
+        $payment->premium_payer_id = $premium_payer_id;
+        $payment->user_id = Auth::user()->id;
+
+
+        if (!$payment->save()) {
+            return response()->json(['code' => 0, 'msg' => 'System error encountered, please contact system administrator']);
+        }
+
+
+        /***
+         * Debit Order
+         */
+        $debit_order = new debit_order(); // next updates should have debit_deduction name as model name
+        $names = explode(" ", $request->account_holder);
+        $surname = $names[0];
+        $firstname = $names[1];
+        $debit_order->debit_order_surname   = $surname;
+        $debit_order->debit_order_firstname = $firstname;
+        $debit_order->bank_name = $request->bank_name;
+        $debit_order->bank_branch = $request->bank_branch;
+        $debit_order->account_number = $request->account_number;
+        $debit_order->account_type   = $request->account_type;
+        $debit_order->application_id = $app_id;
+        $debit_order->user_id = Auth::user()->id;
+
+        if (!$debit_order->save()) {
+            return response()->json(['code' => 0, 'msg' => 'System error encountered, please contact system administrator']);
+        }
+
+
+        return response()->json(['code' => 1, 'msg' => 'Success']);
     }
 
     /**
@@ -504,8 +861,25 @@ class EternityController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        // Deletes
+
+        $appInfo = application::where('id', $request->id)->get();
+        $members = family_member::where('application_id', $request->id)->destroy();
+        $beneficiaries = beneficiary::where('application_id', $request->id)->delete();
+        $medicalInfo  = medical_info::where('application_id', $request->id)->delete();
+        $healthInfo  = health_info::where('application_id', $request->id)->delete();
+        $premiumPayment = premium_payment::where('application_id', $request->id)->delete();
+        $premiumPayer  = premium_payer::where('application_id', $request->id)->delete();
+        $intermediaryInfo = intermediary::where('application_id', $request->id)->delete();
+        $appInfo->destroy();
+        $customer = customer::where('id', $appInfo->customer_id)->delete();
+
+        if ($customer) {
+            return response()->json(['code' => 1, 'msg' => 'Customer Policy Application dropped']);
+        } else {
+            return response()->json(['code' => 0, 'msg' => 'Failed to drop Customer Policy Application']);
+        }
     }
 }

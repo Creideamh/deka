@@ -51,6 +51,10 @@
     </div>
     <form action="{{ route('store-fep-data')}}" method="POST" id="add-eternity-form">
         <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+        <input type="hidden" name="customer_id" value="{{ $apps->customer_id }}">
+        <input type="hidden" name="app_id" value="{{ $apps->id }}">
+        <input type="hidden" name="medical_id" value="{{ $medical_info[0]->id }}">
+        <input type="hidden" name="">
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -262,7 +266,7 @@
                                     </thead>
                                     <tbody>
                                         @forelse ($members as $member)
-                                            <tr  id="row_1">
+                                            <tr  id="row_{{$member->id}}">
                                                 <td>
                                                     <input type="text" name="fullname[]" id="fullname_1"  value="{{ $member->surname}} , {{ $member->firstname}}" class="form-control" readonly >
                                                 </td>
@@ -294,7 +298,7 @@
                                                     <input type="text" name="optional_premium[]" id="optional_premium_1" value="{{ $member->optional_premium }}" class="form-control">
                                                 </td>
                                                 <td>
-                                                    <button type="button" class="btn btn-danger waves-effect waves-light"><div class="ti-close"></div></button>
+                                                    <button type="button" onclick="deleteFam({{$member->id}})" class="btn btn-danger waves-effect waves-light"><div class="ti-close"></div></button>
                                                 </td>
                                             </tr>
                                         @empty
@@ -318,7 +322,7 @@
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <input type="number" min="0.0." max="10000.00" class="form-control" placeholder="monthly risk premium" step="any" name="monthly_premium" id="monthly_premium">
+                            <input type="number" min="0.0." max="10000.00" class="form-control" value="{{ $apps->monthly_risk_premium }}" placeholder="monthly risk premium" step="any" name="monthly_premium" id="monthly_premium">
                         </div>
                     </div>
                 </div>
@@ -409,7 +413,7 @@
                                     </thead>
                                     <tbody>
                                         @forelse ($health_info as $health => $health_item)
-                                        <tr>
+                                        <tr id="add_proposed_row_{{$health_item->id}}">
                                             <td>
                                                 <input type="text" name="proposed_family_member[]" id="proposed_family_member_{{$health}}" value="{{ $health_item->surname }}, {{ $health_item->firstname }}" class="form-control">
                                             </td>
@@ -423,6 +427,9 @@
                                                 <input type="text" class="form-control" id="duration_{{$health}}" name="duration[]" value="{{ $health_item->duration }}">
                                             <td>
                                                 <input type="text" class="form-control" id="present_condition_{{$health}}" name="present_condition[]" value="{{ $health_item->present_condition}}">    
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger"  onclick="deleteHealth({{$health_item->id}})"><i class="ti-close"></i></button>
                                             </td>
                                         </tr>
                                         @empty
@@ -517,7 +524,7 @@
                                 </thead>
                                 <tbody>
                                     @forelse ($beneficiaries as $beneficiary => $beneficiary_row)
-                                        <tr>
+                                        <tr id="brow_{{$beneficiary_row->id}}">
                                             <td>
                                                 <input type="text" name="beneficiary_name[]" id="beneficiary_name_{{$beneficiary}}" value="{{ $beneficiary_row->surname }}, {{ $beneficiary_row->firstname }}" class="form-control">  
                                             </td>
@@ -555,7 +562,7 @@
                                                 <input type="text" class="form-control" id="beneficiary_contact_{{$beneficiary}}" name="beneficiary_contact[]" value="{{$beneficiary_row->beneficiary_contact}}">
                                             </td>
                                             <td>
-                                                <button class="btn btn-danger" id="browButton_1" onclick="removeBrow('1')"><i class="ti-close"></i></button>
+                                                <button class="btn btn-danger" id="browButton_{{$beneficiary}}" onclick="deleteBenef('{{$beneficiary_row->id}}')"><i class="ti-close"></i></button>
                                             </td>
                                         </tr>
                                     @empty
@@ -1102,6 +1109,7 @@
     </form>
 
 @endsection
+
 @push('eternityPlusJs')
     <script src="{{ asset('assets/libs/toastr/toastr.min.js') }}"></script>
     <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
@@ -1139,4 +1147,8 @@
             })
         })
     </script>
+@endpush
+@push('SweetAlert')
+    <!-- SweetAlert 2 -->
+    <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
 @endpush

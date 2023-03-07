@@ -77,6 +77,10 @@ Route::get('/eternity-plus', [EternityController::class, 'index'])->name('eterni
 Route::get('/all-eternity-applications', [EternityController::class, 'allEternityApplications'])->name('all.eternity.applications');
 Route::get('/eternity-plus/create-policy', [EternityController::class, 'create'])->name('create.plus');
 Route::get('/eternity-plus/edit-policy/{id}', [EternityController::class, 'edit'])->name('edit.plus');
+Route::post('/eternity-plus/delete-policy', [EternityController::class, 'destroy'])->name('delete.plus');
 Route::post('/standard-premium', [EternityController::class, 'getStandardBenefitValue'])->name('eternity.standard.benefit');
 Route::post('/optional-premium', [EternityController::class, 'getOptionalBenefitValue'])->name('eternity.optional.benefit');
+Route::post('/delete-health', [EternityController::class, 'deleteHealth'])->name('eternity.delete.health');
+Route::post('/delete-family-member', [EternityController::class, 'deleteMember'])->name('eternity.delete.family.member');
+Route::post('/delete-beneficiary', [EternityController::class, 'deleteBeneficiary'])->name('eternity.delete.beneficiary');
 Route::post('/store', [EternityController::class, 'store'])->name('store-fep-data');

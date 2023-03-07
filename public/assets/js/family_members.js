@@ -256,11 +256,53 @@ function calcAge(dateString) {
     return ~~((Date.now() - birthday) / 31557600000);
 }
 
+function deleteFam(id) {
+    alert(id);
+    $.ajax({
+        url:
+            location.protocol +
+            "//" +
+            location.hostname +
+            ":8000/delete-family-member",
+        type: "POST",
+        data: { member_id: id },
+        dataType: "json",
+        success: function (data) {
+            // setting the rate value into the rate input field
+            if (data.code == 1) {
+                var Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                });
+                Toast.fire({
+                    icon: "success",
+                    title: "   Member dropped successfully",
+                });
+
+                removeRow(id);
+                subAmount();
+            } else {
+                var Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                });
+                Toast.fire({
+                    icon: "error",
+                    title: "   Cannot remove the Main Life",
+                });
+            }
+        }, // /success
+    }); // /aj
+}
+
 // Sum Monthly Premium
 function subAmount() {
     var tableProductLength = $("#family_members tbody tr").length;
     var totalSubAmount = 0;
-
     for (x = 0; x < tableProductLength; x++) {
         var tr = $("#family_members tbody tr")[x];
         var count = $(tr).attr("id");
@@ -270,6 +312,7 @@ function subAmount() {
             Number(totalSubAmount) +
             Number($("#standard_premium_" + count).val()) +
             Number($("#optional_premium_" + count).val());
+        console.log($("#standard_premium_" + count).val());
     } // /for
 
     totalSubAmount = totalSubAmount.toFixed(2);

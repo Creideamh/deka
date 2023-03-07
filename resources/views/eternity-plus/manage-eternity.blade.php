@@ -118,14 +118,14 @@
         });
     </script>
     <script>
-    $(document).on('click','#deletePermissionBtn',function(){
-            var permission_id = $(this).data('id');
-            var url = '<?= route("delete.permission") ;?>';
+    $(document).on('click','#deletePolicyBtn',function(){
+            var id = $(this).data('id');
+            var url = '<?= route("delete.plus") ;?>';
 
             // Sweet Alert to confirm deletion 
             swal.fire({
             title:'Are you sure?',
-            html:"You want to <b>delete<b> this Permission",
+            html:"You want to <b>delete<b> this Policy",
             showCancelButton:true,
             showCloseButton:true,
             cancelButtonText:'Cancel',
@@ -135,7 +135,7 @@
             allowOutsideClick:false
             }).then(function(result){
                 if(result.value){
-                    $.post(url,{permission_id:permission_id},function(data){
+                    $.post(url,{id:id},function(data){
                     if (data.code == 1) {
                         $('#datatable').DataTable().ajax.reload(null,false); // reloads DT, so not to refresh page to see changes
                         toastr.success(data.msg);

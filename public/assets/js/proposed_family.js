@@ -130,6 +130,48 @@ $("#add_proposed_family_member_row")
         );
     });
 
+function deleteHealth(id) {
+    $.ajax({
+        url:
+            location.protocol +
+            "//" +
+            location.hostname +
+            ":8000/delete-health",
+        type: "POST",
+        data: { health_id: id },
+        dataType: "json",
+        success: function (data) {
+            alert(id);
+            // setting the rate value into the rate input field
+            if (data.code == 1) {
+                var Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                });
+                Toast.fire({
+                    icon: "success",
+                    title: "   Health info removed successfully",
+                });
+
+                remove_proposed_family_member_row(id);
+            } else {
+                var Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                });
+                Toast.fire({
+                    icon: "error",
+                    title: "   Failed to remove Health Information",
+                });
+            }
+        }, // /success
+    }); // /aj
+}
+
 // remove added row from proposed family member table
 function remove_proposed_family_member_row(tr_id) {
     $("#proposed_family_members tbody tr#add_proposed_row_" + tr_id).remove();
