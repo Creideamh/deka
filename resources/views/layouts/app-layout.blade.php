@@ -98,17 +98,12 @@
             })
         </script>
 
-        <!-- Peity chart-->
-        <script src="{{ asset('assets/libs/peity/jquery.peity.min.js') }}"></script>
-
-        <!-- Plugin Js-->
-        <script src="{{ asset('assets/libs/chartist/chartist.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/chartist-plugin-tooltips/chartist-plugin-tooltip.min.js') }}"></script>
         {{-- <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script> --}}
 
         <script src="{{ asset('assets/js/pages/dashboard.init.js') }}"></script>
 
         <script src="{{ asset('assets/js/app.js') }}"></script>
+        @stack('customerJS')
         @stack('toastrJs')
         @stack('dashboardjs')
         @stack('dataTablesjs')

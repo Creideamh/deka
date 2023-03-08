@@ -53,6 +53,10 @@
                         <i class="ti-car"></i>&nbsp;
                         <span>Users</span>
                     </a>
+                    <a href="{{ route('customer.lists') }}" class="has-arrow waves-effect">
+                        <i class="ti-car"></i>&nbsp;
+                        <span>Customers</span>
+                    </a>
                     {{-- <ul class="sub-menu" aria-expanded="false">
                         <li><a href="form-elements.html">Comprehensive</a></li>
                         <li><a href="form-validation.html">Theft &amp; Fire</a></li>
