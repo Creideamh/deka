@@ -32,7 +32,9 @@ class EternityController extends Controller
     public function index()
     {
         //
-        return view('eternity-plus.manage-eternity');
+        $eternity_ = application::all();
+
+        return view('eternity-plus.manage-eternity', ['eternity_' => $eternity_]);
     }
 
     /**
@@ -47,40 +49,6 @@ class EternityController extends Controller
         return view('eternity-plus.create-eternity', ['countries' => $countries]);
     }
 
-    public function allEternityApplications()
-    {
-        $eternity_ = application::all();
-
-        return DataTables::of($eternity_)
-            ->addIndexColumn()
-            ->addColumn('created_at', function ($row) {
-                return Carbon::createFromFormat('Y-m-d H:i:s', $row['created_at'])->diffForHumans();
-            })
-            ->addColumn('fullname', function ($rows) {
-                return $rows->customer->surname . ', ' . $rows->customer->firstname;
-            })
-            ->addColumn('assigned', function ($rows) {
-                return $rows->user->lastname . ', ' . $rows->user->firstname;
-            })
-            ->addColumn('status', function ($rows) {
-                if ($rows['status'] === 1) {
-                    return  '<a data-id="' . $rows['id'] . '" class="badge rounded-pill bg-success">Approved</a>';
-                } elseif ($rows['status'] === 0) {
-                    return  '<a data-id="' . $rows['id'] . '" class="badge rounded-pill bg-danger">Pending Approval: Hub</a>';
-                } else {
-                    return  '<a class="badge rounded-pill bg-danger">N/A</a>';
-                }
-            })
-            ->addColumn('actions', function ($rows) {
-                return '
-                    <a class="btn btn-success btn-sm" href="eternity-plus/edit-policy/' . $rows['id'] . '"><i class="fas fa-pen-square"></i></a>   
-                    <a class="btn btn-danger href="eternity-plus/delete-policy/' . $rows['id'] . '" btn-sm" data-id="' . $rows['id'] . '" id="deletePolicyBtn"><i class="ti-trash"></i></a>   
-                    <a class="btn btn-primary btn-sm" data-id="' . $rows['id'] . '" id="pwdResetBtn"><i class="ti-key"></i></a>   
-                ';
-            })
-            ->rawColumns(['actions', 'fullname', 'status', 'created_at', 'assigned'])
-            ->make(true);
-    }
 
     public function getOptionalBenefitValue(Request $request)
     {
@@ -145,16 +113,9 @@ class EternityController extends Controller
         $id = $request->member_id;
         $memberID  = family_member::find($id);
 
-        $amnt = $memberID->standard_premium + $memberID->optional_premium;
-        $appl = application::find($memberID->application_id);
-        $monthly_risk_premium_update = $appl->monthly_risk_premium - $amnt;
-
-        $appl->monthly_risk_premium = $monthly_risk_premium_update;
-
         if ($memberID->relationship === 'Main Life') {
             return response()->json(['code' => 0, 'msg' => 'Cannot delete the main life member']);
         } else {
-            $appl->save();
             $memberID->delete();
             return response()->json(['code' => 1, 'msg' => 'Family member deleted successfully']);
         }
@@ -229,15 +190,13 @@ class EternityController extends Controller
             $customer->user_id = Auth::user()->id;
 
             if ($customer->save()) {
-                $customer_id = $customer->save();
+                $customer_id = $customer->id;
             } else {
                 return response()->json(['code' => 0, 'errors' => $validate->errors()->toArray()]);
             }
         } else {
             return response()->json(['code' => 0, 'errors' => $validate->errors()->toArray()]);
         }
-
-
 
         /**
          * Store in application tbl 
@@ -246,8 +205,6 @@ class EternityController extends Controller
         $application = new application();
         $application->policy_number = "METFNBGHFEP" . microtime(true);
         $application->status = 0;
-        $application->proposed_sum = 0.0;
-        $application->monthly_risk_premium = 0.0;
         $application->user_id = Auth::user()->id;
         $application->customer_id = $customer_id;
 
@@ -280,6 +237,8 @@ class EternityController extends Controller
             $family_member->standard_premium     = $request->standard_premium[$i];
             $family_member->optional_premium     = $request->optional_premium[$i];
             $family_member->optional_benefit = $request->optional_benefits[$i];
+            $family_member->monthly_risk_premium = $request->optional_premium[$i] + $request->standard_premium[$i];
+            $family_member->proposed_sum = $request->benefits;
             $family_member->application_id = $application_id;
 
             if (!$family_member->save()) {
@@ -287,16 +246,6 @@ class EternityController extends Controller
             }
         }
 
-        /** Update application table with monthly_risk_premium and proposed_sum data */
-        /** Reasons for doing this: prevent having one application have the same fields with same data for family_members*/
-        $query = application::find($application_id)->update([
-            'proposed_sum' => $request->benefits,
-            'monthly_risk_premium' => $request->monthly_premium
-        ]);
-
-        if ($query === false) {
-            return response()->json(['code' => 0, 'msg' => 'failed to update necessary field(s)']);
-        }
 
         /** Medical Information */
         $medicals = new medical_info();
@@ -379,15 +328,6 @@ class EternityController extends Controller
             }
         }
 
-
-        $query = application::find($application_id)->update([
-            'signature_date' => $request->declarant_date
-        ]);
-
-
-        if ($query === false) {
-            return response()->json(['code' => 0, 'msg' => 'failed to update necessary field(s)']);
-        }
 
         /**
          * Store data in Intermediary Table 
@@ -637,19 +577,8 @@ class EternityController extends Controller
         }
 
 
-        /** Update application table with monthly_risk_premium and proposed_sum data */
-        /** Reasons for doing this: prevent having one application have the same fields with same data for family_members*/
-        $query = application::find($app_id)->update([
-            'proposed_sum' => $request->benefits,
-            'monthly_risk_premium' => $request->monthly_premium
-        ]);
-
-        if ($query === false) {
-            return response()->json(['code' => 0, 'msg' => 'failed to update necessary field(s)']);
-        }
-
         /** Medical Information */
-        $medicals = medical_info::find($medical_id)->update([
+        $medicals = medical_info::find($request->medical_id)->update([
             'existing_policy' => $request->existing_policy,
             'existing_policy_number' => !empty($request->existing_policy_number) ? $request->existing_policy_number : 'n/a',
             'life_insurance_status' => $request->existing_life_insurance,
@@ -658,7 +587,7 @@ class EternityController extends Controller
             'application_id' => $app_id
         ]);
 
-        if ($query === false) {
+        if ($medicals === false) {
             return response()->json(['code' => 0, 'msg' => 'failed to update medical information']);
         }
 
@@ -667,9 +596,11 @@ class EternityController extends Controller
          */
         $healthID = health_info::where('application_id', $app_id);
 
-        if (!empty($request->proposed_family_member) && !empty($healthID)) {
+        if (count($healthID) > 0) {
 
             for ($i = 0; $i < count($request->proposed_family_member); $i++) {
+
+
 
                 $names = explode(" ", $request->proposed_family_member[$i]);
                 $surname = $names[0];

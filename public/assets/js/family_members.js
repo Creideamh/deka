@@ -257,7 +257,6 @@ function calcAge(dateString) {
 }
 
 function deleteFam(id) {
-    alert(id);
     $.ajax({
         url:
             location.protocol +
@@ -282,7 +281,6 @@ function deleteFam(id) {
                 });
 
                 removeRow(id);
-                subAmount();
             } else {
                 var Toast = Swal.mixin({
                     toast: true,

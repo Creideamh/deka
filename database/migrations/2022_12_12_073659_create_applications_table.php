@@ -18,9 +18,6 @@ return new class extends Migration
             $table->string('policy_number');
             $table->integer('status');
             $table->foreignId('user_id')->constrained('users')->restrictOnDelete();
-            $table->decimal('proposed_sum', 10, 2);
-            $table->decimal('monthly_risk_premium', 10, 2);
-            $table->date('signature_date')->nullable();
             $table->foreignId('customer_id')->constrained('customers')->restrictOnDelete();
             $table->timestamps();
         });

@@ -54,7 +54,6 @@
         <input type="hidden" name="customer_id" value="{{ $apps->customer_id }}">
         <input type="hidden" name="app_id" value="{{ $apps->id }}">
         <input type="hidden" name="medical_id" value="{{ $medical_info[0]->id }}">
-        <input type="hidden" name="">
         <div class="row">
             <div class="col-12">
                 <div class="card">

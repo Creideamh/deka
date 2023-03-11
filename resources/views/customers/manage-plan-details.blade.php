@@ -25,7 +25,7 @@
 <div class="page-title-box">
     <div class="row align-items-center">
         <div class="col-md-8">
-            <h6 class="page-title"><i class="ti-medall"></i>&nbsp; Customers Plus</h6>
+            <h6 class="page-title"><i class="ti-medall"></i>&nbsp; Family Member</h6>
             <ol class="breadcrumb m-0">
                 <li class="breadcrumb-item active">Welcome, {{ Auth::user()->lastname }}</li>
             </ol>
@@ -37,7 +37,7 @@
                         <i class="mdi mdi-cog me-2"></i> Settings
                     </button>
                     <div class="dropdown-menu dropdown-menu-end">
-                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target=".bs-example-modal-lg">Create Customer</a>
+                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#myModal">Create Customer</a>
                         <a class="dropdown-item" href="{{ route('eternity.lists') }}">Manage Eternity Plus</a>
                         <a class="dropdown-item" href="#">Bulk Delete</a>
                         <div class="dropdown-divider"></div>
@@ -53,16 +53,19 @@
         <div class="card">
             <div class="card-body">
 
-                <h4 class="card-title">Customer Table</h4>
+                <h4 class="card-title">Family Members Table</h4>
                 <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
 
                     <thead>
                         <tr>
-                            <th>#Number</th>
+                            <th>N0#</th>
                             <th>Fullname</th>
-                            <th>Policy</th>
-                            <th>Status</th>
-                            <th>Created At</th>
+                            <th>Gender</th>
+                            <th>Birthdate</th>
+                            <th>Relationship</th>
+                            <th>Standard Premium</th>
+                            <th>Optional Benefit</th>
+                            <th>Optional Premium</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -75,8 +78,8 @@
         </div>
     </div> <!-- end col -->
 </div> <!-- end row -->
-@include('customers.create-customer')
 @endsection
+@include('customers.plan-details')
 @push('toastrJs')
     <script src="{{ asset('assets/libs/toastr/toastr.min.js') }}"></script>
     <script>
@@ -109,15 +112,17 @@
             $("#datatable").DataTable({
                 processing:true,
                 info:true,
-                ajax:location.protocol + '//' + location.hostname + ":8000/all-customers",
+                ajax:location.protocol + '//' + location.hostname + ":8000/all-members",
                 "pageLength":5,
                 "aLengthMenu":[[5,10,25,50,-1],[5,10,25,50,"All"]],
                 columns:[
-                    {data:"id", name:"No#"},
+                    {data:"id", name:"N0#"},
                     {data: "fullname", name: "Policy Holder"},
-                    {data:'assigned',name:'Assigned'},
-                    {data:'status',name:'Status'},
-                    {data:'created_at',name:'created_At'},
+                    {data:'gender',name:'Gender'},
+                    {data:'relationship',name:'Relationship'},
+                    {data:'standard_premium',name:'Standard Premium'},
+                    {data:'optional_benefit',name:'Optional Benefit'},
+                    {data:'optional_premium',name:'Optional Premium'},
                     {data:'actions',name:"actions",orderable:false,searchable:false}
                 ]
             }),$("#datatable-buttons").DataTable({lengthChange:!1,buttons:["copy","excel","pdf","colvis"]}).buttons().container().appendTo("#datatable-buttons_wrapper .col-md-6:eq(0)"),$(".dataTables_length select").addClass("form-select form-select-sm")

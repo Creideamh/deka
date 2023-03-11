@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\customerController;
 use App\Http\Controllers\EternityController;
 use App\Http\Controllers\PermissionsController;
+use App\Http\Controllers\planController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
@@ -84,3 +86,18 @@ Route::post('/delete-health', [EternityController::class, 'deleteHealth'])->name
 Route::post('/delete-family-member', [EternityController::class, 'deleteMember'])->name('eternity.delete.family.member');
 Route::post('/delete-beneficiary', [EternityController::class, 'deleteBeneficiary'])->name('eternity.delete.beneficiary');
 Route::post('/store', [EternityController::class, 'store'])->name('store-fep-data');
+Route::get('/plan-details/edit/{id}', [planController::class, 'edit'])->name('edit.plan-details');
+Route::post('/plan-details/add/', [planController::class, 'create_Plan_Details'])->name('update-family');
+
+
+/**
+ * Customers Routes 
+ */
+Route::get('/customers', [customerController::class, 'index'])->name('customers.lists');
+Route::get('/all-customers', [customerController::class, 'getCustomers'])->name('customers.get');
+Route::get('/customer/edit/{id}', [customerController::class, 'edit'])->name('customers.edit');
+
+Route::get('/all-members', [customerController::class, 'getMembers'])->name('members.get');
+Route::get('/customer/plan-details/{id}', [customerController::class, 'planDetails'])->name('plan-details');
+Route::post('/create-customer', [customerController::class, 'store'])->name('customer.create');
+Route::post('/customer/edit-customer/{id}', [customerController::class, 'update'])->name('edit.customer');

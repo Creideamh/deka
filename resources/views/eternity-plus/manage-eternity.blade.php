@@ -4,6 +4,7 @@
 
 @push('toastrCss')
     <link rel="stylesheet" href="{{ asset('assets/libs/toastr/toastr.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.9.2/jquery.contextMenu.min.css" integrity="sha512-SWjZLElR5l3FxoO9Bt9Dy3plCWlBi1Mc9/OlojDPwryZxO0ydpZgvXMLhV6jdEyULGNWjKgZWiX/AMzIvZ4JuA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 @endpush
 
 @push('dataTablesCss')
@@ -52,16 +53,35 @@
 
                     <thead>
                         <tr>
-                            <th>#Policy Number</th>
-                            <th>Holder</th>
-                            <th>Assigned To</th>
+                            <th>#Application</th>
+                            <th>Owner</th>
+                            <th>Created By</th>
                             <th>Status</th>
                             <th>Created At</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @forelse ($eternity_ as $item => $value)
+                            <tr class="context-menu-one" data-id="{{ $value['id'] }}">
+                                <td>
+                                    <img src="{{ asset('assets/images/285644_folder_green_icon_48.png')}}" width="24" height="24" alt=""> &nbsp; {{ $value['policy_number'] }}
+                                </td>
+                                <td>{{ $value->customer->surname}}, {{ $value->customer->firstname }}</td>
+                                <td>{{ $value->user->lastname }}, {{ $value->user->firstname }}</td>
+                                <td>
+                                    @if ($value['status'] == 1)
+                                        <span class="badge rounded-pill text-bg-success">Active</span>
+                                    @elseif ($value['status'] == 0 )
+                                        <span class="badge rounded-pill text-bg-danger">Pending</span>
+                                    @endif
 
+                                </td>
+                                <td>{{ $value['updated_at'] }}</td>
+
+                            </tr>
+                        @empty
+                            
+                        @endforelse
                     </tbody>
                 </table>
 
@@ -74,6 +94,8 @@
 @endsection
 @push('toastrJs')
     <script src="{{ asset('assets/libs/toastr/toastr.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.9.2/jquery.contextMenu.min.js" integrity="sha512-kvg/Lknti7OoAw0GqMBP8B+7cGHvp4M9O9V6nAYG91FZVDMW3Xkkq5qrdMhrXiawahqU7IZ5CNsY/wWy1PpGTQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.9.2/jquery.ui.position.min.js" integrity="sha512-878jmOO2JNhN+hi1+jVWRBv1yNB7sVFanp2gA1bG++XFKNj4camtC1IyNi/VQEhM2tIbne9tpXD4xaPC4i4Wtg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 @endpush
 @push('dataTablesjs')
     <!-- Required datatable js -->
@@ -102,20 +124,38 @@
         $(document).ready(function(){
             $("#datatable").DataTable({
                 processing:true,
-                info:true,
-                ajax:location.protocol + '//' + location.hostname + ":8000/all-eternity-applications",
-                "pageLength":5,
-                "aLengthMenu":[[5,10,25,50,-1],[5,10,25,50,"All"]],
-                columns:[
-                    {data:"policy_number", name:"Policy Number"},
-                    {data: "fullname", name: "Policy Holder"},
-                    {data:'assigned',name:'Assigned'},
-                    {data:'status',name:'Status'},
-                    {data:'created_at',name:'created_At'},
-                    {data:'actions',name:"actions",orderable:false,searchable:false}
-                ]
-            }),$("#datatable-buttons").DataTable({lengthChange:!1,buttons:["copy","excel","pdf","colvis"]}).buttons().container().appendTo("#datatable-buttons_wrapper .col-md-6:eq(0)"),$(".dataTables_length select").addClass("form-select form-select-sm")
+            })
         });
+        $(function() {
+        $.contextMenu({
+            selector: 'tr', 
+            callback: function(key, options) {
+                var link = key+"/edit/"+$(this).data('id');
+                var m = "clicked: " + $(this).data('id');
+                window.location.href=link;
+            },
+            items: {
+                "customer": {name: "Customer", icon: "fas fa-user"},
+                "plan-details": {name: "Plan Details", icon: "fas fa-users"},
+               Medical: {name: "Medicals", icon: "fas fa-hospital-user"},
+                "beneficiaries": {name: "Beneficiaries", icon: "paste"},
+                "Health": {name: "Health Info", icon: "fas fa-hospital-symbol"},
+                "Declarations": {name: "Declarations", icon: "fas fa-signature"},
+                "Premium Payment": {name: "Premium Payment", icon: "fas fa-money-check"},
+                "Debit": {name: "Debits", icon: "fas fa-money-bill-wave"},
+                "preview": {name: "Preview", icon: "far fa-eye"},
+
+                "sep1": "---------",
+                "quit": {name: "Quit", icon: function(){
+                    return 'context-menu-icon context-menu-icon-quit';
+                }}
+            }
+        });
+
+        $('.context-menu-one').on('click', function(e){
+            console.log('clicked', this);
+        })    
+    });
     </script>
     <script>
     $(document).on('click','#deletePolicyBtn',function(){
@@ -209,19 +249,6 @@
               })
             })
 
-        })
-
-        // Update data 
-        $(document).on('click','#editPermissionBtn', function(){
-            var permission_id = $(this).data('id');
-            $('.editPermission').find('form')[0].reset();
-            $('.editPermission').find('span.error-text').text('');
-
-            $.post('<?= route("permission.details"); ?>',{permission_id:permission_id},function(data){
-                $('.editPermission').find('input[name="permission_id"]').val(data.details.id);
-                $('.editPermission').find('input[name="name"]').val(data.details.name);
-                $('.editPermission').modal('show');
-            },'json');
         })
     </script>
 @endpush

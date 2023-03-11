@@ -20,9 +20,11 @@ return new class extends Migration
             $table->string('gender');
             $table->date('birthdate');
             $table->string('relationship');
+            $table->decimal('proposed_sum');
             $table->decimal('standard_premium');
             $table->char('optional_benefit', 5);
             $table->decimal('optional_premium', 10, 2);
+            $table->decimal('monthly_risk_premium', 10, 2);
             $table->foreignId('application_id')->constrained('applications')->restrictOnDelete();
             $table->timestamps();
         });

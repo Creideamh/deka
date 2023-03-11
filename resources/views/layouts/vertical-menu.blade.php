@@ -53,7 +53,7 @@
                         <i class="ti-car"></i>&nbsp;
                         <span>Users</span>
                     </a>
-                    <a href="{{ route('customer.lists') }}" class="has-arrow waves-effect">
+                    <a href="{{ route('customers.lists') }}" class="has-arrow waves-effect">
                         <i class="ti-car"></i>&nbsp;
                         <span>Customers</span>
                     </a>
