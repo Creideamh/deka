@@ -25,79 +25,12 @@ class customerController extends Controller
         return view('customers.manage-customers', ['countries' => Country::all()]);
     }
 
-    public function getCustomers()
-    {
-        $customers_ = Customer::all();
-
-        return DataTables::of($customers_)
-            ->addIndexColumn()
-            ->addColumn('created_at', function ($row) {
-                return Carbon::createFromFormat('Y-m-d H:i:s', $row['created_at'])->diffForHumans();
-            })
-            ->addColumn('fullname', function ($rows) {
-                return $rows->surname . ', ' . $rows->firstname;
-            })
-            ->addColumn('assigned', function ($rows) {
-                return $rows->user->lastname . ', ' . $rows->user->firstname;
-            })
-            ->addColumn('status', function ($rows) {
-                if ($rows->application->status == 1) {
-                    return  '<a data-id="' . $rows['id'] . '" class="badge rounded-pill bg-success">Active</a>';
-                } elseif ($rows->application->status == 0) {
-                    return  '<a  href="customer/plan-details/' . $rows->application->id . '" data-id="' . $rows['id'] . '" class="badge rounded-pill bg-danger">Plan Details</a>';
-                } else {
-                    return  '<a class="badge rounded-pill bg-danger">N/A</a>';
-                }
-            })
-            ->addColumn('actions', function ($rows) {
-                return '
-                    <a class="btn btn-success btn-sm" href="eternity-plus/edit-policy/' . $rows['id'] . '"><i class="fas fa-pen-square"></i></a>   
-                    <a class="btn btn-danger href="eternity-plus/delete-policy/' . $rows['id'] . '" btn-sm" data-id="' . $rows['id'] . '" id="deletePolicyBtn"><i class="ti-trash"></i></a>   
-                    <a class="btn btn-primary btn-sm" data-id="' . $rows['id'] . '" id="pwdResetBtn"><i class="ti-key"></i></a>   
-                ';
-            })
-            ->rawColumns(['actions', 'fullname', 'status', 'created_at', 'assigned'])
-            ->make(true);
-    }
 
 
-    public function getMembers()
-    {
-        $members_ = family_member::all();
 
-        return DataTables::of($members_)
-            ->addIndexColumn()
-            ->addColumn('fullname', function ($rows) {
-                return $rows->surname . ', ' . $rows->firstname;
-            })
-            ->addColumn('gender', function ($rows) {
-                return $rows->gender;
-            })
-            ->addColumn('birthdate', function ($rows) {
-                return $rows->birthdate;
-            })
-            ->addColumn('relationship', function ($rows) {
-                return $rows->relationship;
-            })
-            ->addColumn('standard_premium', function ($rows) {
-                return $rows->standard_premium;
-            })
-            ->addColumn('optional_benefit', function ($rows) {
-                return $rows->optional_benefit;
-            })
-            ->addColumn('optional_premium', function ($rows) {
-                return $rows->optional_premium;
-            })
-            ->addColumn('actions', function ($rows) {
-                return '
-                    <a class="btn btn-success btn-sm" href="eternity-plus/edit-policy/' . $rows['id'] . '"><i class="fas fa-pen-square"></i></a>   
-                    <a class="btn btn-danger href="eternity-plus/delete-policy/' . $rows['id'] . '" btn-sm" data-id="' . $rows['id'] . '" id="deletePolicyBtn"><i class="ti-trash"></i></a>   
-                    <a class="btn btn-primary btn-sm" data-id="' . $rows['id'] . '" id="pwdResetBtn"><i class="ti-key"></i></a>   
-                ';
-            })
-            ->rawColumns(['actions', 'fullname'])
-            ->make(true);
-    }
+
+
+
 
     /**
      * Show the form for creating a new resource.

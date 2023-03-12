@@ -86,8 +86,15 @@ Route::post('/delete-health', [EternityController::class, 'deleteHealth'])->name
 Route::post('/delete-family-member', [EternityController::class, 'deleteMember'])->name('eternity.delete.family.member');
 Route::post('/delete-beneficiary', [EternityController::class, 'deleteBeneficiary'])->name('eternity.delete.beneficiary');
 Route::post('/store', [EternityController::class, 'store'])->name('store-fep-data');
+
+/**
+ * Plan Details Routes
+ */
 Route::get('/plan-details/edit/{id}', [planController::class, 'edit'])->name('edit.plan-details');
-Route::post('/plan-details/add/', [planController::class, 'create_Plan_Details'])->name('update-family');
+Route::post('/plan-details/add/', [planController::class, 'create_Plan_Details'])->name('add.family.member');
+Route::post('/plan-detail', [planController::class, 'get_Plan_Detail'])->name('get.plan.detail');
+Route::get('plan-details-lists/{id}', [planController::class, 'getMembers'])->name('get.plan.details.lists');
+Route::post('plan-details/update', [planController::class, 'updateMembers'])->name('update.plan');
 
 
 /**

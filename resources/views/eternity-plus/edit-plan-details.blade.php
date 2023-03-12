@@ -1,21 +1,22 @@
 <!-- sample modal content -->
-<div id="myModal" class="modal fade addPlanForm" tabindex="-1" role="dialog"
+<div id="myEditModal" class="modal fade editPlanForm" tabindex="-1" role="dialog"
     aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="myModalLabel">Add Family Member 
+                <h5 class="modal-title" id="myModalLabel">Edit Family Member 
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"     aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('add.family.member')}}" id="add-member-form" method="post">
+                <form action="{{ route('update.plan')}}" id="edit-member-form" method="post">
                     <div class="row">
-                        <input type="hidden" name="application_id" value="{{ Request::segment(3) }}">
+                        <input type="hidden" name="plan_id">
+                        <input type="hidden" name="application_id">
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="">Benefits</label>
-                                <select name="benefits" id="benefits" class="form-select">
+                                <select name="eBenefits" id="eBenefits" class="form-select">
                                     <option value=""></option>
                                     <option value="5000">Jasper ---- 5000</option>
                                     <option value="7500">Onyx ---- 7500</option>
@@ -42,13 +43,14 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="">Birthdate </label>
-                                <input type="text" class="form-control" id="birthdate" onchange="customerAge()" name="birthdate">
+                                <input type="date" class="form-control" id="eBirthdate" onchange="eCustomerAge()" name="eBirthdate" readonly="readonly">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="">Gender</label>
-                                <select name="gender" id="gender" class="form-select">
+                                <select name="eGender" id="eGender" class="form-select">
+                                    <option value=""></option>
                                     <option value="M">Male</option>
                                     <option value="F">Female</option>
                                 </select>
@@ -57,7 +59,7 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="">Family Relationship</label>
-                                <select name="relationship" id="relationship" onclick="getBenefits()" class="form-select">
+                                <select name="eRelationship" id="eRelationship" onclick="eGetBenefits()" class="form-select">
                                     <option value="Spouse">Spouse</option>
                                     <option value="parents">Parents</option>
                                 </select>                            
@@ -66,13 +68,13 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="">Standard Premium</label>
-                                <input type="text" name="standard_premium" id="standard_premium" class="form-control" readonly>
+                                <input type="text" name="eStandard_premium" id="eStandard_premium" class="form-control" readonly>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="">Optional Benefit</label>
-                                <select name="optional_benefit" id="optional_benefit" onchange="getOptionals()" class="form-control">
+                                <select name="eOptional_benefit" id="eOptional_benefit" onchange="eGetOptionals()" class="form-control">
                                     <option value="40DB">40DB</option>
                                     <option value="ANR">ANR</option>
                                     <option value="HSB">HSB</option>
@@ -82,13 +84,13 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="">Optional Premium</label>
-                                <input type="text" name="optional_premium" id="optional_premium" class="form-control" readonly>
+                                <input type="text" name="eOptional_premium" id="eOptional_premium" class="form-control" readonly>
                             </div>
                         </div>
                     </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary" id="submit">Save changes</button>
+                <button type="submit" class="btn btn-primary" id="eSubmit">Save changes</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </form>
             </div>
@@ -104,7 +106,7 @@
     <script src="{{ asset('assets/js/app.js') }} "></script>
     <script>
         $(function(){
-            $('#add-member-form').on('submit',function(e){
+            $('#edit-member-form').on('submit',function(e){
                 e.preventDefault();
                 var form = this;
                 $.ajax({
@@ -120,8 +122,8 @@
                         }else{
                             toastr.success(data.msg); 
                             $('#family_members').DataTable().ajax.reload(null,false); // reloads DT, so not to refresh page to see changes
-                            $('.addPlanForm').find('form')[0].reset(); // resets form fields
-                            $('#myModal').modal('hide'); // hide modal
+                            $('.editPlanForm').find('form')[0].reset(); // resets form fields
+                            $('#myEditModal').modal('hide'); // hide modal
                         }
                     }
                 })
@@ -129,7 +131,7 @@
         })
     </script>
     <script>
-        flatpickr("#birthdate", {
+        flatpickr("#eBirthdate", {
             dateFormat: "Y-m-d",
         });
                 // Calculate age
@@ -138,9 +140,8 @@
             return ~~((Date.now() - birthday) / 31557600000);
         }
         // // Customer must be 21 and above
-        function customerAge() {
-            $age = $("#birthdate").val();
-
+        function eCustomerAge() {
+            $age = $("#eBirthdate").val();
             if (calcAge($age) <= 21) {
                 $("#submit").prop("disabled", true); // prevent form submission
                 var Toast = Swal.mixin({
@@ -159,10 +160,10 @@
         }
 
         // get the optional benefit values from the server
-        function getBenefits() {
-            var benefit_id = $("#benefits").val();
-            var age = $("#birthdate").val();
-            var relationship = $("#relationship").val();
+        function eGetBenefits() {
+            var benefit_id = $("#eBenefits").val();
+            var age = $("#eBirthdate").val();
+            var relationship = $("#eRelationship").val();
             var newage = calcAge(age);
             $.ajax({
                 url:
@@ -180,9 +181,9 @@
                 success: function (data) {
                     // setting the rate value into the rate input field
                     if (data.details.length == 0) {
-                        $("#standard_premium").val(0.0);
+                        $("#eStandard_premium").val(0.0);
                     } else {
-                        $("#standard_premium").val(data.details[0].STP);
+                        $("#eSandard_premium").val(data.details[0].STP);
                     }
                     // subAmount(row_id);
                 }, // /success
@@ -190,11 +191,11 @@
         }
 
         // get the optional benefit values from the server
-        function getOptionals() {
-            var option_id = $("#optional_benefit").val();
-            var dateOfBirth = $("#birthdate").val();
+        function eGetOptionals() {
+            var option_id = $("#eOptional_benefit").val();
+            var dateOfBirth = $("#eBirthdate").val();
             var relationship = $("#relationship").val();
-            var benefit = $("#benefits").val();
+            var benefit = $("#eBenefits").val();
             var newage = calcAge(dateOfBirth);
 
             var dataString =
@@ -218,25 +219,25 @@
                 success: function (response) {
                     if (option_id == "40DB") {
                         if (response.details.length == 0) {
-                            $("#optional_premium_" + row_id).val(0.0);
+                            $("#eOptional_premium_" + row_id).val(0.0);
                         } else {
-                            $("#optional_premium_" + row_id).val(
+                            $("#eOptional_premium_" + row_id).val(
                                 response.details[0].FDB
                             );
                         }
                     } else if (option_id == "HSB") {
                         if (response.details.length == 0) {
-                            $("#optional_premium").val(0.0);
+                            $("#eOptional_premium").val(0.0);
                         } else {
-                            $("#optional_premium").val(
+                            $("#eOptional_premium").val(
                                 response.details[0].HSB
                             );
                         }
                     } else {
                         if (response.details.length == 0) {
-                            $("#optional_premium").val(0.0);
+                            $("#eOptional_premium").val(0.0);
                         } else {
-                            $("#optional_premium").val(
+                            $("#eOptional_premium").val(
                                 response.details[0].ANR
                             );
                         }

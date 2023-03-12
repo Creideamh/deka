@@ -9,6 +9,7 @@ use App\Models\family_member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\Facades\DataTables;
 
 use function PHPUnit\Framework\isNull;
 
@@ -70,5 +71,77 @@ class planController extends Controller
         }
 
         return response()->json(['code' => 0, 'msg' => 'Duplicate entries found']);
+    }
+
+
+    public function get_Plan_Detail(Request $request)
+    {
+        $plan_id = family_member::find($request->plan_id);
+        return response()->json(['details' => $plan_id]);
+    }
+
+    // Update member information
+    public function updateMembers(Request $request)
+    {
+        $member = family_member::where('id', $request->plan_id)->update([
+            'surname' => $request->surname,
+            'firstname' => $request->firstname,
+            'birthdate' => $request->eBirthdate,
+            'gender' => $request->eGender,
+            'relationship' => $request->eRelationship,
+            'standard_premium' => $request->eStandard_premium,
+            'optional_benefit' => $request->eOptional_benefit,
+            'optional_premium' => $request->eOptional_premium,
+            'proposed_sum' => $request->eBenefits,
+            'monthly_risk_premium' => $request->eStandard_premium + $request->eOptional_premium
+        ]);
+
+        if ($member) {
+            return response()->json(['code' => 1, 'msg' => 'Update successful']);
+        } else if (!$member) {
+            return response()->json(['code' => 0, 'msg' => 'Failed to update member data']);
+        }
+
+        return response()->json(['code' => 0, 'msg' => 'System error, please try again']);
+    }
+
+    /**
+     * Get members of a plan
+     */
+    public function getMembers($id)
+    {
+        $members_ = family_member::where('application_id', '=', $id);
+
+        return  DataTables::of($members_)
+            ->addIndexColumn()
+            ->addColumn('fullname', function ($rows) {
+                return $rows->surname . ', ' . $rows->firstname;
+            })
+            ->addColumn('gender', function ($rows) {
+                return $rows->gender;
+            })
+            ->addColumn('birthdate', function ($rows) {
+                return $rows->birthdate;
+            })
+            ->addColumn('relationship', function ($rows) {
+                return $rows->relationship;
+            })
+            ->addColumn('standard_premium', function ($rows) {
+                return $rows->standard_premium;
+            })
+            ->addColumn('optional_benefit', function ($rows) {
+                return $rows->optional_benefit;
+            })
+            ->addColumn('optional_premium', function ($rows) {
+                return $rows->optional_premium;
+            })
+            ->addColumn('actions', function ($rows) {
+                return '
+                <a href="#" id="editPlanBtn" data-id="' . $rows->id . '"><span class="badge text-bg-primary" data-bs-toggle="modal" data-bs-target="#myEditModal"><i class="far fa-edit"></i></span></a>
+                <a href="#" onclick="deleteFam(' . $rows->id . ')"><span class="badge text-bg-danger"><i class="fas fa-trash"></i></span></a>
+                ';
+            })
+            ->rawColumns(['actions', 'fullname'])
+            ->make(true);
     }
 }
