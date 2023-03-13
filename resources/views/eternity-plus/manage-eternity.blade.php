@@ -137,7 +137,7 @@
             items: {
                 "customer": {name: "Customer", icon: "fas fa-user"},
                 "plan-details": {name: "Plan Details", icon: "fas fa-users"},
-               Medical: {name: "Medicals", icon: "fas fa-hospital-user"},
+               medicals: {name: "Medicals", icon: "fas fa-hospital-user"},
                 "beneficiaries": {name: "Beneficiaries", icon: "paste"},
                 "Health": {name: "Health Info", icon: "fas fa-hospital-symbol"},
                 "Declarations": {name: "Declarations", icon: "fas fa-signature"},

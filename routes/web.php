@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\customerController;
 use App\Http\Controllers\EternityController;
+use App\Http\Controllers\medicalController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\planController;
 use App\Http\Controllers\RolesController;
@@ -108,3 +109,9 @@ Route::get('/all-members', [customerController::class, 'getMembers'])->name('mem
 Route::get('/customer/plan-details/{id}', [customerController::class, 'planDetails'])->name('plan-details');
 Route::post('/create-customer', [customerController::class, 'store'])->name('customer.create');
 Route::post('/customer/edit-customer/{id}', [customerController::class, 'update'])->name('edit.customer');
+
+
+/** Medical Routes */
+Route::get('/medicals/edit/{id}', [medicalController::class, 'index'])->name('medicals.edit');
+Route::get('/all-health-info/{id}', [medicalController::class, 'allHealthInfo'])->name('all.health.info');
+Route::post('/add-health-info', [medicalController::class, 'store'])->name('add.health.info');
