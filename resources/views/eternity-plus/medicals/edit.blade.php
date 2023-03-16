@@ -47,7 +47,8 @@
                     <h5 class="card-title">Medical Information</h5>
                 </div>
                 <div class="card-body">
-                    <form action="">
+                    <form action="{{ route('update.medical', [ 'id' => $medicalInfo[0]->id ])}}" method="POST" id="edit-medicals-form">
+                        <input type="hidden" name="application_id" value="{{ $medicalInfo[0]->application_id}}">
                         <div class="col-md-8 float-start">
                             <label for="">Do you currently have an existing Life Policy with FNB? </label>
                             <div class="form-check">
@@ -63,7 +64,12 @@
                             <div class="col-md-4 if_yes_edit float-end">
                                 <label for="">If <span class="text-danger">Yes</span>, please provide policy number:</label>
                                 <input type="text" name="existing_policy_number" id="if_yes_edit" class="form-control">
-                            </div>             
+                            </div>
+                        @else
+                            <div class="col-md-4 if_yes_edit float-end">
+                                <label for="">If <span class="text-danger">Yes</span>, please provide policy number:</label>
+                                <input type="text" name="existing_policy_number" id="if_yes" class="form-control">
+                            </div>
                         @endif
                         <div class="col-md-8 float-start">
                             <label for="">Has any Life Insurance Company refused your proposal for Life Insurance or accepted with an extra premium or special terms on any of the proposed lives?</label>
@@ -81,6 +87,11 @@
                                 <label for="">If <span class="text-danger">Yes</span> please state the reason for refusal</label>
                                 <input type="text" name="refusal" id="refusal" value="{{ $medicalInfo[0]->refusal_reasons }}"  class="form-control">
                             </div>
+                        @else
+                            <div class="col-md-4 float-end refusal_edit" >
+                                <label for="">If <span class="text-danger">Yes</span> please state the reason for refusal</label>
+                                <input type="text" name="refusal" id="refusal_edit" class="form-control">
+                            </div>
                         @endif
                         <div class="col-lg-8">
                             <label for="">Are you and any of your proposed family members currently in good health, free from any illness or disease and not undergoing any medical treatment or surgery?</label>
@@ -93,8 +104,25 @@
                                 <label class="form-check-label">No</label>
                             </div>
                         </div>
-                    </form>
+                    
                 </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-success float-end" id="submit">Save Changes</button>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="float-end d-none d-md-block">
+                <button type="button" class="btn btn-success float-end me-2 mb-3" id="edit_row" data-bs-toggle="modal" data-bs-target="#myModal">
+                    <i class="ti-plus"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -102,7 +130,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header bg-success text-white">
-                    <h5 class="card-title">Health Information</h5>
+                    <h5 class="card-title">Healths Information</h5>
                 </div>
                 <div class="card-body">
                     <div class="col-12 float-end">
@@ -117,7 +145,7 @@
                                         <th>Duration</th>
                                         <th>Present Condition</th>
                                         <th>
-                                            <button type="button" class="btn btn-tool" data-bs-toggle="modal" data-bs-target="#myModal" id="add_proposed_family_member_row">
+                                            <button type="button" class="btn btn-tool">
                                             <i class="ti-plus"></i>
                                         </button>
                                         </th>
@@ -133,7 +161,7 @@
                                         <th>Duration</th>
                                         <th>Present Condition</th>
                                         <th>
-                                            <button type="button" class="btn btn-tool" id="add_proposed_family_member_row">
+                                            <button type="button" class="btn btn-tool">
                                                 <i class="ti-plus"></i>
                                             </button>
                                         </th>
@@ -147,6 +175,7 @@
         </div>
     </div>
 @include('eternity-plus.medicals.add-health-info')
+@include('eternity-plus.medicals.edit-health-info')
 @endsection
 @push('dataTablesjs')
     <!-- Required datatable js -->
@@ -166,19 +195,18 @@
     <script src="{{ asset('assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            $("#medicals").DataTable({
+            $("#proposed_family_members").DataTable({
                 processing:true,
                 info:true,
-                ajax:location.protocol + '//' + location.hostname + ":8000/all-healthInfo/" + {{ Request::segment(3) }},
+                ajax:location.protocol + '//' + location.hostname + ":8000/all-health-info/" + {{ Request::segment(3) }},
                 "pageLength":5,
                 "aLengthMenu":[[5,10,25,50,-1],[5,10,25,50,"All"]],
                 columns:[
-                    {data:"id", name:"id"},
-                    {data:"existing_policy", name:"Existing Policy"},
-                    {data:'policy_number',name:'Policy Number'},
-                    {data:'insurance_status',name:'Insurance Status'},
-                    {data:'refusals',name:'Refusals'},
-                    {data:'medical_status',name:'Medical Status'},
+                    {data:"fullname", name:"fullname"},
+                    {data:"illness_injury", name:"Illness / Injury"},
+                    {data:'hospital',name:'Hospital'},
+                    {data:'duration',name:'Duration'},
+                    {data:'present_condition',name:'Medical Status'},
                     {data:'actions',name:"actions",orderable:false,searchable:false}
                 ]
             }),$("#datatable-buttons").DataTable({lengthChange:!1,buttons:["copy","excel","pdf","colvis"]}).buttons().container().appendTo("#datatable-buttons_wrapper .col-md-6:eq(0)"),$(".dataTables_length select").addClass("form-select form-select-sm")
@@ -193,13 +221,34 @@
     <script src="{{ asset('assets/js/proposed_family.js') }}"></script>
 
     <script>
+        $(function(){
+            $('#edit-medicals-form').on('submit',function(e){
+                e.preventDefault();
+                var form = this;
+                $.ajax({
+                    url:$(form).attr('action'),
+                    method:$(form).attr('method'),
+                    data:new FormData(form),
+                    processData:false,
+                    dataType:'json',
+                    contentType:false,
+                    success:function(data){
+                        if(data.code === 0){
+                            toastr.error(data.msg); 
+                        }else{
+                            toastr.success(data.msg); 
+                        }
+                    }
+                })
+            })
+        })
         function deleteFam(id) {
             $.ajax({
                 url:
                     location.protocol +
                     "//" +
                     location.hostname +
-                    ":8000/delete-family-member",
+                    ":8000/delete-health-info",
                 type: "POST",
                 data: { member_id: id },
                 dataType: "json",
@@ -216,7 +265,7 @@
                             icon: "success",
                             title: "   Member dropped successfully",
                         });
-                        $('#medicals').DataTable().ajax.reload(null,false); // reloads DT, so not to refresh page to see changes
+                        $('#proposed_family_members').DataTable().ajax.reload(null,false); // reloads DT, so not to refresh page to see changes
 
                         removeRow(id);
                     } else {
@@ -228,7 +277,7 @@
                         });
                         Toast.fire({
                             icon: "error",
-                            title: "   Cannot remove the Main Life",
+                            title: "   Cannot drop health information",
                         });
                     }
                 }, // /success
@@ -236,26 +285,22 @@
         }
 
                 // Update data 
-        $(document).on('click','#editPlanBtn', function(){
-            alert($(this).data('id'))
-            var plan_id = $(this).data('id');
-            $('.editPlanForm').find('form')[0].reset();
-            $('.editPlanForm').find('span.error-text').text('');
+        $(document).on('click','#editHealthBtn', function(){
+            var med_id = $(this).data('id');
+            $('.editHealthForm').find('form')[0].reset();
+            $('.editHealthForm').find('span.error-text').text('');
 
-            $.post('<?= route("get.plan.detail"); ?>',{plan_id:plan_id},function(data){
-                console.log(data.details.id)
-                $('.editPlanForm').find('input[name="plan_id"]').val(data.details.id);
-                $('.editPlanForm').find('input[name="firstname"]').val(data.details.firstname);
-                $('.editPlanForm').find('input[name="surname"]').val(data.details.surname);
-                $('.editPlanForm').find('input[name="eBirthdate"]').val(data.details.birthdate);
-                $('.editPlanForm').find('input[name="eStandard_premium"]').val(data.details.standard_premium);
-                $('.editPlanForm').find('input[name="eOptional_premium"]').val(data.details.optional_premium);
-                $('#eBenefits').append('<option value="' + data.details.proposed_sum +'" selected>' + data.details.proposed_sum + '</option>');
-                $('#eGender').append('<option value="' + data.details.gender +'" selected>' + data.details.gender + '</option>');
-                $('#eRelationship').append('<option value="' + data.details.relationship +'" selected>' + data.details.relationship + '</option>');
-                $('#eOptional_benefit').append('<option value="' + data.details.optional_benefit +'" selected>' + data.details.optional_benefit + '</option>');
+            $.post('<?= route("get.health.info"); ?>',{med_id:med_id},function(data){
+                console.log(data.details)
+                $('.editHealthForm').find('input[name="health_id"]').val(data.details.id);
+                $('.editHealthForm').find('input[name="eFirstname"]').val(data.details.firstname);
+                $('.editHealthForm').find('input[name="eSurname"]').val(data.details.surname);
+                $('.editHealthForm').find('input[name="duration"]').val(data.details.duration);
+                $('.editHealthForm').find('input[name="eIllness_injury"]').val(data.details.illness_injury);
+                $('.editHealthForm').find('input[name="eHospital"]').val(data.details.hospital);
+                $('.editHealthForm').find('input[name="ePresent_condition"]').val(data.details.present_condition);
+                $('.editHealthForm').modal('show');
 
-                $('.editPlanForm').modal('show');
             },'json');
         })
         

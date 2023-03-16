@@ -113,5 +113,9 @@ Route::post('/customer/edit-customer/{id}', [customerController::class, 'update'
 
 /** Medical Routes */
 Route::get('/medicals/edit/{id}', [medicalController::class, 'index'])->name('medicals.edit');
+Route::post('/update/medical/{id}', [medicalController::class, 'updateMedics'])->name('update.medical');
 Route::get('/all-health-info/{id}', [medicalController::class, 'allHealthInfo'])->name('all.health.info');
 Route::post('/add-health-info', [medicalController::class, 'store'])->name('add.health.info');
+Route::post('/health-info', [medicalController::class, 'healthInfo'])->name('get.health.info');
+Route::post('/edit-health-info', [medicalController::class, 'update'])->name('edit.health.info');
+Route::post('/delete-health-info', [medicalController::class, 'deleteMember'])->name('delete.health.info');

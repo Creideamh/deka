@@ -1,39 +1,42 @@
 <!-- sample modal content -->
 <div>
-    <div id="myModal" class="modal fade addHealthForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div id="myEditModal" class="modal fade editHealthForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="myModalLabel">Add Member Health Information 
+                    <h5 class="modal-title" id="myModalLabel">Edit Member Health Information 
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"     aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('add.health.info')}}" id="add-health-form" method="post">
+                    <form action="{{ route('edit.health.info')}}" id="edit-health-form" method="post">
+                        @csrf
                         <div class="row">
                             <input type="hidden" name="application_id" value="{{ Request::segment(3) }}">
+                            <input type="hidden" name="health_id">
+                            <input type="hidden" name="duration" id="duration">
                             <div class="col-md-12">
                                 <div class="mb-3">
                                     <label for="">Surname</label>
-                                    <input type="text" name="surname" id="surname" class="form-control">
+                                    <input type="text" name="eSurname" id="eSurname" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="mb-3">
                                     <label for="">Firstname</label>
-                                    <input type="text" name="firstname" id="firstname" class="form-control">
+                                    <input type="text" name="eFirstname" id="eFirstname" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="mb-3">
                                     <label for="">Illness / Injury </label>
-                                    <input type="text" class="form-control" id="illness_injury"  name="illness_injury">
+                                    <input type="text" class="form-control" id="eIllness_injury"  name="eIllness_injury">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="mb-3">
                                     <label for="">Hospital</label>
-                                    <input type="text" class="form-control" id="hospital"  name="hospital">
+                                    <input type="text" class="form-control" id="eHospital"  name="eHospital">
                                 </div>
                             </div>
                             <div class="col-md-12">
@@ -44,25 +47,25 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="">Start</label>
-                                    <input type="text" class="form-control" id="startDate"  name="startDate">
+                                    <input type="text" class="form-control" id="startDate"  name="eStartDate">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="">End</label>
-                                    <input type="text" class="form-control" id="endDate"  name="endDate">
+                                    <input type="text" class="form-control" id="endDate"  name="eEndDate">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="mb-3">
                                     <label for="">Present Condition</label>
-                                    <input type="text" name="present_condition" class="form-control" id="present_condition" />
+                                    <input type="text" name="ePresent_condition" class="form-control" id="ePresent_condition" />
                                 </div>
                             </div>
                         </div>
-                </div><!-- end of modal body -->
+                </div>
                 <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" id="submit">Save changes</button>
+                        <button type="submit" class="btn btn-primary" id="eSubmit">Save changes</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </form>
                 </div>
@@ -78,16 +81,9 @@
     <script src="{{ asset('assets/libs/flatpickr/js/flatpickr.min.js') }}"></script>
     <script src="{{ asset('assets/js/app.js') }} "></script>
     <script>
-        flatpickr("#startDate", {
-            dateFormat: "Y-m-d",
-        });
-        flatpickr("#endDate", {
-            dateFormat: "Y-m-d",
-        });
         $(function(){
-            $('#add-health-form').on('submit',function(e){
+            $('#edit-health-form').on('eSubmit',function(e){
                 e.preventDefault();
-                alert('working')
                 var form = this;
                 $.ajax({
                     url:$(form).attr('action'),
@@ -101,10 +97,11 @@
                             toastr.error(data.msg); 
                         }else{
                             toastr.success(data.msg); 
-                            $('.addHealthForm').find('form')[0].reset(); // resets form fields
                             $('#proposed_family_members').DataTable().ajax.reload(null,false); // reloads DT, so not to refresh page to see changes
-                            $('#myModal').modal('hide'); // hide modal
+                            $('.editHealthForm').find('form')[0].reset(); // resets form fields
+                            $('#myEditModal').modal('hide'); // hide modal
                         }
+                        
                     }
                 })
             })

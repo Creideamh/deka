@@ -182,7 +182,6 @@
 
                 // Update data 
         $(document).on('click','#editPlanBtn', function(){
-            alert($(this).data('id'))
             var plan_id = $(this).data('id');
             $('.editPlanForm').find('form')[0].reset();
             $('.editPlanForm').find('span.error-text').text('');
