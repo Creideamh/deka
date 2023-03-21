@@ -11,11 +11,8 @@ class application extends Model
 
     protected $fillable = [
         'policy_number',
-        'proposed_sum',
-        'monthly_risk_premium',
         'status',
-        'signature',
-        'signature_date'
+        'customer_signature'
     ];
 
     public function health_info()

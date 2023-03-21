@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\beneficiaryController;
 use App\Http\Controllers\customerController;
+use App\Http\Controllers\declarationController;
 use App\Http\Controllers\EternityController;
 use App\Http\Controllers\medicalController;
 use App\Http\Controllers\PermissionsController;
@@ -119,3 +121,22 @@ Route::post('/add-health-info', [medicalController::class, 'store'])->name('add.
 Route::post('/health-info', [medicalController::class, 'healthInfo'])->name('get.health.info');
 Route::post('/edit-health-info', [medicalController::class, 'update'])->name('edit.health.info');
 Route::post('/delete-health-info', [medicalController::class, 'deleteMember'])->name('delete.health.info');
+
+
+/**
+ * Beneficiary Routes
+ */
+Route::get('/beneficiaries/edit/{id}', [beneficiaryController::class, 'index'])->name('beneficiaries.index');
+Route::get('/all-beneficiaries/{id}', [beneficiaryController::class, 'allBeneficiaries'])->name('get.beneficiaries.lists');
+Route::post('/delete-beneficiary', [beneficiaryController::class, 'deleteBeneficiary'])->name('delete.beneficiary');
+Route::post('/add-beneficiary', [beneficiaryController::class, 'store'])->name('add.beneficiary');
+Route::post('/edit-beneficiary-info', [beneficiaryController::class, 'update'])->name('edit.beneficiary.info');
+Route::post('/beneficiary-detail', [beneficiaryController::class, 'getBeneficiaryDetail'])->name('get.beneficiary.detail');
+
+
+/**
+ * Declarations
+ */
+Route::get('/declarations/edit/{id}', [declarationController::class, 'index'])->name('get.declaration');
+Route::post('/sign', [declarationController::class, 'update'])->name('update.signature');
+Route::post('/appliation/details', [declarationController::class, 'getApplicationDetails'])->name('get.application.details');

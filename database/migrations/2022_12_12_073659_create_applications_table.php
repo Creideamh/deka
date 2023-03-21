@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('status');
             $table->foreignId('user_id')->constrained('users')->restrictOnDelete();
             $table->foreignId('customer_id')->constrained('customers')->restrictOnDelete();
+            $table->binary('customer_signature');
             $table->timestamps();
         });
     }

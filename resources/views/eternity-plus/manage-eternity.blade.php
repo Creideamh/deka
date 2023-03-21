@@ -140,9 +140,9 @@
                medicals: {name: "Medicals", icon: "fas fa-hospital-user"},
                 "beneficiaries": {name: "Beneficiaries", icon: "paste"},
                 "Health": {name: "Health Info", icon: "fas fa-hospital-symbol"},
-                "Declarations": {name: "Declarations", icon: "fas fa-signature"},
-                "Premium Payment": {name: "Premium Payment", icon: "fas fa-money-check"},
-                "Debit": {name: "Debits", icon: "fas fa-money-bill-wave"},
+                "declarations": {name: "declarations", icon: "fas fa-signature"},
+                "premium-payment": {name: "Premium Payment", icon: "fas fa-money-check"},
+                "debits": {name: "Debits", icon: "fas fa-money-bill-wave"},
                 "preview": {name: "Preview", icon: "far fa-eye"},
 
                 "sep1": "---------",

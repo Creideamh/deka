@@ -207,6 +207,7 @@ class EternityController extends Controller
         $application = new application();
         $application->policy_number = "METFNBGHFEP" . microtime(true);
         $application->status = 0;
+        $application->customer_signature = 'signed';
         $application->user_id = Auth::user()->id;
         $application->customer_id = $customer_id;
 
