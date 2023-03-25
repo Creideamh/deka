@@ -16,7 +16,7 @@
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="">Benefits</label>
-                                <select name="eBenefits" id="eBenefits" class="form-select">
+                                <select name="eProposed_sum" id="eProposed_sum" class="form-select">
                                     <option value=""></option>
                                     <option value="5000">Jasper ---- 5000</option>
                                     <option value="7500">Onyx ---- 7500</option>
@@ -59,7 +59,7 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="">Family Relationship</label>
-                                <select name="eRelationship" id="eRelationship" onclick="eGetBenefits()" class="form-select">
+                                <select name="eRelationship" id="eRelationship" onchange="eGetBenefits()" class="form-select">
                                     <option value="Spouse">Spouse</option>
                                     <option value="parents">Parents</option>
                                 </select>                            
@@ -161,7 +161,7 @@
 
         // get the optional benefit values from the server
         function eGetBenefits() {
-            var benefit_id = $("#eBenefits").val();
+            var benefit_id = $("#eProposed_sum").val();
             var age = $("#eBirthdate").val();
             var relationship = $("#eRelationship").val();
             var newage = calcAge(age);
@@ -183,7 +183,7 @@
                     if (data.details.length == 0) {
                         $("#eStandard_premium").val(0.0);
                     } else {
-                        $("#eSandard_premium").val(data.details[0].STP);
+                        $("#eStandard_premium").val(data.details[0].STP);
                     }
                     // subAmount(row_id);
                 }, // /success
@@ -194,8 +194,8 @@
         function eGetOptionals() {
             var option_id = $("#eOptional_benefit").val();
             var dateOfBirth = $("#eBirthdate").val();
-            var relationship = $("#relationship").val();
-            var benefit = $("#eBenefits").val();
+            var relationship = $("#eRelationship").val();
+            var benefit = $("#eProposed_sum").val();
             var newage = calcAge(dateOfBirth);
 
             var dataString =
@@ -219,9 +219,9 @@
                 success: function (response) {
                     if (option_id == "40DB") {
                         if (response.details.length == 0) {
-                            $("#eOptional_premium_" + row_id).val(0.0);
+                            $("#eOptional_premium").val(0.0);
                         } else {
-                            $("#eOptional_premium_" + row_id).val(
+                            $("#eOptional_premium").val(
                                 response.details[0].FDB
                             );
                         }

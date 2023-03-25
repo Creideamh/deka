@@ -15,7 +15,7 @@
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="">Benefits</label>
-                                <select name="benefits" id="benefits" class="form-select">
+                                <select name="proposed_sum" id="proposed_sum" class="form-select">
                                     <option value=""></option>
                                     <option value="5000">Jasper ---- 5000</option>
                                     <option value="7500">Onyx ---- 7500</option>
@@ -26,17 +26,20 @@
                                     <option value="60000">Emerald ---- 60000</option>
                                 </select>
                             </div>
+                            <span class="text-danger error-text proposed_sum_error"></span>                     
                         </div>
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="">Surname</label>
                                 <input type="text" name="surname" id="surname" class="form-control">
                             </div>
+                            <span class="text-danger error-text surname_error"></span>                     
                         </div>
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="">Firstname</label>
                                 <input type="text" name="firstname" id="firstname" class="form-control">
+                                <span class="text-danger error-text firstname_error"></span>                     
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -52,6 +55,7 @@
                                     <option value="M">Male</option>
                                     <option value="F">Female</option>
                                 </select>
+                                <span class="text-danger error-text gender_error"></span>                     
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -62,11 +66,13 @@
                                     <option value="parents">Parents</option>
                                 </select>                            
                             </div>
+                            <span class="text-danger error-text relationship_error"></span>                     
                         </div>
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="">Standard Premium</label>
                                 <input type="text" name="standard_premium" id="standard_premium" class="form-control" readonly>
+                                <span class="text-danger error-text standard_premium_error"></span>                     
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -77,12 +83,14 @@
                                     <option value="ANR">ANR</option>
                                     <option value="HSB">HSB</option>
                                 </select>
+                                <span class="text-danger error-text optional_benefit_error"></span>                     
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="">Optional Premium</label>
                                 <input type="text" name="optional_premium" id="optional_premium" class="form-control" readonly>
+                                <span class="text-danger error-text optional_premium_error"></span>                     
                             </div>
                         </div>
                     </div>
@@ -116,7 +124,9 @@
                     contentType:false,
                     success:function(data){
                         if(data.code === 0){
-                            toastr.error(data.msg); 
+                            $.each(data.errors, function(prefix, value){
+                                $(form).find('span.'+prefix+'_error').text(value[0]);
+                            });
                         }else{
                             toastr.success(data.msg); 
                             $('#family_members').DataTable().ajax.reload(null,false); // reloads DT, so not to refresh page to see changes

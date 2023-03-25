@@ -17,9 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->restrictOnDelete();
             $table->char('subagent_code', 4);
-            // $table->date('subagent_date'); created_at column will replace this column
             $table->date('date_to_deduction');
-            // $table->date('signature_date'); created_at column will replace this colum
+            $table->string('signature', 60);
             $table->foreignId('application_id')->constrained('applications')->restrictOnDelete();
             $table->timestamps();
         });

@@ -139,7 +139,7 @@
                 "plan-details": {name: "Plan Details", icon: "fas fa-users"},
                medicals: {name: "Medicals", icon: "fas fa-hospital-user"},
                 "beneficiaries": {name: "Beneficiaries", icon: "paste"},
-                "Health": {name: "Health Info", icon: "fas fa-hospital-symbol"},
+                "office_only": {name: "Office Info", icon: "fas fa-signature"},
                 "declarations": {name: "declarations", icon: "fas fa-signature"},
                 "premium-payment": {name: "Premium Payment", icon: "fas fa-money-check"},
                 "debits": {name: "Debits", icon: "fas fa-money-bill-wave"},

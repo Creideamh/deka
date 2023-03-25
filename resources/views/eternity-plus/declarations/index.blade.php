@@ -121,9 +121,9 @@
                 img.onload = function() {
                     ctx.drawImage(img, 0, 0);
                 };
+                // how to secure this route, inorder to prevent users from capturing the customer_signature
                 img.src = "{{ asset('uploads/customers/')}}/{{ $declareInfo->customer_signature }}";
         $(function(){
-
 
             $('#edit-signature').on('submit',function(e){
                 e.preventDefault();
@@ -171,21 +171,6 @@
                     }
                 })
             })
-        })
-
-        // // Update data 
-        // $(document).ready(function(){
-        //     var application = {{ Request::segment(3) }};
-        //     alert(application);
-        //     // $('#edit-signature').find('form')[0].reset();
-        //     // $('$edit-signature').find('span.error-text').text('');
-
-        //     $.post('<?= route("get.application.details"); ?>',{application:application},function(data){
-        //         alert('it working');
-
-
-        //     },'json');
-        // })
-        
+        })        
     </script>
 @endpush

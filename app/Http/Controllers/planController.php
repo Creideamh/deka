@@ -27,20 +27,35 @@ class planController extends Controller
     {
         // Validate form inputs
         $validate = Validator::make($request->all(), [
-            'benefits' => 'required',
             'surname' => 'required|alpha',
             'firstname' => 'required|alpha',
             'birthdate' => 'required|date',
             'gender' => 'required',
             'relationship' => 'required',
+            'proposed_sum' => 'required',
             'standard_premium' => 'required',
             'optional_premium' => 'required',
             'optional_benefit' => 'required'
         ]);
 
-        if (!$validate) {
-            return response()->json(['code' => 0, 'msg' => 'One or more input fields must be provided']);
+        if (!$validate->passes()) {
+            return response()->json(['code' => 0, 'errors' => $validate->errors()->toArray()]);
         }
+
+        // Main Life Check & Maximum entries check
+        $checkBalances = family_member::where('application_id', '=', $request->application_id)->get();
+
+        foreach ($checkBalances as $key => $value) {
+            if ($value['relationship'] == $request->relationship) {
+                return response()->json(['code' => 2, 'msg' => 'Main Life already exists']);
+            }
+        }
+
+        // M(aximum family members should be 12 
+        if (count($checkBalances) > 12) {
+            return response()->json(['code' => 0, 'msg' => 'Maximum number of family members reached']);
+        }
+
 
         // No duplicates are allowed
         $no_plan_duplicates = family_member::where('surname', '=', $request->surname)
@@ -60,6 +75,7 @@ class planController extends Controller
             $plan->standard_premium = $request->standard_premium;
             $plan->optional_premium = $request->optional_premium;
             $plan->optional_benefit = $request->optional_benefit;
+            $plan->proposed_sum = $request->proposed_sum;
             $plan->monthly_risk_premium = $request->standard_premium + $request->optional_premium;
             $plan->application_id = $request->application_id;
 
@@ -83,6 +99,29 @@ class planController extends Controller
     // Update member information
     public function updateMembers(Request $request)
     {
+
+        // Validate form inputs
+        $validate = Validator::make($request->all(), [
+            'surname' => 'required|alpha',
+            'firstname' => 'required|alpha',
+            'eBirthdate' => 'required|date',
+            'eGender' => 'required',
+            'eRelationship' => 'required',
+            'eProposed_sum' => 'required',
+            'eStandard_premium' => 'required',
+            'eOptional_premium' => 'required',
+            'eOptional_benefit' => 'required'
+        ]);
+
+        if (!$validate->passes()) {
+            return response()->json(['code' => 0, 'msg' => 'One or more input fields empty']);
+        }
+
+        // Main Life Check & Maximum entries check
+        $checkBalances = family_member::where('application_id', '=', $request->application_id)->get();
+
+
+
         $member = family_member::where('id', $request->plan_id)->update([
             'surname' => $request->surname,
             'firstname' => $request->firstname,
@@ -92,7 +131,7 @@ class planController extends Controller
             'standard_premium' => $request->eStandard_premium,
             'optional_benefit' => $request->eOptional_benefit,
             'optional_premium' => $request->eOptional_premium,
-            'proposed_sum' => $request->eBenefits,
+            'proposed_sum' => $request->eProposed_sum,
             'monthly_risk_premium' => $request->eStandard_premium + $request->eOptional_premium
         ]);
 
@@ -143,5 +182,20 @@ class planController extends Controller
             })
             ->rawColumns(['actions', 'fullname'])
             ->make(true);
+    }
+
+
+    /**Delete Family Member */
+    public function deleteMember(Request $request)
+    {
+        $id = $request->member_id;
+        $memberID  = family_member::find($id);
+
+        if ($memberID->relationship === 'Main Life') {
+            return response()->json(['code' => 0, 'msg' => 'Cannot delete the main life member']);
+        } else {
+            $memberID->delete();
+            return response()->json(['code' => 1, 'msg' => 'Family member deleted successfully']);
+        }
     }
 }

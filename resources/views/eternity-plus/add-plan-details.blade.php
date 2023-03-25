@@ -15,7 +15,7 @@
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="">Benefits</label>
-                                <select name="benefits" id="benefits" class="form-select">
+                                <select name="proposed_sum" id="proposed_sum" class="form-select">
                                     <option value=""></option>
                                     <option value="5000">Jasper ---- 5000</option>
                                     <option value="7500">Onyx ---- 7500</option>
@@ -26,23 +26,27 @@
                                     <option value="60000">Emerald ---- 60000</option>
                                 </select>
                             </div>
+                            <span class="text-danger error-text proposed_sum_error"></span>                     
                         </div>
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="">Surname</label>
                                 <input type="text" name="surname" id="surname" class="form-control">
                             </div>
+                            <span class="text-danger error-text surname_error"></span>                     
                         </div>
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="">Firstname</label>
                                 <input type="text" name="firstname" id="firstname" class="form-control">
+                                <span class="text-danger error-text firstname_error"></span>                     
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="">Birthdate </label>
                                 <input type="text" class="form-control" id="birthdate" onchange="customerAge()" name="birthdate">
+                                <span class="text-danger error-text birhdate_error"></span>                     
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -52,21 +56,26 @@
                                     <option value="M">Male</option>
                                     <option value="F">Female</option>
                                 </select>
+                                <span class="text-danger error-text gender_error"></span>                     
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="">Family Relationship</label>
                                 <select name="relationship" id="relationship" onclick="getBenefits()" class="form-select">
+                                    <option value="Main Life">Main Life</option>
                                     <option value="Spouse">Spouse</option>
                                     <option value="parents">Parents</option>
+                                    <option value="Extended">Extended</option>
                                 </select>                            
                             </div>
+                            <span class="text-danger error-text relationship_error"></span>                     
                         </div>
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="">Standard Premium</label>
                                 <input type="text" name="standard_premium" id="standard_premium" class="form-control" readonly>
+                                <span class="text-danger error-text standard_premium_error"></span>                     
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -77,12 +86,14 @@
                                     <option value="ANR">ANR</option>
                                     <option value="HSB">HSB</option>
                                 </select>
+                                <span class="text-danger error-text optional_benefit_error"></span>                     
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="">Optional Premium</label>
                                 <input type="text" name="optional_premium" id="optional_premium" class="form-control" readonly>
+                                <span class="text-danger error-text optional_premium_error"></span>                     
                             </div>
                         </div>
                     </div>
@@ -116,6 +127,10 @@
                     contentType:false,
                     success:function(data){
                         if(data.code === 0){
+                            $.each(data.errors, function(prefix, value){
+                                $(form).find('span.'+prefix+'_error').text(value[0]);
+                            });
+                        }else if(data.code == 2){
                             toastr.error(data.msg); 
                         }else{
                             toastr.success(data.msg); 
@@ -160,7 +175,7 @@
 
         // get the optional benefit values from the server
         function getBenefits() {
-            var benefit_id = $("#benefits").val();
+            var benefit_id = $("#proposed_sum").val();
             var age = $("#birthdate").val();
             var relationship = $("#relationship").val();
             var newage = calcAge(age);
@@ -194,7 +209,7 @@
             var option_id = $("#optional_benefit").val();
             var dateOfBirth = $("#birthdate").val();
             var relationship = $("#relationship").val();
-            var benefit = $("#benefits").val();
+            var benefit = $("#proposed_sum").val();
             var newage = calcAge(dateOfBirth);
 
             var dataString =
@@ -218,9 +233,9 @@
                 success: function (response) {
                     if (option_id == "40DB") {
                         if (response.details.length == 0) {
-                            $("#optional_premium_" + row_id).val(0.0);
+                            $("#optional_premium").val(0.0);
                         } else {
-                            $("#optional_premium_" + row_id).val(
+                            $("#optional_premium").val(
                                 response.details[0].FDB
                             );
                         }

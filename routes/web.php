@@ -3,11 +3,14 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\beneficiaryController;
 use App\Http\Controllers\customerController;
+use App\Http\Controllers\debitController;
 use App\Http\Controllers\declarationController;
 use App\Http\Controllers\EternityController;
 use App\Http\Controllers\medicalController;
+use App\Http\Controllers\officeController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\planController;
+use App\Http\Controllers\premiumPaymentController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
@@ -140,3 +143,23 @@ Route::post('/beneficiary-detail', [beneficiaryController::class, 'getBeneficiar
 Route::get('/declarations/edit/{id}', [declarationController::class, 'index'])->name('get.declaration');
 Route::post('/sign', [declarationController::class, 'update'])->name('update.signature');
 Route::post('/appliation/details', [declarationController::class, 'getApplicationDetails'])->name('get.application.details');
+
+
+/**
+ * Office Only routes
+ */
+Route::get('/office_only/edit/{id}', [officeController::class, 'index'])->name('get.office');
+Route::post('/sign', [officeController::class, 'update'])->name('update.signature');
+Route::post('/office_only/details', [officeController::class, 'getApplicationDetails'])->name('get.application.details');
+
+
+
+/** Premium Payments */
+Route::get('/premium-payment/edit/{id}', [premiumPaymentController::class, 'index'])->name('get.premium-payments');
+Route::post('/premium-payment', [premiumPaymentController::class, 'getPremiumPayment'])->name('get.premium.payment');
+Route::post('/premium-details/edit', [premiumPaymentController::class, 'update'])->name('edit.premium.details');
+
+/** Debits Routes */
+Route::get('/debits/edit/{id}', [debitController::class, 'index'])->name('edit.debits');
+Route::post('/debits', [debitController::class, 'getDebitDetails'])->name('get.debit.details');
+Route::post('/debits/edit', [debitController::class, 'update'])->name('edit.debit.details');

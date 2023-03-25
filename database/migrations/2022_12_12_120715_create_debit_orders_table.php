@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('bank_branch');
             $table->string('account_number', 11);
             $table->string('account_type', 10);
+            $table->string('account_signature', 60);
             $table->foreignId('application_id')->constrained('applications')->restrictOnDelete();
             $table->foreignId('user_id')->constrained('users')->restrictOnDelete();
             $table->timestamps();

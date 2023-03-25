@@ -188,13 +188,14 @@
 
             $.post('<?= route("get.plan.detail"); ?>',{plan_id:plan_id},function(data){
                 console.log(data.details.id)
+                $('.editPlanForm').find('input[name="application_id"]').val(data.details.application_id);
                 $('.editPlanForm').find('input[name="plan_id"]').val(data.details.id);
                 $('.editPlanForm').find('input[name="firstname"]').val(data.details.firstname);
                 $('.editPlanForm').find('input[name="surname"]').val(data.details.surname);
                 $('.editPlanForm').find('input[name="eBirthdate"]').val(data.details.birthdate);
                 $('.editPlanForm').find('input[name="eStandard_premium"]').val(data.details.standard_premium);
                 $('.editPlanForm').find('input[name="eOptional_premium"]').val(data.details.optional_premium);
-                $('#eBenefits').append('<option value="' + data.details.proposed_sum +'" selected>' + data.details.proposed_sum + '</option>');
+                $('#eProposed_sum').append('<option value="' + data.details.proposed_sum +'" selected>' + data.details.proposed_sum + '</option>');
                 $('#eGender').append('<option value="' + data.details.gender +'" selected>' + data.details.gender + '</option>');
                 $('#eRelationship').append('<option value="' + data.details.relationship +'" selected>' + data.details.relationship + '</option>');
                 $('#eOptional_benefit').append('<option value="' + data.details.optional_benefit +'" selected>' + data.details.optional_benefit + '</option>');
