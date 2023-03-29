@@ -73,7 +73,7 @@
                             <li>I agree that if the premium received is less than the agreed premium for the chosen level of cover, that I consent to it being adjusted to commensurate the premium received.</li>
                         </ol>
                     </div>
-                    <form action="{{ route('update.signature')}}" method="POST" id="edit-signature">
+                    <form action="{{ route('declarant.signature')}}" method="POST" id="edit-signature">
                         <input type="hidden" name="application_id" value="{{ Request::segment(3)}} ">
                         <div class="col-12">
                             <h1>E-Signature</h1>

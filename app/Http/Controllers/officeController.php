@@ -13,8 +13,8 @@ class officeController extends Controller
 
     public function index($id)
     {
-        $declareInfo = application::find($id);
-        return view('eternity-plus.office.index', ['declareInfo' => $declareInfo]);
+        $officeData = intermediary::where('application_id', '=', $id)->get();
+        return view('eternity-plus.office.index', ['officeData' => $officeData]);
     }
 
     public function update(Request $request)

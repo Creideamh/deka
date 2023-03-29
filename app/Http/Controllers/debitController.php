@@ -35,7 +35,7 @@ class debitController extends Controller
 
 
         if (!$validate->passes()) {
-            return response()->json(['code' => 0, 'errors' => $validate->errors()->toArray()]);
+            return response()->json(['code' => 0, 'errors' => $validate->errors()->toArray(), 'msg' => 'One or more fields empty']);
         }
 
 
@@ -49,8 +49,8 @@ class debitController extends Controller
 
 
         $accountUpdate = debit_order::where('application_id', '=', $request->application_id)->update([
-            'debit_order_surname'   => $request->surname,
-            'debit_order_firstname' => $request->firstname,
+            'debit_order_surname'   => $request->debit_order_surname,
+            'debit_order_firstname' => $request->debit_order_firstname,
             'account_number' => $request->account_number,
             'account_type' => $request->account_type,
             'bank_name' => $request->bank_name,

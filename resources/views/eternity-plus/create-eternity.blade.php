@@ -74,44 +74,52 @@
                                         <option value="Sir">Sir</option>
                                     </select>
                                 </div>
+                                <span class="text-danger error-text title_error"></span>
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label for="">Surname</label>
                                     <input type="text" name="surname" id="surname" class="form-control">
                                 </div>
+                                <span class="text-danger error-text surname_error"></span>
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label for="">Firstname</label>
                                     <input type="text" name="firstname" id="firstname" class="form-control">
+                                    <span class="text-danger error-text firstname_error"></span>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label for="">Birthdate </label>
                                     <input type="text" class="form-control" id="birthdate" onchange="customerAge()" name="birthdate" readonly="readonly">
+                                    <span class="text-danger error-text birthdate_error"></span>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label for="">BirthPlace</label>
                                     <input type="text" name="birthplace" id="birthplace" class="form-control">
+                                    <span class="text-danger error-text birthplace_error"></span>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label for="">Gender</label>
                                     <select name="gender" id="gender" class="form-select">
+                                        <option value=""></option>
                                         <option value="M">Male</option>
                                         <option value="F">Female</option>
                                     </select>
+                                    <span class="text-danger error-text gender_error"></span>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label for="">Occupation</label>
                                     <input type="text" name="occupation" id="occupation" class="form-control">
+                                    <span class="text-danger error-text occupation_error"></span>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -125,6 +133,7 @@
                                         <option value="separated">Separated</option>
                                         <option value="widowed">Widowed</option>
                                     </select>
+                                    <span class="text-danger error-text marital_status_error"></span>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -135,39 +144,45 @@
                                         @forelse ($countries as $country)
                                             <option value="{{ $country->name }}">{{ $country->name }}</option>
                                         @empty
-                                            
+                                            <option value="no_country">N/A</option>
                                         @endforelse
                                     </select>
+                                    <span class="text-danger error-text nationality_error"></span>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label for="">Phone-number</label>
                                     <input type="text" name="phone_number" id="phone_number" class="form-control">
+                                    <span class="text-danger error-text phone_number_error"></span>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label for="">@Email</label>
                                     <input type="email" name="email_address" id="email_address" class="form-control">
+                                    <span class="text-danger error-text email_address_error"></span>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="mb-3">
                                     <label for="">Home Address</label>
                                     <input type="text" name="home_address" id="home_address" class="form-control">
+                                    <span class="text-danger error-text home_address_error"></span>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="mb-3">
                                     <label for="">Postal Address</label>
                                     <input type="text" name="postal_address" id="postal_address" class="form-control">
+                                    <span class="text-danger error-text postal_address_error"></span>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label for="">TIN Number</label>
                                     <input type="text" name="tin_number" id="tin_number" class="form-control">
+                                    <span class="text-danger error-text tin_number_error"></span>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -181,12 +196,14 @@
                                         <option value="driver_license">Driver's License</option>
                                         <option value="national_id">National ID</option>
                                     </select>
+                                    <span class="text-danger error-text form_of_identification_error"></span>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label for="">Identiy Number</label>
                                     <input type="text" name="identity_number" id="identity_number" class="form-control">
+                                    <span class="text-danger error-text identity_number_error"></span>
                                 </div>
                             </div>
                         </div>
@@ -194,7 +211,7 @@
                 </div>
             </div>
         </div>
-         <div class="row">
+        <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header bg-success text-white">
@@ -214,6 +231,7 @@
                                     <option value="50000">Sapphire ---- 50000</option>
                                     <option value="60000">Emerald ---- 60000</option>
                                 </select>
+                                <span class="text-danger error-text proposed_sum_error"></span>
                             </div>
                         </div>
                         <div class="col-12">
@@ -312,11 +330,13 @@
                             <div class="form-check">
                                 <input class="form-check-input if_yes_checked" type="radio" name="existing_policy" value="No">
                                 <label class="form-check-label">No</label>
+                                <span class="text-danger error-text existing_policy_error"></span>
                             </div>
                         </div>
                         <div class="col-md-4 if_yes float-end">
                             <label for="">If <span class="text-danger">Yes</span>, please provide policy number:</label>
                             <input type="text" name="existing_policy_number" id="if_yes" class="form-control">
+                            <span class="text-danger error-text existing_policy_number"></span>
                         </div>
                         <div class="col-md-8 float-start">
                             <label for="">Has any Life Insurance Company refused your proposal for Life Insurance or accepted with an extra premium or special terms on any of the proposed lives?</label>
@@ -328,10 +348,12 @@
                                 <input class="form-check-input refusal_checked" type="radio" name="existing_life_insurance" value="No">
                                 <label class="form-check-label">No</label>
                             </div>
+                            <span class="text-danger error-text refusal_checked_error"></span>
                         </div>
                         <div class="col-md-4 float-end refusal" >
                             <label for="">If <span class="text-danger">Yes</span> please state the reason for refusal</label>
                             <input type="text" name="refusal" id="refusal" class="form-control">
+                            <span class="text-danger error-text refusal_error"></span>
                         </div>
                         <div class="col-lg-8">
                             <label for="">Are you and any of your proposed family members currently in good health, free from any illness or disease and not undergoing any medical treatment or surgery?</label>
@@ -530,16 +552,17 @@
                             <p>Sign in the canvas below and save your signature as an image!</p>
                         </div>
                         <div class="col-12">
-                            <canvas class="border border-3" id="declarant-signature" width="1100" height="260">
+                            <canvas class="border border-3" id="sig_canvas" width="1100" height="260">
                                 Get a better browser, bro.
                             </canvas>
+                            <span class="text-danger error-text customer_signature"></span>
                         </div>
                         <div class="col-12">
-                            <a class="btn btn-success" id="declarant-submit">Genenate Signature</a>
-                            <a class="btn btn-default" id="declarant-clear">Clear Signature</a>
+                            <a class="btn btn-success" id="sig_submitBtn">Generate Signature</a>
+                            <a class="btn btn-default" id="sig_clearBtn">Clear Signature</a>
                             <input type="text" name="declarant_date" id="declarant-date" value="<?=date('Y-m-d');?>" placeholder="Signature Date" class="btn btn-default" readonly>
-                            <textarea id="declarant-signature" name="declarant_signature" hidden="" class="form-control" rows="5">Data URL for your signature will go here!</textarea>
-                            <img id="declarant-signature-image" hidden="" src="" alt="Your signature will go here!">
+                            <textarea id="sig_dataUrl" name="sig_dataUrl" hidden  class="form-control" rows="5">Data URL for your signature will go here!</textarea>
+                            <img id="sig_image" hidden src="" alt="Your signature will go here!">
                         </div>
                         <div class="col-12 mt-5 border border border-secondary bg-light p-2">
                             <h5>Note</h5>
@@ -658,18 +681,18 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <canvas class="border border-3" id="champion-signature" width="1100" height="260">
+                                <canvas class="border border-3" id="champion_signature_canvas" width="1100" height="260">
                                     Get a better browser, bro.
                                 </canvas>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <a class="btn btn-success" id="champion-signature-submit">Genenate Signature</a>
-                                <a class="btn btn-default" id="champion-signature-clear">Clear Signature</a>
+                                <a class="btn btn-success" id="champion_signature_generate">Generate Signature</a>
+                                <a class="btn btn-default" id="champion_signature_clear">Clear Signature</a>
                                 <input type="text" name="champion-date" id="champion-date" value="<?=date('Y-m-d');?>" placeholder="Signature Date" class="btn btn-default">
-                                <textarea id="champion-signature" name="champion-signature" hidden="" class="form-control" rows="5">Data URL for your signature will go here!</textarea>
-                                <img id="champion-signature-image" hidden="" src="" alt="Your signature will go here!">
+                                <textarea id="champion_signature" name="champion_signature" hidden="" class="form-control" rows="5">Data URL for your signature will go here!</textarea>
+                                <img id="champion_signature_image" hidden="" src="" alt="Your signature will go here!">
                             </div>
                         </div>
                     </div>
@@ -685,78 +708,90 @@
                     <div class="card-body">
                             <div class="row">
                                 <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="Title">Title</label>
-                                    <select name="premium_title" id="premium_title" class="form-control select2 select2bs5" >
-                                        <option value=""></option>
-                                        <option value="Mr">Mr</option>
-                                        <option value="Mrs">Mrs</option>
-                                        <option value="Sir">Sir</option>
-                                    </select>
-                                </div>
-                                </div>
-                                <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="Surname">Surname</label>
-                                    <input type="text" name="premium_surname" id="premium_surname" class="form-control" >
-                                </div>
+                                    <div class="form-group">
+                                        <label for="Title">Title</label>
+                                        <select name="premium_title" id="premium_title" class="form-control select2 select2bs5" >
+                                            <option value=""></option>
+                                            <option value="Mr">Mr</option>
+                                            <option value="Mrs">Mrs</option>
+                                            <option value="Sir">Sir</option>
+                                        </select>
+                                        <span class="text-danger error-text premium_title_error"></span>
+
+                                    </div>
                                 </div>
                                 <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="Firstname">Firstname</label>
-                                    <input type="text" name="premium_firstname" id="premium_firstname" class="form-control" >
+                                    <div class="form-group">
+                                        <label for="Surname">Surname</label>
+                                        <input type="text" name="premium_surname" id="premium_surname" class="form-control" >
+                                        <span class="text-danger error-text premium_surname_error"></span>
+                                    </div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="Firstname">Firstname</label>
+                                        <input type="text" name="premium_firstname" id="premium_firstname" class="form-control" >
+                                        <span class="text-danger error-text premium_firstname_error"></span>
+                                    </div>
                                 </div>
                                 <div class="col-md-2">
-                                <div class="form-group">
-                                    <label for="DOB">Date of Birth</label>
-                                    <input type="date" name="premium_birthdate" id="premium_birthdate" class="form-control" >
-                                </div>
+                                    <div class="form-group">
+                                        <label for="DOB">Date of Birth</label>
+                                        <input type="date" name="premium_birthdate" onchange="payeeAge()" id="premium_birthdate" class="form-control" >
+                                        <span class="text-danger error-text premium_birthdate_error"></span>
+                                    </div>
                                 </div>                          
                         </div>
                         <div class="row pt-3">
                                 <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="MobileNumber">Mobile Number</label>
-                                    <input type="text" name="premium_mobile_number" id="premium_mobile_number" class="form-control" >
-                                </div>
-                                </div>
-                                <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="Email">Email Address</label>
-                                    <input type="email" name="premium_email" value="" class="form-control" id="premium_email">
-                                </div>
+                                    <div class="form-group">
+                                        <label for="MobileNumber">Mobile Number</label>
+                                        <input type="text" name="premium_mobile_number" id="premium_mobile_number" class="form-control" >
+                                        <span class="text-danger error-text premium_mobile_number_error"></span>
+                                    </div>
                                 </div>
                                 <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="TIN">Tin Number</label>
-                                    <input type="text" name="premium_tin" value="" id="premium_tin" class="form-control">
+                                    <div class="form-group">
+                                        <label for="Email">Email Address</label>
+                                        <input type="email" name="premium_email" value="" class="form-control" id="premium_email">
+                                        <span class="text-danger error-text premium_email_error"></span>
+                                    </div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="TIN">Tin Number</label>
+                                        <input type="text" name="premium_tin" value="" id="premium_tin" class="form-control">
+                                        <span class="text-danger error-text premium_tin_error"></span>
+                                    </div>
                                 </div>
                         </div>
                         <div class="row pt-3">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                <label for="">Risk Premium GHS</label>
-                                <input type="number" min="0.0." max="10000.00"  step="any" name="premium_risk" value="" id="premium_risk" class="form-control" >
+                                    <label for="">Risk Premium GHS</label>
+                                    <input type="number" min="0.0." max="10000.00"  step="any" name="premium_risk" value="" id="premium_risk" class="form-control" >
+                                    <span class="text-danger error-text premium_risk_error"></span>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                <label for="">Saving Premium GHS</label>
-                                <input type="number" min="0.0." max="10000.00"  step="any" name="premium_savings" value="" id="premium_savings" class="form-control" >
+                                    <label for="">Saving Premium GHS</label>
+                                    <input type="number" min="0.0." max="10000.00"  step="any" name="premium_savings" value="" id="premium_savings" class="form-control" >
+                                    <span class="text-danger error-text premium_savings_error"></span>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                <label for="">Policy Fee: GHS (Monthly Fee: 1.50+)</label>
-                                <input type="number" min="0.0." max="10000.00"  step="any" name="premium_fee" id="premium_fee" value="1.50" class="form-control" >
+                                    <label for="">Policy Fee: GHS (Monthly Fee: 1.50+)</label>
+                                    <input type="number" min="0.0." max="10000.00"  step="any" name="premium_fee" id="premium_fee" value="1.50" class="form-control" >
+                                    <span class="text-danger error-text premium_fee_error"></span>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                <label for="">Total Premium GHS</label>
-                                <input type="number" min="0.0." max="10000.00"  step="any" name="premium_total" id="premium_total" class="form-control" >
+                                    <label for="">Total Premium GHS</label>
+                                    <input type="number" min="0.0." max="10000.00"  step="any" name="premium_total" id="premium_total" class="form-control" >
+                                    <span class="text-danger error-text premium_total_error"></span>
                                 </div>
                             </div>
                         </div>
@@ -764,29 +799,32 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                 <label for="">Payment Frequency</label>
-                                <select name="premium_frequency" id="premium_frequency" class="form-control select2 select2bs5">
-                                    <option value=""></option>
-                                    <option value="monthly">Monthly</option>
-                                    <option value="quarterly">Quarterly</option>
-                                    <option value="bi-annually">Bi annually</option>
-                                    <option value="annually">Annualy</option>
-                                </select>
+                                    <select name="premium_frequency" id="premium_frequency" class="form-control select2 select2bs5">
+                                        <option value=""></option>
+                                        <option value="monthly">Monthly</option>
+                                        <option value="quarterly">Quarterly</option>
+                                        <option value="bi-annually">Bi annually</option>
+                                        <option value="annually">Annualy</option>
+                                    </select>
+                                    <span class="text-danger error-text premium_frequency_error"></span>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                <label for="">Mode Of Payment</label>
-                                <input type="text" name="premium_mode" id="premium_mode" value="BANK DEBIT ORDER" class="form-control" >
+                                    <label for="">Mode Of Payment</label>
+                                    <input type="text" name="premium_mode" id="premium_mode" value="BANK DEBIT ORDER" class="form-control" >
+                                    <span class="text-danger error-text premium_mode_error"></span>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                <label for="">Deduction Start Date</label>
-                                <input type="text" name="premium_deduction" id="premium_deduction" class="form-control" >
+                                    <label for="">Deduction Start Date</label>
+                                    <input type="text" name="premium_deduction" id="premium_deduction" class="form-control" >
+                                    <span class="text-danger error-text premium_deduction_error"></span>
                                 </div>
                             </div>
-                            </div>
-                            <div class="row pt-5">
+                        </div>
+                        <div class="row pt-5">
                             <div class="col-6 border border-secondary bg-light p-2 d-inline-block">
                                 <p class="lead">Automatic Inflation Management: (Annual Premium Increase). There is a standard 10% Automatic Inflation Management (AIM) embedded in the plan. However, you have the option to select a higher AIM.</p>
                             </div>
@@ -799,7 +837,8 @@
                                         <option value="30">30%</option>
                                         <option value="40">40%</option>
                                     </select>
-                                    </div>
+                                    <span class="text-danger error-text premium_increase"></span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -817,15 +856,17 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                  <label for="">Account Holder Name</label>
-                                  <input type="text" name="account_holder" value="" class="form-control" id="account_holder"  >
+                                    <label for="">Account Holder Name</label>
+                                    <input type="text" name="account_holder" value="" class="form-control" id="account_holder"  >
+                                    <span class="text-danger error-text account_holder_error"></span>
                                 </div>
-                              </div>
-                              <div class="col-md-4">
+                            </div>
+                            <div class="col-md-4">
                                 <label for="">Account Number</label>
                                 <input type="text" name="account_number" id="account_number" class="form-control" >
-                              </div>
-                              <div class="col-md-4">
+                                <span class="text-danger error-text account_number_error"></span>
+                            </div>
+                            <div class="col-md-4">
                                 <label for="">Account Type</label>
                                 <select name="account_type" id="account_type" class="form-control" >
                                   <option value=""></option>
@@ -835,50 +876,53 @@
                                   <option value="Smart">Smart</option>
                                   <option value="Transition">Transition</option>
                                 </select>
-                            </div>
+                                <span class="text-danger error-text account_type_error"></span>
+                            </div>                            
                         </div>
                         <div class="row pt-3">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                  <label for="">Bank Name</label>
-                                  <select name="bank_name" id="bank_name" class="form-control select2">
-                                    <option value=""></option>
-                                    <option value="FirstNationalBank" selected>First National Bank GH</option>
-                                  </select>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="">Bank Name</label>
+                                        <select name="bank_name" id="bank_name" class="form-control select2">
+                                            <option value=""></option>
+                                            <option value="FirstNationalBank" selected>First National Bank GH</option>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                  <label for="">Bank Branch</label>
-                                  <select name="bank_branch" id="bank_branch" class="form-control select2 select2bs5">
-                                    <option value=""></option>
-                                    <option value="330101">Junction Shopping Centre Branch</option>
-                                    <option value="330102">Accra Branch</option>
-                                    <option value="330106">Accra Mall Branch</option>
-                                    <option value="330108">Achimota Mall Branch</option>
-                                    <option value="330111">WestHils Mall Branch</option>
-                                    <option value="330112">Tema Branch</option>
-                                    <option value="330119">Airport Branch</option>
-                                    <option value="330120">Community 1 Branch Tema</option>
-                                    <option value="330401">Market Circle Branch Takoradi</option>
-                                    <option value="330601">Adum Branch Kumasi</option>
-                                  </select>
-                                  <input type="hidden" name="debit_date" value="{{ date('Y-m-d') }}" readonly>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="">Bank Branch</label>
+                                        <select name="bank_branch" id="bank_branch" class="form-control select2 select2bs5">
+                                            <option value=""></option>
+                                            <option value="330101">Junction Shopping Centre Branch</option>
+                                            <option value="330102">Accra Branch</option>
+                                            <option value="330106">Accra Mall Branch</option>
+                                            <option value="330108">Achimota Mall Branch</option>
+                                            <option value="330111">WestHils Mall Branch</option>
+                                            <option value="330112">Tema Branch</option>
+                                            <option value="330119">Airport Branch</option>
+                                            <option value="330120">Community 1 Branch Tema</option>
+                                            <option value="330401">Market Circle Branch Takoradi</option>
+                                            <option value="330601">Adum Branch Kumasi</option>
+                                        </select>
+                                        <input type="hidden" name="debit_date" value="{{ date('Y-m-d') }}" readonly>
+                                        <span class="text-danger error-text bank_branch_error"></span>
+                                    </div>
                                 </div>
-                              </div>
-                              <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Please add a copy of the Cheque leaflet, if</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input cheque_status" type="radio" name="cheque" value="Yes"> 
-                                        <label class="form-check-label">Yes</label>
-                                    </div>     
-                                    <div class="form-check">
-                                        <input class="form-check-input cheque_status" type="radio" name="cheque" value="No">
-                                        <label class="form-check-label">No</label>
-                                    </div>                           
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Please add a copy of the Cheque leaflet, if</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input cheque_status" type="radio" name="cheque" value="Yes"> 
+                                            <label class="form-check-label">Yes</label>
+                                        </div>     
+                                        <div class="form-check">
+                                            <input class="form-check-input cheque_status" type="radio" name="cheque" value="No">
+                                            <label class="form-check-label">No</label>
+                                        </div>   
+                                        <span class="text-danger error-text cheque_error"></span>                       
+                                    </div>
                                 </div>
-                              </div>
                             </div>
                             <div class="row pt-3">
                                 <div class="col-12 pt-3 border-start  border-info">
@@ -907,15 +951,16 @@
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <canvas class="border border-3" id="signature-canvas" width="1100" height="260">
+                                    <canvas class="border border-3" id="account_signature_canvas" width="1100" height="260">
                                         Get a better browser, bro.
                                       </canvas>
+                                      <span class="text-danger error-text accountholder_signature_error"></span>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <a class="btn btn-success" id="generate-account-signature">Genenate Signature</a>
-                                    <a class="btn btn-default" id="clear-account-signature">Clear Signature</a>
+                                    <a class="btn btn-success" id="generate_account_signature">Genenate Signature</a>
+                                    <a class="btn btn-default" id="clear_account_signature">Clear Signature</a>
                                 </div>
                             </div>
                             <div class="row">
@@ -943,6 +988,7 @@
                 </div>
             </div>
         </div>
+
     </form>
 
 @endsection
@@ -974,7 +1020,11 @@
                     contentType:false,
                     success:function(data){
                         if(data.code == 0){
-                            toastr.error(data.msg); 
+                            $.each(data.errors, function(prefix, value){
+                                $(form).find('span.'+prefix+'_error').text(value[0]);
+                            });
+                        }else if(data.code == 2) {
+                            toastr.error(data.msg)
                         }else{
                             toastr.success(data.msg); 
                         }

@@ -135,7 +135,7 @@ class EternityController extends Controller
         $validate = Validator::make($request->all(), [
             "title" => "required",
             "surname" => "required|string",
-            "firstname" => "requried|string",
+            "firstname" => "required|string",
             "birthdate" => "required|date",
             "birthplace"  => "required|string",
             "gender"     => "required|string",
@@ -143,62 +143,71 @@ class EternityController extends Controller
             "marital_status" => "required|string",
             "nationality"   => "required|string",
             "phone_number"  => "required|string",
-            "email"         => "required|email",
+            "email_address"         => "required|email",
             "postal_address" => "required|string",
+            "home_address" => "required",
             "tin_number"    => "required|string|max:15|min:10",
             "form_of_identification"      => "required|string",
-            "id_number" => "required|string",
+            "identity_number" => "required|string",
             'existing_policy' => 'required',
-            'existing_policy_number' => 'required|string',
+            'existing_policy_number' => 'sometimes|required',
+            'refusal' => 'sometimes|required',
             'medical_health_status' => 'required',
             "subagent_name"   => "required|string",
             "subagent_code"   => "required",
-            "branch"        => "required|string",
-            "ist_premium_date" => "required|date",
+            "branch"        => "required",
+            "premium_deduction" => "required|date",
+            "sig_dataUrl" => "required",
             "champion_signature" => "required",
             "premium_tin" => "required",
             "premium_email" => "required|email",
             "premium_mobile_number" => "required",
             "premium_birthdate" => "required|date",
-            "premium_firstname" => "required",
-            "premium_surname" => "required",
+            "premium_firstname" => "required|string",
+            "premium_surname" => "required|string",
             "premium_title"  => "required",
+            "premium_frequency" => "required",
+            "premium_mode" => "required",
+            "premium_total" => "required",
+            "premium_risk" => "required",
+            "premium_savings" => "required",
+            "premium_increase" => "required",
             "account_holder" => "required|string",
             "account_number" => "required|numeric|digits_between:11,11",
+            "account_type" => "required",
             "bank_branch"    => "required",
-            "branch_name"    => "required",
+            "cheque" => "required"
         ]);
 
-        if ($validate) {
-
-            $customer = new Customer();
-            $customer->title = $request->title;
-            $customer->surname = $request->surname;
-            $customer->firstname = $request->firstname;
-            $customer->birthdate = $request->birthdate;
-            $customer->birthplace  = $request->birthplace;
-            $customer->gender   = $request->gender;
-            $customer->occupation = $request->occupation;
-            $customer->marital_status = $request->marital_status;
-            $customer->nationality  = $request->nationality;
-            $customer->phone_number = $request->phone_number;
-            $customer->email = $request->email_address;
-            $customer->home_address = $request->home_address;
-            $customer->postal_address = $request->postal_address;
-            $customer->tin_number = $request->tin_number;
-            $customer->id_number  = $request->identity_number;
-            $customer->form_of_identification = $request->form_of_identification;
-            $customer->upload_document = 1;
-            $customer->user_id = Auth::user()->id;
-
-            if ($customer->save()) {
-                $customer_id = $customer->id;
-            } else {
-                return response()->json(['code' => 0, 'errors' => $validate->errors()->toArray()]);
-            }
-        } else {
+        if (!$validate->passes()) {
             return response()->json(['code' => 0, 'errors' => $validate->errors()->toArray()]);
         }
+
+        $customer = new Customer();
+        $customer->title = $request->title;
+        $customer->surname = $request->surname;
+        $customer->firstname = $request->firstname;
+        $customer->birthdate = $request->birthdate;
+        $customer->birthplace  = $request->birthplace;
+        $customer->gender   = $request->gender;
+        $customer->occupation = $request->occupation;
+        $customer->marital_status = $request->marital_status;
+        $customer->nationality  = $request->nationality;
+        $customer->phone_number = $request->phone_number;
+        $customer->email = $request->email_address;
+        $customer->home_address = $request->home_address;
+        $customer->postal_address = $request->postal_address;
+        $customer->tin_number = $request->tin_number;
+        $customer->id_number  = $request->identity_number;
+        $customer->form_of_identification = $request->form_of_identification;
+        $customer->upload_document = 1;
+        $customer->user_id = Auth::user()->id;
+
+        if (!$customer->save()) {
+            return response()->json(['code' => 2, 'msg' => 'System error, please try again or contact your administrator']);
+        }
+
+        $customer_id = $customer->id;
 
         /**
          * Store in application tbl 
@@ -207,7 +216,7 @@ class EternityController extends Controller
         $application = new application();
         $application->policy_number = "METFNBGHFEP" . microtime(true);
         $application->status = 0;
-        $application->customer_signature = 'signed';
+        $application->customer_signature = $this->getSignature($request->customer_signature);
         $application->user_id = Auth::user()->id;
         $application->customer_id = $customer_id;
 
@@ -335,12 +344,11 @@ class EternityController extends Controller
         /**
          * Store data in Intermediary Table 
          */
-
         $intermediary  = new intermediary();
-
         $intermediary->user_id = Auth::user()->id;
         $intermediary->subagent_code = $request->subagent_code;
         $intermediary->date_to_deduction = $request->subagent_deduction_date;
+        $intermediary->signature = $this->getSignature($request->champion_signature);
         $intermediary->application_id = $application_id;
 
         if (!$intermediary->save()) {
@@ -398,6 +406,8 @@ class EternityController extends Controller
         /***
          * Debit Order
          */
+
+
         $debit_order = new debit_order(); // next updates should have debit_deduction name as model name
         $names = explode(" ", $request->account_holder);
         $surname = $names[0];
@@ -408,6 +418,7 @@ class EternityController extends Controller
         $debit_order->bank_branch = $request->bank_branch;
         $debit_order->account_number = $request->account_number;
         $debit_order->account_type   = $request->account_type;
+        $debit_order->account_signature = $this->getSignature($request->accountholder_signature);;
         $debit_order->application_id = $application_id;
         $debit_order->user_id = Auth::user()->id;
 
@@ -485,7 +496,7 @@ class EternityController extends Controller
         $validate = Validator::make($request->all(), [
             "title" => "required",
             "surname" => "required|string",
-            "firstname" => "requried|string",
+            "firstname" => "required|string",
             "birthdate" => "required|date",
             "birthplace"  => "required|string",
             "gender"     => "required|string",
@@ -815,5 +826,19 @@ class EternityController extends Controller
         } else {
             return response()->json(['code' => 0, 'msg' => 'Failed to drop Customer Policy Application']);
         }
+    }
+
+
+    // Handles signatures
+    public function getSignature($request)
+    {
+        $signature = $request;
+        $signature = str_replace('data:image/png;base64,', '', $signature);
+        $signature = str_replace(' ', '+', $signature);
+        $data = base64_decode($signature);
+        $file_name = md5(microtime() . date('Y-m-d')) . '.png';
+        $file_path = public_path('uploads/customers/' . $file_name);
+        $loc = file_put_contents($file_path, $data);
+        return $file_name;
     }
 }

@@ -141,7 +141,7 @@ Route::post('/beneficiary-detail', [beneficiaryController::class, 'getBeneficiar
  * Declarations
  */
 Route::get('/declarations/edit/{id}', [declarationController::class, 'index'])->name('get.declaration');
-Route::post('/sign', [declarationController::class, 'update'])->name('update.signature');
+Route::post('/sign-declaration', [declarationController::class, 'update'])->name('declarant.signature');
 Route::post('/appliation/details', [declarationController::class, 'getApplicationDetails'])->name('get.application.details');
 
 
@@ -149,7 +149,7 @@ Route::post('/appliation/details', [declarationController::class, 'getApplicatio
  * Office Only routes
  */
 Route::get('/office_only/edit/{id}', [officeController::class, 'index'])->name('get.office');
-Route::post('/sign', [officeController::class, 'update'])->name('update.signature');
+Route::post('/sign-office', [officeController::class, 'update'])->name('office.signature');
 Route::post('/office_only/details', [officeController::class, 'getApplicationDetails'])->name('get.application.details');
 
 

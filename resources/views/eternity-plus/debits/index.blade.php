@@ -194,6 +194,7 @@
                             $.each(data.errors, function(prefix, value){
                                 $(form).find('span.'+prefix+'_error').text(value[0]);
                             });
+                            toastr.error(data.msg); 
                         }else{
                             toastr.success(data.msg); 
                         }
@@ -228,7 +229,7 @@
                         };
                         
                     // how to secure this route, inorder to prevent users from capturing the customer_signature
-                    img.src = "{{ asset('uploads/customers/')}}/" + data.details[0].account_signature;
+                    img.src = "{{ asset('uploads/customers/') }}/" + data.details[0].account_signature;
 
                 }
 
