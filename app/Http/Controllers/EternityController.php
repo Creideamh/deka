@@ -438,7 +438,39 @@ class EternityController extends Controller
      */
     public function show($id)
     {
-        //
+        $countries = Country::all();
+        $apps = application::find($id);
+        $customer = Customer::find($apps->customer_id);
+        $user = User::where('id', $apps->user_id)->with('intermediary')->get();
+        $members = family_member::where('application_id', $apps->id)->get();
+        $medicals = medical_info::where('application_id', $apps->id)->get();
+        $healths = health_info::where('application_id', $apps->id)->get();
+        $beneficiaries = beneficiary::where('application_id', $apps->id)->get();
+        $trustees = trustee::where('application_id', $apps->id)->get();
+        $premium_payer = premium_payer::where('application_id', $apps->id)->get();
+        $premium_payment = premium_payment::where('application_id', $apps->id)->get();
+        $debit_order = debit_order::where('application_id', $apps->id)->get();
+        $intermediary = intermediary::where('application_id', $apps->id)->get();
+
+
+        return view(
+            'eternity-plus.preview',
+            [
+                'countries' => $countries,
+                'apps' => $apps,
+                'customer' => $customer,
+                'members' => $members,
+                'medical_info' => $medicals,
+                'health_info' => $healths,
+                'beneficiaries' => $beneficiaries,
+                'premium_payer' => $premium_payer,
+                'payment' => $premium_payment,
+                'debit_info' => $debit_order,
+                'intermInfo' => $intermediary,
+                'trustee' => $trustees,
+                'user' => $user
+            ]
+        );
     }
 
     /**

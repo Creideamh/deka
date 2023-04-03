@@ -130,9 +130,17 @@
         $.contextMenu({
             selector: 'tr', 
             callback: function(key, options) {
-                var link = key+"/edit/"+$(this).data('id');
-                var m = "clicked: " + $(this).data('id');
-                window.location.href=link;
+
+                if (key == 'preview') {
+                    var link = key+"/policy/"+$(this).data('id');
+                    window.location.href=link;
+                }else{
+                    var link = key+"/edit/"+$(this).data('id');
+                    var m = "clicked: " + $(this).data('id');
+                    window.location.href=link;
+                }
+
+
             },
             items: {
                 "customer": {name: "Customer", icon: "fas fa-user"},

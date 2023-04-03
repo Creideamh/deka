@@ -25,6 +25,7 @@
         @stack('select2Css')
         @stack('SweetAlertCss')
         @stack('flatpickrCss')
+        @stack('preview')
     </head>
 
     <body data-sidebar="dark">

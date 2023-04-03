@@ -163,3 +163,6 @@ Route::post('/premium-details/edit', [premiumPaymentController::class, 'update']
 Route::get('/debits/edit/{id}', [debitController::class, 'index'])->name('edit.debits');
 Route::post('/debits', [debitController::class, 'getDebitDetails'])->name('get.debit.details');
 Route::post('/debits/edit', [debitController::class, 'update'])->name('edit.debit.details');
+
+// Preview policy 
+Route::get('/preview/policy/{id}', [EternityController::class, 'show'])->name('preview.policy');
