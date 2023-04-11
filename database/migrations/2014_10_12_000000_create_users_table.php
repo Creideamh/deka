@@ -28,7 +28,9 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
             $table->integer('status')->default(1);
+            $table->foreignId('branch_id')->constrained('branches')->restrictOnDelete();
             $table->string('userImage');
+            $table->string('customer_signature')->default('');
         });
     }
 

@@ -60,4 +60,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Intermediary::class);
     }
+
+    public function branch()
+    {
+        return $this->belongsTo(branch::class);
+    }
 }

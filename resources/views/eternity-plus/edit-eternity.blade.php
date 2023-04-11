@@ -1,6 +1,6 @@
 @extends('layouts.app-layout')
 
-@section('title', 'Create Policy')
+@section('title', 'Edit Policy')
 @push('toastrCss')
     <link rel="stylesheet" href="{{ asset('assets/libs/toastr/toastr.min.css') }}">
 @endpush
@@ -49,7 +49,7 @@
             </div>
         </div>
     </div>
-    <form action="{{ route('store-fep-data')}}" method="POST" id="add-eternity-form">
+    <form action="{{ route('edit-fep-data')}}" method="POST" id="edit-eternity-form">
         <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
         <input type="hidden" name="customer_id" value="{{ $apps->customer_id }}">
         <input type="hidden" name="app_id" value="{{ $apps->id }}">
@@ -685,16 +685,17 @@
                             <p>Sign in the canvas below and save your signature as an image!</p>
                         </div>
                         <div class="col-12">
-                            <canvas class="border border-3" id="declarant-signature" width="1100" height="260">
+                            <canvas class="border border-3" id="sig_canvas" width="1100" height="260">
                                 Get a better browser, bro.
                             </canvas>
+                            <span class="text-danger error-text customer_signature"></span>
                         </div>
                         <div class="col-12">
-                            <a class="btn btn-success" id="declarant-submit">Genenate Signature</a>
-                            <a class="btn btn-default" id="declarant-clear">Clear Signature</a>
+                            <a class="btn btn-success" id="sig_submitBtn">Generate Signature</a>
+                            <a class="btn btn-default" id="sig_clearBtn">Clear Signature</a>
                             <input type="text" name="declarant_date" id="declarant-date" value="<?=date('Y-m-d');?>" placeholder="Signature Date" class="btn btn-default" readonly>
-                            <textarea id="declarant-signature" name="declarant_signature" hidden="" class="form-control" rows="5">Data URL for your signature will go here!</textarea>
-                            <img id="declarant-signature-image" hidden="" src="" alt="Your signature will go here!">
+                            <textarea id="sig_dataUrl" name="sig_dataUrl" hidden  class="form-control" rows="5">Data URL for your signature will go here!</textarea>
+                            <img id="sig_image" hidden src="" alt="Your signature will go here!">
                         </div>
                         <div class="col-12 mt-5 border border border-secondary bg-light p-2">
                             <h5>Note</h5>
@@ -713,8 +714,8 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header text-white bg-success">
-                        <h5 class="card-title">Intermediary Information</h5>
+                    <div class="card-header bg-success text-white">
+                        <h5 class="card-title">Office Use</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -756,44 +757,46 @@
                                 <div class="form-group">
                                     <label for="">Branch</label>
                                     <select name="branch" id="branch" class="form-control select2 select2bs5">
-                                    <!-- Branch codes should display based on Bank --> 
-                                    <option value=""></option>
-                                    <option value="3009">Achimota Mall</option>
-                                    <option value="3012">Westhills Mall</option>
-                                    <option value="4126">Makola</option>
-                                    <option value="4127">Tema Community 11</option>
-                                    <option value="3006">Accra Mall</option>
-                                    <option value="3002">Junction Mall</option>
-                                    <option value="6735">Airport</option>
-                                    <option value="3003">Accra Main</option>
-                                    <option value="6822">Takoradi</option>
-                                    <option value="6824">Tema Community 1</option>
-                                    <option value="6753">Kumasi</option>
-                                    </select>
+                                        <!-- Branch codes should display based on Bank --> 
+                                        @if ($intermInfo[0]->subagent_code == 3009)
+                                            <option value="3009">Achimota Mall</option>
+                                        @elseif($intermInfo[0]->subagent_code == 3012)
+                                            <option value="3012">Westhills Mall</option>
+                                        @elseif($intermInfo[0]->subagent_code == 4126)
+                                            <option value="4126">Makola</option>
+                                        @elseif($intermInfo[0]->subagent_code == 3006)
+                                            <option value="3006">Accra Mall</option>
+                                        @elseif($intermInfo[0]->subagent_code == 3002)
+                                            <option value="3002">Junction Mall</option>
+                                        @elseif($intermInfo[0]->subagent_agent == 6735)
+                                            <option value="6735">Airport</option>
+                                        @elseif($intermInfo[0]->subagent_code == 4127)
+                                            <option value="4127">Tema Community 11</option>
+                                        @elseif($intermInfo[0]->subagent_code == 3003)
+                                            <option value="3003">Accra Main</option>
+                                        @elseif($intermInfo[0]->subagent_code == 6822)
+                                            <option value="6822">Takoradi</option>
+                                        @elseif($intermInfo[0]->subagent_code == 6824)
+                                            <option value="6824">Tema Community 1</option>
+                                        @elseif($intermInfo[0]->subagent_code == 6753) 
+                                            <option value="6753">Kumasi</option>
+                                        @endif
+                                   </select>
                                 </div>
                             </div>
-                                <div class="col-md-3">
+                            <div class="col-md-3">
                                 <label for="istPremiumDate">Date to Deduction</label>
                                 <input type="text" class="form-control" name="subagent_deduction_date" id="subagent_deduction_date" value="{{$intermInfo[0]->date_to_deduction}}" readonly>
                             </div>
+
+                            <div class="col-12 pt-3">
+                                <strong for="">1. Bancassurance Champion</strong>
+                                <p><strong>I confirm that the application form and the premium payment mandate is fully completed and I hereby authorise the application to be sent to Bancassurance Hub (Head Office) for underwriting.</strong></p>
+                            </div>
+
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-success text-white">
-                        <h5 class="card-title">Office Use</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="col-12">
-                            <strong for="">1. Bancassurance Champion</strong>
-                            <p> I confirm that the application form and the premium payment mandate is fully completed and I hereby authorise the application to be sent to Bancassurance Hub (Head Office) for underwriting.</p>
-                        </div>
-                        <div class="row">
+
+                        <div class="row pt-3">
                             <div class="col-md-8">
                                 <div class="form-group">
                                 <label for="">Name</label>
@@ -815,18 +818,18 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <canvas class="border border-3" id="champion-signature" width="1100" height="260">
+                                <canvas class="border border-3" id="champion_signature_canvas" width="1100" height="260">
                                     Get a better browser, bro.
                                 </canvas>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <a class="btn btn-success" id="champion-signature-submit">Genenate Signature</a>
-                                <a class="btn btn-default" id="champion-signature-clear">Clear Signature</a>
+                                <a class="btn btn-success" id="champion_signature_generate">Generate Signature</a>
+                                <a class="btn btn-default" id="champion_signature_clear">Clear Signature</a>
                                 <input type="text" name="champion-date" id="champion-date" value="<?=date('Y-m-d');?>" placeholder="Signature Date" class="btn btn-default">
-                                <textarea id="champion-signature" name="champion-signature" hidden="" class="form-control" rows="5">Data URL for your signature will go here!</textarea>
-                                <img id="champion-signature-image" hidden="" src="" alt="Your signature will go here!">
+                                <textarea id="champion_signature" name="champion_signature" hidden="" class="form-control" rows="5">Data URL for your signature will go here!</textarea>
+                                <img id="champion_signature_image" hidden="" src="" alt="Your signature will go here!">
                             </div>
                         </div>
                     </div>
@@ -965,7 +968,8 @@
                     </div>
                 </div>
             </div>
-        </div>    
+        </div>   
+
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -1069,15 +1073,16 @@
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <canvas class="border border-3" id="signature-canvas" width="1100" height="260">
+                                    <canvas class="border border-3" id="account_signature_canvas" width="1100" height="260">
                                         Get a better browser, bro.
                                       </canvas>
+                                      <span class="text-danger error-text accountholder_signature_error"></span>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <a class="btn btn-success" id="generate-account-signature">Genenate Signature</a>
-                                    <a class="btn btn-default" id="clear-account-signature">Clear Signature</a>
+                                    <a class="btn btn-success" id="generate_account_signature">Genenate Signature</a>
+                                    <a class="btn btn-default" id="clear_account_signature">Clear Signature</a>
                                 </div>
                             </div>
                             <div class="row">
@@ -1100,7 +1105,7 @@
                 <div class="card">
                     <div class="card-body bg-default">
                         <a href="#" class="btn btn-secondary float-left">Cancel Form</a>
-                        <button type="submit" class="btn btn-success float-end" id="submit">Submit</button>
+                        <button type="submit" class="btn btn-success float-end" id="submit">Save Changes</button>
                     </div>
                 </div>
             </div>
@@ -1125,7 +1130,7 @@
 
     <script>
         $(function(){
-            $('#add-eternity-form').on('submit',function(e){
+            $('#edit-eternity-form').on('submit',function(e){
                 e.preventDefault();
                 var form = this;
                 $.ajax({

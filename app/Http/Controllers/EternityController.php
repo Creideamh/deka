@@ -17,13 +17,19 @@ use App\Models\premium_payment;
 use App\Models\trustee;
 use App\Models\User;
 use Carbon\Carbon;
+use Codedge\Fpdf\Facades\Fpdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
+use mikehaertl\pdftk\Pdf;
+
+
+
 
 class EternityController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -479,8 +485,9 @@ class EternityController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $policy_id, $id)
     {
+
         $countries = Country::all();
         $apps = application::find($id);
         $customer = Customer::find($apps->customer_id);
@@ -521,8 +528,9 @@ class EternityController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
+        dd($request);
 
 
         $validate = Validator::make($request->all(), [
@@ -620,6 +628,7 @@ class EternityController extends Controller
             if (!$family_member->save()) {
                 return response()->json(['code' => 0, 'errors' => $validate->errors()->toArray()]);
             }
+            
         }
 
 
@@ -872,5 +881,41 @@ class EternityController extends Controller
         $file_path = public_path('uploads/customers/' . $file_name);
         $loc = file_put_contents($file_path, $data);
         return $file_name;
+    }
+
+
+    public function generate($id)
+    {
+
+        $apps = application::find($id);
+        $customer = customer::find($apps->customer_id);
+
+
+        $pdf = new Pdf(
+            'C:\laragon\www\deka\testing.pdf',
+            [
+                'useExec' => true
+            ]
+        );
+
+
+        $result = $pdf->fillForm([
+            'surname' => $customer->surname,
+            'firstname' => $customer->firstname,
+            'gender' => $customer->gender,
+            'email' => $customer->email,
+            'tin_number' => $customer->tin_number,
+        ])
+            ->flatten()
+            ->needAppearances()
+            ->saveAs('C:\laragon\www\deka\filled.pdf');
+
+        if ($result === false) {
+            $error = $pdf->getError();
+            dd($error);
+            return response()->json(['code' => 0, 'msg' => $error]);
+        }
+
+        return response()->download('C://laragon/www/deka/filled.pdf', 'reliable_.pdf', ['Content-Type: application/pdf']);
     }
 }

@@ -62,7 +62,7 @@
                     </thead>
                     <tbody>
                         @forelse ($eternity_ as $item => $value)
-                            <tr class="context-menu-one" data-id="{{ $value['id'] }}">
+                            <tr class="context-menu-one" data-id="{{ $value['id'] }}" data-policy="{{ $value['policy_number']}}" >
                                 <td>
                                     <img src="{{ asset('assets/images/285644_folder_green_icon_48.png')}}" width="24" height="24" alt=""> &nbsp; {{ $value['policy_number'] }}
                                 </td>
@@ -89,8 +89,6 @@
         </div>
     </div> <!-- end col -->
 </div> <!-- end row -->
-
-
 @endsection
 @push('toastrJs')
     <script src="{{ asset('assets/libs/toastr/toastr.min.js') }}"></script>
@@ -134,6 +132,12 @@
                 if (key == 'preview') {
                     var link = key+"/policy/"+$(this).data('id');
                     window.location.href=link;
+                }else if(key == 'export-to-pdf') {
+                    var link = key+"/"+$(this).data('id');
+                    window.location.href=link;
+                }else if( key == 'preview-edit') {
+                    var link = "edit-policy/"+$(this).data('policy')+"/"+$(this).data('id')
+                    window.location.href=link;
                 }else{
                     var link = key+"/edit/"+$(this).data('id');
                     var m = "clicked: " + $(this).data('id');
@@ -147,14 +151,16 @@
                 "plan-details": {name: "Plan Details", icon: "fas fa-users"},
                medicals: {name: "Medicals", icon: "fas fa-hospital-user"},
                 "beneficiaries": {name: "Beneficiaries", icon: "paste"},
-                "office_only": {name: "Office Info", icon: "fas fa-signature"},
-                "declarations": {name: "declarations", icon: "fas fa-signature"},
+                "office_only": {name: "Office Use", icon: "fas fa-pen-nib"},
+                "declarations": {name: "declarations", icon: "fas fa-pencil-alt"},
                 "premium-payment": {name: "Premium Payment", icon: "fas fa-money-check"},
                 "debits": {name: "Debits", icon: "fas fa-money-bill-wave"},
-                "preview": {name: "Preview", icon: "far fa-eye"},
+                "preview": {name: "Preview", icon: "far fa-eye"},   
+                'preview-edit' : {name: "Edit", icon: "fas fa-edit"},
+                "export-to-pdf": {name: "Generate PDF", icon: "fas fa-file-pdf"},   
 
                 "sep1": "---------",
-                "quit": {name: "Quit", icon: function(){
+                "reject": {name: "Cancel", icon: function(){
                     return 'context-menu-icon context-menu-icon-quit';
                 }}
             }

@@ -2,8 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\branch;
+use App\Models\company;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Faker\Factory as Faker;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -17,6 +20,8 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+        $faker = Faker::create();
+
         return [
             'firstname' => fake()->firstName(),
             'lastname' => fake()->lastName(),
@@ -30,7 +35,8 @@ class UserFactory extends Factory
             'password' => '$2a$12$Yf7uffUKjsNz.zXeOklSvukYj2HULG7hKEeNiSQHQbauEwB2G372a', // P@$$w0rd
             'remember_token' => Str::random(10),
             'status' => '1',
-            'userImage' => 'no_image.png'
+            'userImage' => 'no_image.png',
+            'branch_id' => $faker->randomDigitNotNull(),
         ];
     }
 

@@ -12,11 +12,11 @@
     <div class="page-title-box">
         <div class="row align-items-center">
             <div class="col-md-8">
-                <h6 class="page-title">Edit</h6>
+                <h6 class="page-title">Preview Policy</h6>
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item"><a href="#">Family</a></li>
                     <li class="breadcrumb-item"><a href="#">Eternity Plus</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Edit Policy</li>
+                    <li class="breadcrumb-item active" aria-current="page">Preview Policy</li>
                 </ol>
             </div>
             <div class="col-md-4">
@@ -135,84 +135,62 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-grow-1">
-                                <p class="text-muted mb-1">Existing Life Policy with FNB?
-                                        <strong> </strong>
-                                    <div class="col-md-4">
-                                            {{-- <p>{{ $medical_info[0]->refusal_reasons }}</p>
-                                        @endif --}}
-                                    </div>
+                                <p class="text-muted mb-1">
+                                    Do you currently have an existing Life Insurance Policy with FNB?
+                                    @if ( $medical_info[0]->existing_policy == 'No' )
+                                        <span class="badge rounded-pill font-size-13 badge-soft-danger">No</span>
+                                    @else
+                                        <span class="badge rounded-pill font-size-13 badge-soft-success">Yes</span>
+                                    @endif
                                 </p>
-                            </div>
-
-                            <div class="flex-shrink-0 align-self-end ms-2">
-                                @if ( $medical_info[0]->existing_policy == 'No' )
-                                    <div class="badge rounded-pill font-size-13 badge-soft-danger">No</div>
-                                @else
-                                    <div class="badge rounded-pill font-size-13 badge-soft-succes">Yes</div>
+                                @if ($medical_info[0]->existing_policy == 'Yes') 
+                                    <p class="text-muted mb-1"><strong> {{ $medical_info[0]->existing_policy_number }}</strong></p>
                                 @endif
                             </div>
                         </div>
                     </div> <!-- end card body -->
                 </div> <!-- end card -->
-            
-                @if ($medical_info[0]->existing_policy == 'Yes')
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <p class="text-muted mb-1">{{ $medical_info[0]->existing_policy_number }}
-        
-                                    </p>
-                                </div>
-                            </div>
-                        </div> <!-- end card body -->
-                    </div> <!-- end card -->
-                @endif
-
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-grow-1">
-                                <p class="text-muted mb-1">Life Insurance History?</p>
-                            </div>
-                            <div class="flex-shrink-0 align-self-end ms-2">
-                                @if ($medical_info[0]->life_insurance_status == 'No')
-                                    <div class="badge rounded-pill font-size-13 badge-soft-danger">
-                                        No
-                                    </div>
-                                @else
-                                    <div class="badge rounded-pill font-size-13 badge-soft-success">
-                                        Yes
-                                    </div>
+                                <p class="text-muted mb-1">
+                                    Has any Life Insurance Company refused your proposal for Life Insurance or accepted with an extra premium or special terms on any of the proposed lives?
+                                    @if ($medical_info[0]->life_insurance_status == 'No')
+                                        <span class="badge rounded-pill font-size-13 badge-soft-danger">
+                                            No
+                                        </span>
+                                    @else
+                                        <span class="badge rounded-pill font-size-13 badge-soft-success">
+                                            Yes
+                                        </span>
+                                    @endif
+                                </p>
+
+                                @if ($medical_info[0]->life_insurance_status == 'Yes')
+                                    <p class="text-muted mb-1">
+                                        {{ $medical_info[0]->refusal_reasons }}
+                                    </p>
                                 @endif
                             </div>
                         </div>
                     </div> <!-- end card body -->
                 </div> <!-- end card -->
-                @if ($medical_info[0]->life_insurance_status == 'Yes')
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-grow-1">
-                                    <p class="text-muted mb-1">{{ $medical_info[0]->refusal_reasons }}        
-                                    </p>
-                                </div>
-                            </div>
-                        </div> <!-- end card body -->
-                    </div> <!-- end card -->
-                @endif
 
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-grow-1">
-                                <p class="text-muted mb-1">Members health Status</p>
-                            </div>
-                            @if ( $medical_info[0]->medical_health_status == 'No' )
-                                <div class="badge rounded-pill font-size-13 badge-soft-danger">No</div>
-                            @else
-                                <div class="badge rounded-pill font-size-13 badge-soft-success">Yes</div>
-                            @endif  
+                                <p class="text-muted mb-1">
+                                    Are you and any of your proposed family members currently in good health, free from any illness or disease and not undergoing any medical treatment or surgery?
+                                    @if ( $medical_info[0]->medical_health_status == 'No' )
+                                        <span class="badge rounded-pill font-size-13 badge-soft-danger">No</span>
+                                    @else
+                                        <span class="badge rounded-pill font-size-13 badge-soft-success">Yes</span>
+                                    @endif
+                                </p>
+                                
+                            </div> 
                         </div>
                     </div> <!-- end card body -->
                 </div> <!-- end card -->
@@ -245,10 +223,39 @@
                     </div> <!-- end card body -->
                 </div> <!-- end card -->
 
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Premium Payment</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="d-flex justify-content-between p-2 font-size-15"><span class="text-muted"><i class="fas fa-piggy-bank"></i></span><span> {{ $payment[0]->premium_savings }}</span></li>
+                            <li class="d-flex justify-content-between p-2 font-size-15"><span class="text-muted"><i class="fas fa-comments-dollar"></i></span><span>{{ $payment[0]->premium_fee }}</span></li>
+                            <li class="d-flex justify-content-between p-2 font-size-15"><span class="text-muted"><i class="fas fa-wave-square"></i></span><span>{{ $payment[0]->premium_frequency }}</span></li>
+                            <li class="d-flex justify-content-between p-2 font-size-15"><span class="text-muted"><i class="fab fa-modx"></i></span><span>{{ $payment[0]->premium_mode }}</span></li>
+                            <li class="d-flex justify-content-between p-2 font-size-15"><span class="text-muted"><i class="fas fa-credit-card"></i></span><span>{{ $payment[0]->premium_deduction }}</span></li>
+                            <li class="d-flex justify-content-between p-2 font-size-15"><span class="text-muted"><i class="fas fa-chart-line"></i></span><span>{{ $payment[0]->premium_increase }}%</span></li>
+                        </ul>
+                    </div>
+                </div>
+
             </div>
         </div>
 
         <div class="col-xl-9">
+
+                        <div class="card">
+                <div class="card-body">
+                    <div class="invoice-title">
+                        <h4 class="float-end font-size-16"><strong>{{ $apps->policy_number }}</strong></h4>
+                        <h3>
+                            <img src="{{ asset('assets/images/fnb-image_.png')}}" alt="logo" height="32">
+                            Family Eternity Plus 
+                        </h3>
+                    </div>
+                    <hr>
+                </div>
+            </div>
 
             <!-- family members section -->
             <div class="card">
@@ -392,818 +399,85 @@
                     </div>
                     <div class="row">
                         <div class="col-12">
-                            <canvas class="border border-3" id="sig-canvas" width="880" height="260">
+                            <canvas class="border border-3" id="signature-interm" width="880" height="260">
                                 Get a better browser, bro.
                             </canvas>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="card">
-            <!-- Nav tabs -->
-            <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link" data-bs-toggle="tab" href="#about" role="tab" aria-selected="false" tabindex="-1">
-                        <i class="bx bx-user-circle font-size-20"></i>
-                        <span class="d-none d-sm-block">About</span>
-                    </a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link" data-bs-toggle="tab" href="#tasks" role="tab" aria-selected="false" tabindex="-1">
-                        <i class="bx bx-clipboard font-size-20"></i>
-                        <span class="d-none d-sm-block">Tasks</span>
-                    </a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link" data-bs-toggle="tab" href="#messages" role="tab" aria-selected="false" tabindex="-1">
-                        <i class="bx bx-mail-send font-size-20"></i>
-                        <span class="d-none d-sm-block">Messages</span>
-                    </a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#post" role="tab" aria-selected="true">
-                        <i class="bx bx-image font-size-20"></i>
-                        <span class="d-none d-sm-block">Post</span>
-                    </a>
-                </li>
-            </ul>
-            <!-- Tab content -->
-            <div class="tab-content p-4">
-
-                <div class="tab-pane" id="about" role="tabpanel">
-                    <div>
-                        <div>
-                            <h5 class="font-size-16 mb-4">Experience</h5>
-
-                            <ol class="activity-checkout mb-0 px-4 mt-3">
-                                <li class="checkout-item">
-                                    <div class="avatar-sm checkout-icon p-1">
-                                        <div class="avatar-title rounded-circle bg-primary">
-                                            <i class="mdi mdi-pen text-white font-size-20"></i>
-                                        </div>
-                                    </div>
-                                    <div class="feed-item-list">
-                                        <div>
-                                            <h5 class="font-size-16 mb-1">Front end Developer</h5>
-                                            <p class="text-muted text-truncate mb-2">2016 - 2019</p>
-                                            <div class="mb-3">
-                                                <p>ABC Company</p>
-                                                <p class="text-muted">Proin maximus nibh at lorem bibendum venenatis. Cras gravida felis et erat consectetur, ac venenatis quam pulvinar.
-                                                    Cras neque neque, vehicula vel lacus quis, eleifend iaculis mi.
-                                                    Curabitur in mi eget ex fringilla ultricies sit amet quis arcu.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-
-                                <li class="checkout-item">
-                                    <div class="avatar-sm checkout-icon p-1">
-                                        <div class="avatar-title rounded-circle bg-primary">
-                                            <i class="mdi mdi-chart-box text-white font-size-20"></i>
-                                        </div>
-                                    </div>
-                                    <div class="feed-item-list">
-
-                                        <h5 class="font-size-16 mb-1">UI /UX Designer</h5>
-                                        <p class="text-muted text-truncate mb-2">2014 - 2016</p>
-                                        <div class="mb-3">
-                                            <p>XYZ Company</p>
-                                            <p class="text-muted">It will be as simple as occidental in fact,
-                                                it will be Occidental. To an English person, it will seem like simplified
-                                                English, as a skeptical Cambridge friend of mine told me what Occidental</p>
-                                        </div>
-                                    </div>
-                                </li>
-
-                            </ol>
-                        </div>
-
-                        <div>
-                            <h5 class="font-size-16 mb-4">Projects</h5>
-                            <div class="table-responsive">
-                                <table class="table table-nowrap table-hover mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Projects</th>
-                                            <th scope="col">Date</th>
-                                            <th scope="col">Budget</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col" style="width: 120px;">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row">01</th>
-                                            <td><a href="#" class="text-dark">Brand Logo Design</a></td>
-                                            <td>
-                                                18 Jun, 2021
-                                            </td>
-                                            <td>
-                                                $523
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-soft-primary font-size-12">Open</span>
-                                            </td>
-                                            <td>
-                                                <div class="dropdown">
-                                                    <a class="text-muted dropdown-toggle font-size-18 px-2" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
-                                                        <i class="mdi mdi-dots-vertical"></i>
-                                                    </a>
-
-                                                    <div class="dropdown-menu dropdown-menu-end">
-                                                        <a class="dropdown-item" href="#">Action</a>
-                                                        <a class="dropdown-item" href="#">Another action</a>
-                                                        <a class="dropdown-item" href="#">Something else here</a>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">02</th>
-                                            <td><a href="#" class="text-dark">Minible Admin</a></td>
-                                            <td>
-                                                06 Jun, 2021
-                                            </td>
-                                            <td>
-                                                $253
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-soft-primary font-size-12">Open</span>
-                                            </td>
-                                            <td>
-                                                <div class="dropdown">
-                                                    <a class="text-muted dropdown-toggle font-size-18 px-2" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
-                                                        <i class="mdi mdi-dots-vertical"></i>
-                                                    </a>
-
-                                                    <div class="dropdown-menu dropdown-menu-end">
-                                                        <a class="dropdown-item" href="#">Action</a>
-                                                        <a class="dropdown-item" href="#">Another action</a>
-                                                        <a class="dropdown-item" href="#">Something else here</a>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">03</th>
-                                            <td><a href="#" class="text-dark">Chat app Design</a></td>
-                                            <td>
-                                                28 May, 2021
-                                            </td>
-                                            <td>
-                                                $356
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-soft-success font-size-12">Complete</span>
-                                            </td>
-                                            <td>
-                                                <div class="dropdown">
-                                                    <a class="text-muted dropdown-toggle font-size-18 px-2" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
-                                                        <i class="mdi mdi-dots-vertical"></i>
-                                                    </a>
-
-                                                    <div class="dropdown-menu dropdown-menu-end">
-                                                        <a class="dropdown-item" href="#">Action</a>
-                                                        <a class="dropdown-item" href="#">Another action</a>
-                                                        <a class="dropdown-item" href="#">Something else here</a>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">04</th>
-                                            <td><a href="#" class="text-dark">Minible Landing</a></td>
-                                            <td>
-                                                13 May, 2021
-                                            </td>
-                                            <td>
-                                                $425
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-soft-success font-size-12">Complete</span>
-                                            </td>
-                                            <td>
-                                                <div class="dropdown">
-                                                    <a class="text-muted dropdown-toggle font-size-18 px-2" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
-                                                        <i class="mdi mdi-dots-vertical"></i>
-                                                    </a>
-
-                                                    <div class="dropdown-menu dropdown-menu-end">
-                                                        <a class="dropdown-item" href="#">Action</a>
-                                                        <a class="dropdown-item" href="#">Another action</a>
-                                                        <a class="dropdown-item" href="#">Something else here</a>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">05</th>
-                                            <td><a href="#" class="text-dark">Authentication Pages</a></td>
-                                            <td>
-                                                06 May, 2021
-                                            </td>
-                                            <td>
-                                                $752
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-soft-success font-size-12">Complete</span>
-                                            </td>
-                                            <td>
-                                                <div class="dropdown">
-                                                    <a class="text-muted dropdown-toggle font-size-18 px-2" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
-                                                        <i class="mdi mdi-dots-vertical"></i>
-                                                    </a>
-
-                                                    <div class="dropdown-menu dropdown-menu-end">
-                                                        <a class="dropdown-item" href="#">Action</a>
-                                                        <a class="dropdown-item" href="#">Another action</a>
-                                                        <a class="dropdown-item" href="#">Something else here</a>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tab-pane" id="tasks" role="tabpanel">
-                    <div>
-                        <h5 class="font-size-16 mb-3">Active</h5>
-
-                        <div class="table-responsive">
-                            <table class="table table-nowrap table-centered">
-                                <tbody>
-                                    <tr>
-                                        <td style="width: 60px;">
-                                            <div class="form-check font-size-16 text-center">
-                                                <input type="checkbox" class="form-check-input" id="tasks-activeCheck2">
-                                                <label class="form-check-label" for="tasks-activeCheck2"></label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <a href="#" class="fw-medium text-dark">Ecommerce Product Detail</a>
-                                        </td>
-
-                                        <td>
-                                            <p class="ml-4 text-muted mb-0">
-                                                <i class="mdi mdi-comment-outline align-middle text-muted font-size-16 me-1"></i> 3
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <p class="ml-4 mb-0">Product Design</p>
-                                        </td>
-
-                                        <td>27 May, 2021</td>
-                                        <td style="width: 160px;"><span class="badge badge-soft-primary font-size-12">Active</span></td>
-
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="form-check font-size-16 text-center">
-                                                <input type="checkbox" class="form-check-input" id="tasks-activeCheck1">
-                                                <label class="form-check-label" for="tasks-activeCheck1"></label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <a href="#" class="fw-medium text-dark">Ecommerce Product</a>
-                                        </td>
-
-                                        <td>
-                                            <p class="ml-4 text-muted mb-0">
-                                                <i class="mdi mdi-comment-outline align-middle text-muted font-size-16 me-1"></i> 7
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <p class="ml-4 mb-0">Web Development</p>
-                                        </td>
-
-                                        <td>26 May, 2021</td>
-                                        <td><span class="badge badge-soft-primary font-size-12">Active</span></td>
-
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <h5 class="font-size-16 my-3">Upcoming</h5>
-
-                        <div class="table-responsive">
-                            <table class="table table-nowrap table-centered">
-                                <tbody>
-                                    <tr>
-                                        <td style="width: 60px;">
-                                            <div class="form-check font-size-16 text-center">
-                                                <input type="checkbox" class="form-check-input" id="tasks-upcomingCheck3">
-                                                <label class="form-check-label" for="tasks-upcomingCheck3"></label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <a href="#" class="fw-medium text-dark">Chat app Page</a>
-                                        </td>
-
-                                        <td>
-                                            <p class="ml-4 text-muted mb-0">
-                                                <i class="mdi mdi-comment-outline align-middle text-muted font-size-16 me-1"></i> 2
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <p class="ml-4 mb-0">Web Development</p>
-                                        </td>
-
-                                        <td>-</td>
-                                        <td style="width: 160px;"><span class="badge badge-soft-secondary font-size-12">Waiting</span></td>
-
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="form-check font-size-16 text-center">
-                                                <input type="checkbox" class="form-check-input" id="tasks-upcomingCheck2">
-                                                <label class="form-check-label" for="tasks-upcomingCheck2"></label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <a href="#" class="fw-medium text-dark">Email Pages</a>
-                                        </td>
-
-                                        <td>
-                                            <p class="ml-4 text-muted mb-0">
-                                                <i class="mdi mdi-comment-outline align-middle text-muted font-size-16 me-1"></i> 1
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <p class="ml-4 mb-0">Illustration</p>
-                                        </td>
-
-                                        <td>04 June, 2021</td>
-                                        <td><span class="badge badge-soft-primary font-size-12">Approved</span></td>
-
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="form-check font-size-16 text-center">
-                                                <input type="checkbox" class="form-check-input" id="tasks-upcomingCheck1">
-                                                <label class="form-check-label" for="tasks-upcomingCheck1"></label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <a href="#" class="fw-medium text-dark">Contacts Profile Page</a>
-                                        </td>
-                                        <td>
-                                            <p class="ml-4 text-muted mb-0">
-                                                <i class="mdi mdi-comment-outline align-middle text-muted font-size-16 me-1"></i> 6
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <p class="ml-4 mb-0">Product Design</p>
-                                        </td>
-
-                                        <td>-</td>
-                                        <td><span class="badge badge-soft-secondary font-size-12">Waiting</span></td>
-
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <h5 class="font-size-16 my-3">Complete</h5>
-
-                        <div class="table-responsive">
-                            <table class="table table-nowrap table-centered">
-                                <tbody>
-                                    <tr>
-                                        <td style="width: 60px;">
-                                            <div class="form-check font-size-16 text-center">
-                                                <input type="checkbox" class="form-check-input" id="tasks-completeCheck3">
-                                                <label class="form-check-label" for="tasks-completeCheck3"></label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <a href="#" class="fw-medium text-dark">UI Elements</a>
-                                        </td>
-
-                                        <td>
-                                            <p class="ml-4 text-muted mb-0">
-                                                <i class="mdi mdi-comment-outline align-middle text-muted font-size-16 me-1"></i> 6
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <p class="ml-4 mb-0">Product Design</p>
-                                        </td>
-
-                                        <td>27 May, 2021</td>
-                                        <td style="width: 160px;"><span class="badge badge-soft-success font-size-12">Complete</span></td>
-
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="form-check font-size-16 text-center">
-                                                <input type="checkbox" class="form-check-input" id="tasks-completeCheck2">
-                                                <label class="form-check-label" for="tasks-completeCheck2"></label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <a href="#" class="fw-medium text-dark">Authentication Pages</a>
-                                        </td>
-
-                                        <td>
-                                            <p class="ml-4 text-muted mb-0">
-                                                <i class="mdi mdi-comment-outline align-middle text-muted font-size-16 me-1"></i> 2
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <p class="ml-4 mb-0">Illustration</p>
-                                        </td>
-
-                                        <td>27 May, 2021</td>
-                                        <td><span class="badge badge-soft-success font-size-12">Complete</span></td>
-
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="form-check font-size-16 text-center">
-                                                <input type="checkbox" class="form-check-input" id="tasks-completeCheck1">
-                                                <label class="form-check-label" for="tasks-completeCheck1"></label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <a href="#" class="fw-medium text-dark">Admin Layout</a>
-                                        </td>
-
-                                        <td>
-                                            <p class="ml-4 text-muted mb-0">
-                                                <i class="mdi mdi-comment-outline align-middle text-muted font-size-16 me-1"></i> 3
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <p class="ml-4 mb-0">Product Design</p>
-                                        </td>
-
-                                        <td>26 May, 2021</td>
-                                        <td><span class="badge badge-soft-success font-size-12">Complete</span></td>
-
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tab-pane" id="messages" role="tabpanel">
-                    <div>
-                        <h5 class="font-size-16 mb-4">Review</h5>
-                        <div class="px-3" data-simplebar="init" style="max-height: 430px;">
-                            <div class="simplebar-wrapper" style="margin: 0px -16px;">
-                                <div class="simplebar-height-auto-observer-wrapper">
-                                    <div class="simplebar-height-auto-observer"></div>
-                                </div>
-                                <div class="simplebar-mask">
-                                    <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
-                                        <div class="simplebar-content-wrapper" style="height: auto; overflow: hidden;">
-                                            <div class="simplebar-content" style="padding: 0px 16px;">
-                                                <div class="d-flex align-items-start border-bottom pb-4">
-                                                    <div class="flex-shrink-0 me-2">
-                                                        <img class="rounded-circle avatar-sm" src="assets/images/users/avatar-3.jpg" alt="avatar-3 images">
-                                                    </div>
-
-                                                    <div class="flex-grow-1">
-                                                        <h5 class="font-size-15 mb-1">Marion Walker <small class="text-muted float-end">1 hr ago</small></h5>
-                                                        <p class="text-muted">Maecenas non vestibulum ante, nec efficitur orci. Duis eu ornare mi, quis bibendum quam. Etiam imperdiet aliquam purus sit amet rhoncus. Vestibulum pretium consectetur leo, in mattis ipsum sollicitudin eget. Pellentesque vel mi tortor.
-                                                            Nullam vitae maximus dui dolor sit amet, consectetur adipiscing elit.</p>
-
-                                                        <a href="javascript: void(0);" class="text-muted font-13 d-inline-block"><i class="mdi mdi-reply"></i> Reply</a>
-
-                                                        <div class="d-flex align-items-start mt-4">
-                                                            <div class="flex-shrink-0 me-2">
-                                                                <img class="rounded-circle avatar-sm" src="assets/images/users/avatar-4.jpg" alt="avatar-4 images">
-                                                            </div>
-
-                                                            <div class="flex-grow-1">
-                                                                <h5 class="font-size-15 mb-1">Shanon Marvin <small class="text-muted float-end">1 hr ago</small></h5>
-                                                                <p class="text-muted">It will be as simple as in fact, it will be Occidental. To it will seem like simplified .</p>
-
-
-                                                                <a href="javascript: void(0);" class="text-muted font-13 d-inline-block">
-                                                                    <i class="mdi mdi-reply"></i> Reply
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="d-flex align-items-start border-bottom py-4">
-                                                    <div class="flex-shrink-0 me-2">
-                                                        <img class="rounded-circle avatar-sm" src="assets/images/users/avatar-5.jpg" alt="avatar-5 images">
-                                                    </div>
-
-                                                    <div class="flex-grow-1">
-                                                        <h5 class="font-size-15 mb-1">Janice Morgan <small class="text-muted float-end">2 hrs ago</small></h5>
-                                                        <p class="text-muted">Cras ac condimentum velit. Quisque vitae elit auctor quam egestas congue. Duis eget lorem fringilla, ultrices justo consequat, gravida lorem. Maecenas orci enim, sodales id condimentum et, nisl arcu aliquam velit,
-                                                            sit amet vehicula turpis metus cursus dolor cursus eget dui.</p>
-
-                                                        <a href="javascript: void(0);" class="text-muted font-13 d-inline-block"><i class="mdi mdi-reply"></i> Reply</a>
-
-                                                    </div>
-                                                </div>
-
-                                                <div class="d-flex align-items-start border-bottom py-4">
-                                                    <div class="flex-shrink-0 me-2">
-                                                        <img class="rounded-circle avatar-sm" src="assets/images/users/avatar-7.jpg" alt="avatar-7 images">
-                                                    </div>
-
-                                                    <div class="flex-grow-1">
-                                                        <h5 class="font-size-15 mb-1">Patrick Petty <small class="text-muted float-end">3 hrs ago</small></h5>
-                                                        <p class="text-muted">Aliquam sit amet eros eleifend, tristique ante sit amet, eleifend arcu. Cras ut diam quam. Fusce quis diam eu augue semper ullamcorper vitae sed massa. Mauris lacinia, massa a feugiat mattis, leo massa porta eros, sed congue arcu sem nec orci.
-                                                            In ac consectetur augue. Nullam pulvinar risus non augue tincidunt blandit.</p>
-
-                                                        <a href="javascript: void(0);" class="text-muted font-13 d-inline-block"><i class="mdi mdi-reply"></i> Reply</a>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="simplebar-placeholder" style="width: 0px; height: 0px;"></div>
-                            </div>
-                            <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;">
-                                <div class="simplebar-scrollbar" style="transform: translate3d(0px, 0px, 0px); display: none;"></div>
-                            </div>
-                            <div class="simplebar-track simplebar-vertical" style="visibility: hidden;">
-                                <div class="simplebar-scrollbar" style="transform: translate3d(0px, 0px, 0px); display: none; height: 298px;"></div>
-                            </div>
-                        </div>
-
-                        <div class="border rounded mt-4">
-                            <form action="#">
-                                <div class="px-2 py-1 bg-light">
-
-                                    <div class="btn-group" role="group">
-                                        <button type="button" class="btn btn-sm btn-link text-dark text-decoration-none"><i class="bx bx-link font-size-15"></i></button>
-                                        <button type="button" class="btn btn-sm btn-link text-dark text-decoration-none"><i class="bx bx-smile font-size-15"></i></button>
-                                        <button type="button" class="btn btn-sm btn-link text-dark text-decoration-none"><i class="bx bx-at font-size-15"></i></button>
-                                    </div>
-
-                                </div>
-                                <textarea rows="3" class="form-control border-0 resize-none" placeholder="Your Message..."></textarea>
-
-                            </form>
-                        </div> <!-- end .border-->
-
-                        <div class="text-end mt-3">
-                            <button type="button" class="btn btn-success w-sm text-truncate ms-2"> Send <i class="bx bx-send ms-2 align-middle"></i></button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tab-pane active show" id="post" role="tabpanel">
-                    <div>
-                        <h5 class="font-size-16 mb-4">Post</h5>
-
-                        <div class="blog-post">
-                            <div class="d-flex align-items-center">
-                                <div class="avatar-md me-3">
-                                    <img src="assets/images/users/avatar-6.jpg" alt="" class="img-fluid rounded-circle img-thumbnail d-block">
-                                </div>
-                                <div class="flex-1">
-                                    <h5 class="font-size-15 text-truncate"><a href="#" class="text-dark">Richard Johnson</a></h5>
-                                    <p class="font-size-13 text-muted mb-0">24 Mar, 2021</p>
-                                </div>
-                            </div>
-                            <div class="pt-3">
-                                <ul class="list-inline">
-                                    <li class="list-inline-item me-3">
-                                        <a href="javascript: void(0);" class="text-muted">
-                                            <i class="bx bx-purchase-tag-alt align-middle text-muted me-1"></i> Development
-                                        </a>
-                                    </li>
-                                    <li class="list-inline-item me-3">
-                                        <a href="javascript: void(0);" class="text-muted">
-                                            <i class="bx bx-comment-dots align-middle text-muted me-1"></i> 08 Comments
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="position-relative mt-3">
-                                <img src="./assets/images/post-1.jpg" alt="" class="img-thumbnail">
-                            </div>
-                            <div class="pt-3">
-                                <div class="d-flex align-items-center justify-content-between border-bottom pb-3">
-                                    <div>
-                                        <ul class="list-inline mb-0">
-                                            <li class="list-inline-item me-3">
-                                                <a href="javascript: void(0);" class="text-muted">
-                                                    <i class="bx bx-purchase-tag-alt text-muted me-1"></i> Project
-                                                </a>
-                                            </li>
-                                            <li class="list-inline-item me-3">
-                                                <a href="javascript: void(0);" class="text-muted">
-                                                    <i class="bx bx-like align-middle text-muted me-1"></i> 12 Like
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    <div>
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar-group">
-                                                <div class="avatar-group-item">
-                                                    <a href="javascript: void(0);" class="d-inline-block">
-                                                        <img src="assets/images/users/avatar-4.jpg" alt="" class="rounded-circle avatar-sm">
-                                                    </a>
-                                                </div>
-                                                <div class="avatar-group-item">
-                                                    <a href="javascript: void(0);" class="d-inline-block">
-                                                        <img src="assets/images/users/avatar-5.jpg" alt="" class="rounded-circle avatar-sm">
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div class="ms-2">
-                                                <button type="button" class="btn btn-outline-primary btn-sm waves-effect">Share <i class="bx bx-share-alt align-middle ms-1"></i></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="blog-post mt-4">
-                            <div class="d-flex align-items-center">
-                                <div class="avatar-md me-3">
-                                    <img src="assets/images/users/avatar-2.jpg" alt="" class="img-fluid img-thumbnail rounded-circle d-block">
-                                </div>
-                                <div class="flex-1">
-                                    <h5 class="font-size-15 text-truncate"><a href="#" class="text-dark">Michael Smith</a></h5>
-                                    <p class="font-size-13 text-muted mb-0">08 Mar, 2021</p>
-                                </div>
-                            </div>
-                            <div class="pt-3">
-                                <ul class="list-inline">
-                                    <li class="list-inline-item me-3">
-                                        <a href="javascript: void(0);" class="text-muted">
-                                            <i class="bx bx-purchase-tag-alt align-middle text-muted me-1"></i> Development
-                                        </a>
-                                    </li>
-                                    <li class="list-inline-item me-3">
-                                        <a href="javascript: void(0);" class="text-muted">
-                                            <i class="bx bx-comment-dots align-middle text-muted me-1"></i> 08 Comments
-                                        </a>
-                                    </li>
-                                </ul>
-                                <p class="text-muted">Aenean ornare mauris velit. Donec imperdiet, massa sit amet porta maximus, massa justo faucibus nisi,
-                                    eget accumsan nunc ipsum nec lacus. Etiam dignissim turpis sit amet lectus porttitor eleifend. Maecenas ornare molestie metus eget feugiat.
-                                    Interdum et malesuada fames ac ante ipsum primis in faucibus.</p>
-
-                            </div>
-                            <div class="position-relative mt-3">
-                                <img src="./assets/images/post-2.jpg" alt="" class="img-thumbnail">
-                            </div>
-                            <div class="pt-3">
-                                <div class="d-flex align-items-center justify-content-between border-bottom pb-3">
-                                    <div>
-                                        <ul class="list-inline mb-0">
-                                            <li class="list-inline-item me-3">
-                                                <a href="javascript: void(0);" class="text-muted">
-                                                    <i class="bx bx-purchase-tag-alt text-muted me-1"></i> Project
-                                                </a>
-                                            </li>
-                                            <li class="list-inline-item me-3">
-                                                <a href="javascript: void(0);" class="text-muted">
-                                                    <i class="bx bx-like align-middle text-muted me-1"></i> 12 Like
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    <div>
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar-group">
-                                                <div class="avatar-group-item">
-                                                    <a href="javascript: void(0);" class="d-inline-block">
-                                                        <img src="assets/images/users/avatar-4.jpg" alt="" class="rounded-circle avatar-sm">
-                                                    </a>
-                                                </div>
-                                                <div class="avatar-group-item">
-                                                    <a href="javascript: void(0);" class="d-inline-block">
-                                                        <img src="assets/images/users/avatar-5.jpg" alt="" class="rounded-circle avatar-sm">
-                                                    </a>
-                                                </div>
-                                                <div class="avatar-group-item">
-                                                    <a href="javascript: void(0);" class="d-inline-block">
-                                                        <img src="assets/images/users/avatar-7.jpg" alt="" class="rounded-circle avatar-sm">
-                                                    </a>
-                                                </div>
-                                                <div class="avatar-group-item">
-                                                    <a href="javascript: void(0);" class="d-inline-block">
-                                                        <img src="assets/images/users/avatar-6.jpg" alt="" class="rounded-circle avatar-sm">
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div class="ms-2">
-                                                <button type="button" class="btn btn-outline-primary btn-sm waves-effect">Share <i class="bx bx-share-alt align-middle ms-1"></i></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end blog post -->
-                    </div>
-                </div>
-            </div>
-        </div>
             
-            <!-- members health status -->
-            @if ($medical_info[0]->medical_health_status == 'No')
+        <!-- members health status -->
+        @if ($medical_info[0]->medical_health_status == 'No')
             <div class="card">
                 <div class="p-4 pb-0">
                     <h5 class="card-title mb-0">Team Members</h5>
                 </div>
                 <div class="card-body">
-                        <div class="col-12">
-                            <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                <thead>
+                    <div class="col-12">
+                        <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>Proposed Family Member</th>
+                                    <th>Illness / Injury</th>
+                                    <th>Hospital Attended</th>
+                                    <th>Duration</th>
+                                    <th>Present Condition</th>
+                                </tr>
+                            </thead>
+                            <tbody>    
+                                @forelse ($health_info as $health)
                                     <tr>
-                                        <th>Proposed Family Member</th>
-                                        <th>Illness / Injury</th>
-                                        <th>Hospital Attended</th>
-                                        <th>Duration</th>
-                                        <th>Present Condition</th>
+                                        <td>{{$health->surname}}, {{ $health->firstname }}</td>
+                                        <td>{{$health->illness_injury}}</td>
+                                        <td>{{$health->hospital}}</td>
+                                        <td>{{$health->duration}}</td>
+                                        <td>{{$health->present_condition}}</td>
                                     </tr>
-                                </thead>
-                                <tbody>
-    
-                                    @forelse ($health_info as $health)
-                                        <tr>
-                                            <td>{{$health->surname}}, {{ $health->firstname }}</td>
-                                            <td>{{$health->illness_injury}}</td>
-                                            <td>{{$health->hospital}}</td>
-                                            <td>{{$health->duration}}</td>
-                                            <td>{{$health->present_condition}}</td>
-                                        </tr>
-                                    @empty
-                                        
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>  
-                    @endif  
+                                @empty
+                                    
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>  
                 </div>
             </div> <!-- end card -->
-
+            @endif       
             
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
             <div class="card">
-                <div class="card-body">
-                    <div class="invoice-title">
-                        <h4 class="float-end font-size-16"><strong>{{ $apps->policy_number }}</strong></h4>
-                        <h3>
-                            <img src="{{ asset('assets/images/fnb-image_.png')}}" alt="logo" height="32">
-                            Family Eternity Plus 
-                        </h3>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-6">
-                            <address>
-                                <strong>Policy Champion:</strong><br>
-                                {{ Auth::user()->lastname }} , {{ Auth::user()->firstname }}<br>
-                                {{ Auth::user()->jobTitle }}<br>
-                                {{ Auth::user()->cellphone }}<br>
-                                {{ Auth::user()->email_address }}<br>
-                                Firstnational Bank
-                            </address>
-                        </div>
-                        <div class="col-6 text-end">
-                            <address>
-                                <strong>Policy Holder:</strong><br>
-                                {{ $customer->surname }} , {{ $customer->firstname }}<br>
-                                @if ($customer->gender == 'F')
-                                    Female
-                                @else
-                                    Male
-                                @endif, {{ $customer->birthdate }}<br>
-                                {{ $customer->email }}, {{ $customer->phone_number }} <br>
-                                Springfield, ST 54321
-                            </address>
-                        </div>
-                    </div>
-                    <hr>
+                <div class="card-header">
+                    <h5 class="card-title">Debit Order</h5>
                 </div>
+                    <input type="hidden" name="application_id" value="1">
+                    <div class="card-body">
+                             <div class="row">
+                                <p>
+                                    I the undersigned, authorize First National Bank Ghana to withdraw the amount stated below and if selected, increased yearly as per the Automatic Inflation Management rate from my
+                                                account as premium for my policy(ies). This request should be actioned between the 20th of the current month to the15th of the following commencement date stated above, continuing till
+                                                the end of the policy term.
+                                </p>
+                                <p>
+                                    I understand that the withdrawals hereby authorized shall be processed by electronic funds transfer and that details of each withdrawal shall be printed on my bank statement. I also
+                                    understand that if any Direct Debit Instruction is paid which breaches the terms of this authority, Metropolitan Life shall not be liable in any way or manner whatsoever, whether under contract
+                                    tort or negligence, and that our recourse shall be limited to Metropolitan Life Insurance Ghana Ltd
+                                </p>
+                                <p>
+                                    I shall not be entitled to any refund of amounts which may have already been withdrawn while this Authority was in force, if such amounts were legally owed to Metropolitan Life Insurance
+                                                Ghana Ltd.
+                                </p>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <canvas class="border border-3" id="debit-canvas" width="880" height="260">
+                                        Get a better browser, bro.
+                                    </canvas>
+                                </div>
+                            </div>
+                    </div>
             </div>
-        </div>
+
     </div>
-
-
-
 @endsection
 
 @push('toastrJs')
@@ -1224,7 +498,7 @@
     </script>
         <script>
             $(function() {
-                var canvas = document.getElementById('sig-canvas');
+                var canvas = document.getElementById('signature-interm');
                 var ctx = canvas.getContext('2d');
                 var img = new Image();
                     img.onload = function() {
@@ -1234,4 +508,17 @@
                     img.src = "{{ asset('uploads/customers/')}}/{{ $intermInfo[0]->signature }}";
             })
         </script>
+    <script>
+        $(function() {
+            var canvas = document.getElementById('debit-canvas');
+            var ctx = canvas.getContext('2d');
+            var img = new Image();
+                img.onload = function() {
+                    ctx.drawImage(img, 0, 0);
+                };
+                // how to secure this route, inorder to prevent users from capturing the customer_signature
+                img.src = "{{ asset('uploads/customers/')}}/{{ $debit_info[0]->account_signature }}";
+        })
+    </script>
+    
 @endpush

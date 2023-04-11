@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CountrySeeder::class,
             eternity_option_seeder::class,
+            companySeeder::class,
+            branchSeeder::class,
         ]);
     }
 }

@@ -698,7 +698,8 @@
                     </div>
                 </div>
             </div>
-    
+        </div>
+        
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -965,7 +966,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <textarea id="accountholder_signature" name="accountholder_signature" hidden class="form-control" rows="5"></textarea>
+                                    <textarea id="account_signature" name="account_signature" hidden class="form-control" rows="5"></textarea>
                                 </div>
                             </div>
                             <div class="row">

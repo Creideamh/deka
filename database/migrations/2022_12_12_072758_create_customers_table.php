@@ -32,6 +32,7 @@ return new class extends Migration
             $table->string('form_of_identification');
             $table->string('id_number')->unique();
             $table->string('upload_document');
+            $table->string('customer_signature');
             $table->foreignId('user_id')->constrained('users')->restrictOnDelete();
             $table->timestamps();
         });

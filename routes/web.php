@@ -92,6 +92,8 @@ Route::post('/delete-health', [EternityController::class, 'deleteHealth'])->name
 Route::post('/delete-family-member', [EternityController::class, 'deleteMember'])->name('eternity.delete.family.member');
 Route::post('/delete-beneficiary', [EternityController::class, 'deleteBeneficiary'])->name('eternity.delete.beneficiary');
 Route::post('/store', [EternityController::class, 'store'])->name('store-fep-data');
+Route::post('/update', [EternityController::class, 'update'])->name('edit-fep-data');
+
 
 /**
  * Plan Details Routes
@@ -166,3 +168,5 @@ Route::post('/debits/edit', [debitController::class, 'update'])->name('edit.debi
 
 // Preview policy 
 Route::get('/preview/policy/{id}', [EternityController::class, 'show'])->name('preview.policy');
+Route::get('/export-to-pdf/{id}', [EternityController::class, 'generate'])->name('export.pdf');
+Route::get('edit-policy/{id}/{id2}', [EternityController::class, 'edit'])->name('edit.policy');
