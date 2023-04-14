@@ -46,25 +46,26 @@
                              <div class="col-md-4">
                                 <div class="form-group">
                                   <label for="">Surname</label>
-                                  <input type="text" name="debit_order_surname"  class="form-control" id="debit_order_surname">
+                                  <input type="text" name="debit_order_surname"  class="form-control" id="debit_order_surname" value="{{ $accountInfo[0]->debit_order_surname }}">
                                   <span class="text-danger error-text debit_order_surname_error"></span>
                                 </div>
                               </div>
                               <div class="col-md-4">
                                 <div class="form-group">
                                   <label for="">Firstname</label>
-                                  <input type="text" name="debit_order_firstname"  class="form-control" id="debit_order_firstname">
+                                  <input type="text" name="debit_order_firstname"  class="form-control" value="{{ $accountInfo[0]->debit_order_firstname }}" id="debit_order_firstname">
                                   <span class="text-danger error-text debit_order_firstname_error"></span>
                                 </div>
                               </div>
                               <div class="col-md-2">
                                 <label for="">Account Number</label>
-                                <input type="text" name="account_number" id="account_number" class="form-control">
+                                <input type="text" name="account_number" id="account_number" value="{{ $accountInfo[0]->account_number }}" class="form-control">
                                 <span class="text-danger error-text account_number_error"></span>
                               </div>
                               <div class="col-md-2">
                                 <label for="">Account Type</label>
                                 <select name="account_type" id="account_type" class="form-control">
+                                  <option value="{{ $accountInfo[0]->account_type }}" selected>{{ $accountInfo[0]->account_type }}</option>
                                   <option value=""></option>
                                   <option value="Gold">Gold</option>
                                   <option value="Platinum">Platinum</option>
@@ -78,35 +79,30 @@
                         <div class="row pt-3">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                  <label for="">Bank Name</label>
-                                  <select name="bank_name" id="bank_name" class="form-control select2">
-                                    <option value=""></option>
-                                    <option value="FirstNationalBank" selected="">First National Bank GH</option>
-                                  </select>
+                                    <label for="">Bank Name</label>
+                                    <select name="bank_name" id="bank_name" class="form-control select2" onchange="getBranches()">
+                                        <option value="{{ $company->id}}">{{ $company->company_name }}</option>
+                                        <option value=""></option>]
+                                        @forelse ($companies as $company) {
+                                            <option value="{{ $company->id }}">{{ $company->company_name }}</option>
+                                        @empty
+                                            <option value="">No Bank Available</option>
+                                        @endforelse
+                                    </select>
                                 </div>
-                                <span class="text-danger error-text bank_name_error"></span>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                  <label for="">Bank Branch</label>
-                                  <select name="bank_branch" id="bank_branch" class="form-control select2 select2bs5">
-                                    <option value=""></option>
-                                    <option value="330101">Junction Shopping Centre Branch</option>
-                                    <option value="330102">Accra Branch</option>
-                                    <option value="330106">Accra Mall Branch</option>
-                                    <option value="330108">Achimota Mall Branch</option>
-                                    <option value="330111">WestHils Mall Branch</option>
-                                    <option value="330112">Tema Branch</option>
-                                    <option value="330119">Airport Branch</option>
-                                    <option value="330120">Community 1 Branch Tema</option>
-                                    <option value="330401">Market Circle Branch Takoradi</option>
-                                    <option value="330601">Adum Branch Kumasi</option>
-                                  </select>
-                                  <input type="hidden" name="debit_date" value="2023-03-24" readonly="">
-                                  <span class="text-danger error-text bank_branch_error"></span>
+                                    <label for="">Bank Branch</label>
+                                    <select name="bank_branch" id="bank_branch" class="form-control select2 select2bs5">
+                                        <option value="{{ $branch->branch_code }}">{{ $branch->branch_name }}</option>
+                                        <option value=""></option>
+                                    </select>
+                                    <input type="hidden" name="debit_date" value="{{ date('Y-m-d') }}" readonly>
+                                    <span class="text-danger error-text bank_branch_error"></span>
                                 </div>
-                              </div>
-                              <div class="col-md-4">
+                            </div>
+                            <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label">Please add a copy of the Cheque leaflet, if</label>
                                     <div class="form-check">
@@ -119,9 +115,9 @@
                                     </div>    
                                     <span class="text-danger error-text cheque_error"></span>                     
                                 </div>
-                              </div>
                             </div>
-                            <div class="row pt-3">
+                        </div>
+                        <div class="row pt-3">
                                 <div class="col-12 pt-3 border-start  border-info">
                                     <blockquote>
                                         <p><strong>I the undersigned, authorize First National Bank Ghana to withdraw the amount stated below and if selected, increased yearly as per the Automatic Inflation Management rate from my
@@ -203,25 +199,36 @@
             })
         })
 
+        function getBranches() {
+            var bank  = $('#bank_name').val();
+            alert(bank);
+            $.ajax({
+                url:
+                    location.protocol +
+                    "//" +
+                    location.hostname +
+                    ":8000/company-branches",
+                type: "POST",
+                data: {
+                    company: bank,
+                },
+                dataType: "json",
+                success: function (data) {
+                    console.log(JSON.stringify(data.details));
+                    // setting the rate value into the rate input field
+                    data.details.forEach(function(e, i){
+                        $('#bank_branch').append($('<option></option>').val(e.id).text(e.branch_name)); 
+                    });
+                }, // /success
+            }); // /ajax function to fetch the product data
+        }
+
+
 
         // Update data 
         $(document).ready(function(){
 
-            var application_id = {{ Request::segment(3) }};
-
-            $.post('<?= route("get.debit.details"); ?>',{application_id:application_id},function(data){
-                console.log(data.details[0])
-
-                if(data.details[0]){
-
-                    $('#debit_order_surname').val(data.details[0].debit_order_surname);
-                    $('#debit_order_firstname').val(data.details[0].debit_order_firstname);
-                    $('#account_type').append('<option .value="' + data.details[0].account_type +'" selected>' + data.details[0].account_type + '</option>');
-                    $('#account_number').val(data.details[0].account_number);
-                    $('#bank_name').append('<option .value="' + data.details[0].bank_name +'" selected>' + data.details[0].bank_name + '</option>');
-                    $('#bank_branch').append('<option .value="' + data.details[0].bank_branch +'" selected>' + data.details[0].bank_branch + '</option>');
-
-                    var canvas = document.getElementById('sig-canvas');
+            var canvas = document.getElementById('sig-canvas');
                     var ctx = canvas.getContext('2d');
                     var img = new Image();
                         img.onload = function() {
@@ -229,14 +236,10 @@
                         };
                         
                     // how to secure this route, inorder to prevent users from capturing the customer_signature
-                    img.src = "{{ asset('uploads/customers/') }}/" + data.details[0].account_signature;
-
-                }
-
-
-
-            },'json');
+                    img.src = "{{ asset('uploads/customers/') }}/{{ $accountInfo[0]->account_signature }}";
         })
+
+
         
     </script>
 @endpush

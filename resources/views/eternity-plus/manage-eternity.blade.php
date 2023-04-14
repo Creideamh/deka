@@ -151,7 +151,6 @@
                 "plan-details": {name: "Plan Details", icon: "fas fa-users"},
                medicals: {name: "Medicals", icon: "fas fa-hospital-user"},
                 "beneficiaries": {name: "Beneficiaries", icon: "paste"},
-                "office_only": {name: "Office Use", icon: "fas fa-pen-nib"},
                 "declarations": {name: "declarations", icon: "fas fa-pencil-alt"},
                 "premium-payment": {name: "Premium Payment", icon: "fas fa-money-check"},
                 "debits": {name: "Debits", icon: "fas fa-money-bill-wave"},

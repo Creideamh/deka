@@ -7,6 +7,8 @@ use App\Models\Customer;
 use App\Models\eternity_options;
 use App\Models\application;
 use App\Models\beneficiary;
+use App\Models\branch;
+use App\Models\company;
 use App\Models\debit_order;
 use App\Models\family_member;
 use App\Models\health_info;
@@ -52,7 +54,9 @@ class EternityController extends Controller
     {
         //
         $countries = Country::all();
-        return view('eternity-plus.create-eternity', ['countries' => $countries]);
+        $companies = company::all();
+
+        return view('eternity-plus.create-eternity', ['countries' => $countries, 'companies' => $companies]);
     }
 
 
@@ -159,12 +163,8 @@ class EternityController extends Controller
             'existing_policy_number' => 'sometimes|required',
             'refusal' => 'sometimes|required',
             'medical_health_status' => 'required',
-            "subagent_name"   => "required|string",
-            "subagent_code"   => "required",
-            "branch"        => "required",
             "premium_deduction" => "required|date",
             "sig_dataUrl" => "required",
-            "champion_signature" => "required",
             "premium_tin" => "required",
             "premium_email" => "required|email",
             "premium_mobile_number" => "required",
@@ -207,6 +207,7 @@ class EternityController extends Controller
         $customer->id_number  = $request->identity_number;
         $customer->form_of_identification = $request->form_of_identification;
         $customer->upload_document = 1;
+        $customer->customer_signature = $this->getSignature($request->customer_signature);
         $customer->user_id = Auth::user()->id;
 
         if (!$customer->save()) {
@@ -222,7 +223,6 @@ class EternityController extends Controller
         $application = new application();
         $application->policy_number = "METFNBGHFEP" . microtime(true);
         $application->status = 0;
-        $application->customer_signature = $this->getSignature($request->customer_signature);
         $application->user_id = Auth::user()->id;
         $application->customer_id = $customer_id;
 
@@ -348,21 +348,6 @@ class EternityController extends Controller
 
 
         /**
-         * Store data in Intermediary Table 
-         */
-        $intermediary  = new intermediary();
-        $intermediary->user_id = Auth::user()->id;
-        $intermediary->subagent_code = $request->subagent_code;
-        $intermediary->date_to_deduction = $request->subagent_deduction_date;
-        $intermediary->signature = $this->getSignature($request->champion_signature);
-        $intermediary->application_id = $application_id;
-
-        if (!$intermediary->save()) {
-            return response()->json(['code' => 0, 'msg' => 'Trace: intermediaries data has error']);
-        }
-
-
-        /**
          *  Premium Payer
          */
 
@@ -447,7 +432,7 @@ class EternityController extends Controller
         $countries = Country::all();
         $apps = application::find($id);
         $customer = Customer::find($apps->customer_id);
-        $user = User::where('id', $apps->user_id)->with('intermediary')->get();
+        $user = User::find($apps->user_id);
         $members = family_member::where('application_id', $apps->id)->get();
         $medicals = medical_info::where('application_id', $apps->id)->get();
         $healths = health_info::where('application_id', $apps->id)->get();
@@ -456,7 +441,6 @@ class EternityController extends Controller
         $premium_payer = premium_payer::where('application_id', $apps->id)->get();
         $premium_payment = premium_payment::where('application_id', $apps->id)->get();
         $debit_order = debit_order::where('application_id', $apps->id)->get();
-        $intermediary = intermediary::where('application_id', $apps->id)->get();
 
 
         return view(
@@ -472,7 +456,6 @@ class EternityController extends Controller
                 'premium_payer' => $premium_payer,
                 'payment' => $premium_payment,
                 'debit_info' => $debit_order,
-                'intermInfo' => $intermediary,
                 'trustee' => $trustees,
                 'user' => $user
             ]
@@ -491,7 +474,7 @@ class EternityController extends Controller
         $countries = Country::all();
         $apps = application::find($id);
         $customer = Customer::find($apps->customer_id);
-        $user = User::where('id', $apps->user_id)->with('intermediary')->get();
+        $user = User::find($apps->user_id);
         $members = family_member::where('application_id', $apps->id)->get();
         $medicals = medical_info::where('application_id', $apps->id)->get();
         $healths = health_info::where('application_id', $apps->id)->get();
@@ -499,8 +482,10 @@ class EternityController extends Controller
         $premium_payer = premium_payer::where('application_id', $apps->id)->get();
         $premium_payment = premium_payment::where('application_id', $apps->id)->get();
         $debit_order = debit_order::where('application_id', $apps->id)->get();
-        $intermediary = intermediary::where('application_id', $apps->id)->get();
-
+        $accountInfo = debit_order::where('application_id', $id)->get();
+        $branch = branch::find($accountInfo[0]->bank_branch);
+        $companies  = company::all();
+        $company = company::find($branch->company_id);
 
         return view(
             'eternity-plus.edit-eternity',
@@ -515,7 +500,9 @@ class EternityController extends Controller
                 'premium_payer' => $premium_payer,
                 'payment' => $premium_payment,
                 'debit_info' => $debit_order,
-                'intermInfo' => $intermediary,
+                'branch' => $branch,
+                'companies' => $companies,
+                'company' => $company,
                 'user' => $user
             ]
         );
@@ -530,8 +517,6 @@ class EternityController extends Controller
      */
     public function update(Request $request)
     {
-        dd($request);
-
 
         $validate = Validator::make($request->all(), [
             "title" => "required",
@@ -552,11 +537,7 @@ class EternityController extends Controller
             'existing_policy' => 'required',
             'existing_policy_number' => 'required|string',
             'medical_health_status' => 'required',
-            "subagent_name"   => "required|string",
-            "subagent_code"   => "required",
             "branch"        => "required|string",
-            "ist_premium_date" => "required|date",
-            "champion_signature" => "required",
             "premium_tin" => "required",
             "premium_email" => "required|email",
             "premium_mobile_number" => "required",
@@ -576,26 +557,32 @@ class EternityController extends Controller
 
         // Customer update
         $customer_id = $request->customer_id;
-        $customer = Customer::find($customer_id);
+        
+        $customer = Customer::find($customer_id)->update([
 
-        $customer->title = $request->title;
-        $customer->surname = $request->surname;
-        $customer->firstname = $request->firstname;
-        $customer->birthdate = $request->birthdate;
-        $customer->birthplace  = $request->birthplace;
-        $customer->gender   = $request->gender;
-        $customer->occupation = $request->occupation;
-        $customer->marital_status = $request->marital_status;
-        $customer->nationality  = $request->nationality;
-        $customer->phone_number = $request->phone_number;
-        $customer->email = $request->email_address;
-        $customer->home_address = $request->home_address;
-        $customer->postal_address = $request->postal_address;
-        $customer->tin_number = $request->tin_number;
-        $customer->id_number  = $request->identity_number;
-        $customer->form_of_identification = $request->form_of_identification;
-        $customer->upload_document = 1;
-        $customer->user_id = Auth::user()->id;
+            "title" => $request->title,
+            "surname" => $request->surname,
+            "firstname" => $request->firstname,
+            "birthdate" => $request->birthdate,
+            "birthplace"  => $request->birthplace,
+            "gender"   => $request->gender,
+            "occupation" => $request->occupation,
+            "marital_status" => $request->marital_status,
+            "nationality"  => $request->nationality,
+            "phone_number" => $request->phone_number,
+            "email" => $request->email_address,
+            "home_address" => $request->home_address,
+            "postal_address" => $request->postal_address,
+            "tin_number" => $request->tin_number,
+            "id_number"  => $request->identity_number,
+            "form_of_identification" => $request->form_of_identification,
+            "upload_document" => 1,
+            "user_id" => Auth::user()->id,
+
+        ]);
+
+
+
 
         if (!$customer->save()) {
             return response()->json(['code' => 0, 'errors' => $validate->errors()->toArray()]);
@@ -628,7 +615,6 @@ class EternityController extends Controller
             if (!$family_member->save()) {
                 return response()->json(['code' => 0, 'errors' => $validate->errors()->toArray()]);
             }
-            
         }
 
 
@@ -773,8 +759,6 @@ class EternityController extends Controller
         /**
          *  Premium Payer
          */
-
-
         $premium_payer = new premium_payer();
 
         $premium_payer->premium_title = $request->premium_title;

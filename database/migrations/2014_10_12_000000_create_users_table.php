@@ -30,7 +30,7 @@ return new class extends Migration
             $table->integer('status')->default(1);
             $table->foreignId('branch_id')->constrained('branches')->restrictOnDelete();
             $table->string('userImage');
-            $table->string('customer_signature')->default('');
+            $table->string('user_signature')->default('');
         });
     }
 

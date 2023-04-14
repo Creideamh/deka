@@ -13,8 +13,8 @@ class company extends Model
      * @var \Illuminate\Database\Eloquent\Model
      * a company has many branches
      */
-    public function branch()
+    public function branches()
     {
-        return $this->hasMany(branch::class);
+        return $this->hasMany(branch::class, 'company_id');
     }
 }

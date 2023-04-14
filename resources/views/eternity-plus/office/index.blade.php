@@ -170,7 +170,7 @@
                     ctx.drawImage(img, 0, 0);
                 };
                 // how to secure this route, inorder to prevent users from capturing the customer_signature
-                img.src = "{{ asset('uploads/customers/')}}/{{ $officeData[0]->signature }}";
+                img.src = "{{ asset('uploads/customers/')}}/{{ Auth::user->user_signature }}";
         $(function(){
 
             $('#edit-signature').on('submit',function(e){

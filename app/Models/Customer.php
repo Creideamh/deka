@@ -30,6 +30,7 @@ class Customer extends Model
         'home_address',
         'postal_address',
         'phone_number',
+        'customer_signature'
     ];
 
     public function application()

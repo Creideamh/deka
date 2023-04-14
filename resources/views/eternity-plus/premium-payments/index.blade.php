@@ -79,7 +79,7 @@
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="DOB">Date of Birth</label>
-                                    <input type="date" name="premium_birthdate" id="premium_birthdate" class="form-control" >
+                                    <input type="text" name="premium_birthdate" id="premium_birthdate" class="form-control" >
                                     <span class="text-danger error-text premium_birthdate_error"></span>
                                 </div>
                             </div>                          
@@ -205,6 +205,11 @@
         flatpickr("#premium_deduction", {
             dateFormat: "Y-m-d",
         });
+
+        flatpickr('#premium_birthdate', {
+            dateFormat: "Y-m-d",
+        });
+
         $(function(){
 
             $('#edit-premium-details').on('submit',function(e){

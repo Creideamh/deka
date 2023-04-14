@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\branch;
 use App\Models\company;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Faker\Factory as Faker;
@@ -36,7 +37,7 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'status' => '1',
             'userImage' => 'no_image.png',
-            'branch_id' => $faker->randomDigitNotNull(),
+            'user_signature' => '91d.jpg',
         ];
     }
 

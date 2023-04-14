@@ -656,7 +656,7 @@
                     <div class="card-body">
                         <div class="col-12">
                             <ol>
-                                <li> I warrant that the information in this application and in all documents submitted to First National Bank Ghana (herein referred to as the Bank) in connection with it, whether in my
+                                <li> I <strong>[{{ $customer->surname }}, {{ $customer->firstname }}]</strong>  warrant that the information in this application and in all documents submitted to First National Bank Ghana (herein referred to as the Bank) in connection with it, whether in my
                                     handwriting or not, is true, correct and complete and will form the basis of the proposed contract.
                                 </li>
                                 <li> In order to facilitate the assessment of the risks, I irrevocably authorize Metropolitan Life:
@@ -721,32 +721,16 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    
-                                    <label for="">Sub Agent Name</label>
-                                    <input type="text" name="agent_name" id="agent_name" value="{{ $user[0]->lastname }}, {{ $user[0]->firstname }}" hidden class="form-control" >
-                                    <input type="text" value="{{ $user[0]->lastname }}, {{ $user[0]->firstname }}" disabled class="form-control" >
-                                    <input type="hidden" name="subagent_name" id="subagent_name" value="{{ $user[0]->id }}" class="form-control">
+                                    <label for="">Agent Name</label>
+                                    <input type="text" name="agent_name" id="agent_name" value="{{ Auth::user()->lastname }}, {{ Auth::user()->firstname }}" hidden class="form-control" >
+                                    <input type="text" value="{{ Auth::user()->lastname }}, {{ Auth::user()->firstname }}" disabled class="form-control" >
+                                    <input type="hidden" name="subagent_name" id="subagent_name" value="{{ Auth::user()->id }}" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="">Sub Agent Code</label>
-                                    <select name="subagent_code" id="subagent_code" class="form-control select2 select2bs5">
-                                        <option value="{{$intermInfo[0]->subagent_code}}">{{$intermInfo[0]->subagent_code}}</option>
-                                        <!-- Branch codes should display based on Bank --> 
-                                        <option value=""></option>
-                                        <option value="3009">3009</option>
-                                        <option value="3012">3012</option>
-                                        <option value="4126">4126</option>
-                                        <option value="4127">4127</option>
-                                        <option value="3006">3006</option>
-                                        <option value="3002">3002</option>
-                                        <option value="3003">3003</option>
-                                        <option value="6735">6735</option>
-                                        <option value="6822">6822</option>
-                                        <option value="6824">6824</option>
-                                        <option value="6753">6753</option>
-                                    </select>
+                                    <input type="text" name="branch_code" id="branch_code" value="{{ Auth::user()->branch->branch_code }}" class="form-control" readonly>
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -756,85 +740,24 @@
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="">Branch</label>
-                                    <select name="branch" id="branch" class="form-control select2 select2bs5">
-                                        <!-- Branch codes should display based on Bank --> 
-                                        @if ($intermInfo[0]->subagent_code == 3009)
-                                            <option value="3009">Achimota Mall</option>
-                                        @elseif($intermInfo[0]->subagent_code == 3012)
-                                            <option value="3012">Westhills Mall</option>
-                                        @elseif($intermInfo[0]->subagent_code == 4126)
-                                            <option value="4126">Makola</option>
-                                        @elseif($intermInfo[0]->subagent_code == 3006)
-                                            <option value="3006">Accra Mall</option>
-                                        @elseif($intermInfo[0]->subagent_code == 3002)
-                                            <option value="3002">Junction Mall</option>
-                                        @elseif($intermInfo[0]->subagent_agent == 6735)
-                                            <option value="6735">Airport</option>
-                                        @elseif($intermInfo[0]->subagent_code == 4127)
-                                            <option value="4127">Tema Community 11</option>
-                                        @elseif($intermInfo[0]->subagent_code == 3003)
-                                            <option value="3003">Accra Main</option>
-                                        @elseif($intermInfo[0]->subagent_code == 6822)
-                                            <option value="6822">Takoradi</option>
-                                        @elseif($intermInfo[0]->subagent_code == 6824)
-                                            <option value="6824">Tema Community 1</option>
-                                        @elseif($intermInfo[0]->subagent_code == 6753) 
-                                            <option value="6753">Kumasi</option>
-                                        @endif
-                                   </select>
+                                    <input type="text" name="branch_code" id="branch_name" value="{{ Auth::user()->branch->branch_name }}" class="form-control" readonly>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                                <div class="col-md-3">
                                 <label for="istPremiumDate">Date to Deduction</label>
-                                <input type="text" class="form-control" name="subagent_deduction_date" id="subagent_deduction_date" value="{{$intermInfo[0]->date_to_deduction}}" readonly>
+                                <input type="text" class="form-control" name="subagent_deduction_date" id="subagent_deduction_date" value="<?=date('Y-m-d');?>" readonly>
                             </div>
 
-                            <div class="col-12 pt-3">
+                            <div class="col-12 pt-4">
                                 <strong for="">1. Bancassurance Champion</strong>
-                                <p><strong>I confirm that the application form and the premium payment mandate is fully completed and I hereby authorise the application to be sent to Bancassurance Hub (Head Office) for underwriting.</strong></p>
+                                <p> I <strong>{{ Auth::user()->lastname}}, {{ Auth::user()->firstname }}</strong> confirm that the application form and the premium payment mandate is fully completed and I hereby authorise the application to be sent to Bancassurance Hub (Head Office) for underwriting.</p>
                             </div>
 
-                        </div>
-
-                        <div class="row pt-3">
-                            <div class="col-md-8">
-                                <div class="form-group">
-                                <label for="">Name</label>
-                                <input type="hidden" name="champion_id" value="{{ Auth::user()->id }}" id="bancassuranceChampion">
-                                <input type="text" class="form-control" name="champion_fullname" value="{{ Auth::user()->lastname}}, {{ Auth::user()->firstname }}" readonly>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                <label for="name">Date</label>
-                                <input type="text" class="form-control" name="champion_date" value="{{ date('Y-m-d') }}" readonly>
-                            </div>
-                        </div>
-                        <div class="row pt-4">
-                            <div class="col-12">
-                                <h1>E-Signature</h1>
-                                <p>Sign in the canvas below and save your signature as an image!</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <canvas class="border border-3" id="champion_signature_canvas" width="1100" height="260">
-                                    Get a better browser, bro.
-                                </canvas>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <a class="btn btn-success" id="champion_signature_generate">Generate Signature</a>
-                                <a class="btn btn-default" id="champion_signature_clear">Clear Signature</a>
-                                <input type="text" name="champion-date" id="champion-date" value="<?=date('Y-m-d');?>" placeholder="Signature Date" class="btn btn-default">
-                                <textarea id="champion_signature" name="champion_signature" hidden="" class="form-control" rows="5">Data URL for your signature will go here!</textarea>
-                                <img id="champion_signature_image" hidden="" src="" alt="Your signature will go here!">
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
     
         <div class="row">
             <div class="col-12">
@@ -1005,29 +928,23 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                   <label for="">Bank Name</label>
-                                  <select name="bank_name" id="bank_name" class="form-control select2">
-                                    <option value="{{$debit_info[0]->bank_name}}">{{$debit_info[0]->bank_name}}</option>
-                                    <option value=""></option>
-                                    <option value="FirstNationalBank" selected>First National Bank GH</option>
+                                  <select name="bank_name" id="bank_name" class="form-control select2" onchange="getBranches()">
+                                        <option value="{{ $company->id }}">{{ $company->company_name }}</option>
+                                        <option value=""></option>
+                                        @forelse ($companies as $company) {
+                                            <option value="{{ $company->id }}">{{ $company->company_name }}</option>
+                                        @empty
+                                            <option value="">No Bank Available</option>
+                                        @endforelse                                  
                                   </select>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                   <label for="">Bank Branch</label>
-                                  <select name="bank_branch" id="bank_branch" class="form-control select2 select2bs5">
-                                    <option value="{{$debit_info[0]->bank_branch}}">{{$debit_info[0]->bank_branch}}</option>
+                                  <select name="bank_branch" id="bank_branch" class="form-control select2 select2bs5" >
+                                    <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
                                     <option value=""></option>
-                                    <option value="330101">Junction Shopping Centre Branch</option>
-                                    <option value="330102">Accra Branch</option>
-                                    <option value="330106">Accra Mall Branch</option>
-                                    <option value="330108">Achimota Mall Branch</option>
-                                    <option value="330111">WestHils Mall Branch</option>
-                                    <option value="330112">Tema Branch</option>
-                                    <option value="330119">Airport Branch</option>
-                                    <option value="330120">Community 1 Branch Tema</option>
-                                    <option value="330401">Market Circle Branch Takoradi</option>
-                                    <option value="330601">Adum Branch Kumasi</option>
                                   </select>
                                   <input type="hidden" name="debit_date" value="{{ date('Y-m-d') }}" readonly>
                                 </div>
@@ -1124,7 +1041,6 @@
     <script src="{{ asset('assets/js/proposed_family.js') }}"></script>
     <script src="{{ asset('assets/js/beneficiaries.js') }}"></script>
     <script src="{{ asset('assets/js/declarant_signature.js') }}" ></script>
-    <script src="{{ asset('assets/js/office_signature.js') }}" type="text/javascript"></script>
     <script src="{{ asset('assets/js/accountholder_signature.js') }}" type="text/javascript"></script>
     <script src="{{ asset('assets/js/premium.js') }}" type="text/javascript"></script>
 
@@ -1149,7 +1065,31 @@
                     }
                 })
             })
-        })
+        });
+
+        function getBranches() {
+            var bank  = $('#bank_name').val();
+            alert(bank);
+            $.ajax({
+                url:
+                    location.protocol +
+                    "//" +
+                    location.hostname +
+                    ":8000/company-branches",
+                type: "POST",
+                data: {
+                    company: bank,
+                },
+                dataType: "json",
+                success: function (data) {
+                    console.log(JSON.stringify(data.details));
+                    // setting the rate value into the rate input field
+                    data.details.forEach(function(e, i){
+                        $('#bank_branch').append($('<option></option>').val(e.id).text(e.branch_name)); 
+                    });
+                }, // /success
+            }); // /ajax function to fetch the product data
+        }
     </script>
 @endpush
 @push('SweetAlert')

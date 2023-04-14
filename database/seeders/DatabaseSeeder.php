@@ -14,13 +14,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\User::factory(20)->create();
 
         $this->call([
             CountrySeeder::class,
             eternity_option_seeder::class,
-            companySeeder::class,
-            branchSeeder::class,
+            CompanySeed::class,
+            UserSeed::class
         ]);
+
+
+
+        // \App\Models\User::factory(20)->create();
     }
 }

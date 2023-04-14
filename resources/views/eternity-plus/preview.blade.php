@@ -68,30 +68,8 @@
                                     <div>
                                         <a href="#" class="text-muted m-1">{{ $customer->occupation }}</a>
                                     </div>
-
-                                    <div class="mt-4">
-                                        <a href="" class="btn btn-primary waves-effect waves-light btn-sm" data-email_address="{{ $customer->email }}">Send Message</a>
-                                        <a href="" class="btn btn-primary waves-effect waves-light btn-sm">Email</a>
-                                    </div>
                                 </div>
 
-                            </div>
-                        </div>
-
-                        <div class="p-3 mt-3">
-                            <div class="row text-center">
-                                <div class="col-6 border-end">
-                                    <div class="p-1">
-                                        <h5 class="mb-1">1,269</h5>
-                                        <p class="text-muted mb-0">Products</p>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="p-1">
-                                        <h5 class="mb-1">5.2k</h5>
-                                        <p class="text-muted mb-0">Followers</p>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div> <!-- end card body -->
@@ -202,8 +180,8 @@
                     <div class="card-body">
                         <ul class="list-unstyled mb-0">
                             <li class="d-flex justify-content-between p-2 font-size-15"><span class="text-muted">Agent name </span><span> {{ $apps->user->firstname }}, {{ $apps->user->lastname }}</span></li>
-                            <li class="d-flex justify-content-between p-2 font-size-15"><span class="text-muted">Agent <Code></Code></span><span>{{ $intermInfo[0]->subagent_code }}</span></li>
-                            <li class="d-flex justify-content-between p-2 font-size-15"><span class="text-muted">Date to Deduction</span><span>{{ $intermInfo[0]->date_to_deduction }}</span></li>
+                            <li class="d-flex justify-content-between p-2 font-size-15"><span class="text-muted">Agent <Code></Code></span><span>{{ $apps->user->branch->branch_code }}</span></li>
+                            <li class="d-flex justify-content-between p-2 font-size-15"><span class="text-muted">Date to Deduction</span><span>{{ $apps->created_at }}</span></li>
                         </ul>
                     </div> <!-- end card body -->
                 </div> <!-- end card -->
@@ -249,7 +227,7 @@
                     <div class="invoice-title">
                         <h4 class="float-end font-size-16"><strong>{{ $apps->policy_number }}</strong></h4>
                         <h3>
-                            <img src="{{ asset('assets/images/fnb-image_.png')}}" alt="logo" height="32">
+                            <img src="{{$apps->user->branch->company->company_logo}}" alt="logo" height="32" class="avatar-xl rounded-circle img-thumbnail">
                             Family Eternity Plus 
                         </h3>
                     </div>
@@ -334,7 +312,7 @@
             </div>
 
             <!-- trustees -->
-            @if ($trustee[0]->application_id == $apps->id)
+            @if (!empty($trustee[0]->application_id))
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Trustee (applicable where a named beneficiary is less than 18 years)</h3>
@@ -388,7 +366,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title">Intermediary Informaion &amp; Office Use</h5>
+                    <h5 class="card-title">Office Information</h5>
                 </div>
                 <div class="card-body">
                     <div class="row pt-4">
@@ -505,7 +483,7 @@
                         ctx.drawImage(img, 0, 0);
                     };
                     // how to secure this route, inorder to prevent users from capturing the customer_signature
-                    img.src = "{{ asset('uploads/customers/')}}/{{ $intermInfo[0]->signature }}";
+                    img.src = "{{ asset('uploads/customers/')}}/{{ $user->user_signature }}";
             })
         </script>
     <script>

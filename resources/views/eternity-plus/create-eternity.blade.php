@@ -581,14 +581,14 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header text-white bg-success">
-                        <h5 class="card-title">Intermediary Information</h5>
+                    <div class="card-header bg-success text-white">
+                        <h5 class="card-title">Office Use</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="">Sub Agent Name</label>
+                                    <label for="">Agent Name</label>
                                     <input type="text" name="agent_name" id="agent_name" value="{{ Auth::user()->lastname }}, {{ Auth::user()->firstname }}" hidden class="form-control" >
                                     <input type="text" value="{{ Auth::user()->lastname }}, {{ Auth::user()->firstname }}" disabled class="form-control" >
                                     <input type="hidden" name="subagent_name" id="subagent_name" value="{{ Auth::user()->id }}" class="form-control">
@@ -597,21 +597,7 @@
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="">Sub Agent Code</label>
-                                    <select name="subagent_code" id="subagent_code" class="form-control select2 select2bs5">
-                                        <!-- Branch codes should display based on Bank --> 
-                                        <option value=""></option>
-                                        <option value="3009">3009</option>
-                                        <option value="3012">3012</option>
-                                        <option value="4126">4126</option>
-                                        <option value="4127">4127</option>
-                                        <option value="3006">3006</option>
-                                        <option value="3002">3002</option>
-                                        <option value="3003">3003</option>
-                                        <option value="6735">6735</option>
-                                        <option value="6822">6822</option>
-                                        <option value="6824">6824</option>
-                                        <option value="6753">6753</option>
-                                    </select>
+                                    <input type="text" name="branch_code" id="branch_code" value="{{ Auth::user()->branch->branch_code }}" class="form-control" readonly>
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -621,79 +607,19 @@
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="">Branch</label>
-                                    <select name="branch" id="branch" class="form-control select2 select2bs5">
-                                    <!-- Branch codes should display based on Bank --> 
-                                    <option value=""></option>
-                                    <option value="3009">Achimota Mall</option>
-                                    <option value="3012">Westhills Mall</option>
-                                    <option value="4126">Makola</option>
-                                    <option value="4127">Tema Community 11</option>
-                                    <option value="3006">Accra Mall</option>
-                                    <option value="3002">Junction Mall</option>
-                                    <option value="6735">Airport</option>
-                                    <option value="3003">Accra Main</option>
-                                    <option value="6822">Takoradi</option>
-                                    <option value="6824">Tema Community 1</option>
-                                    <option value="6753">Kumasi</option>
-                                    </select>
+                                    <input type="text" name="branch_code" id="branch_name" value="{{ Auth::user()->branch->branch_name }}" class="form-control" readonly>
                                 </div>
                             </div>
                                 <div class="col-md-3">
                                 <label for="istPremiumDate">Date to Deduction</label>
                                 <input type="text" class="form-control" name="subagent_deduction_date" id="subagent_deduction_date" value="<?=date('Y-m-d');?>" readonly>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-success text-white">
-                        <h5 class="card-title">Office Use</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="col-12">
-                            <strong for="">1. Bancassurance Champion</strong>
-                            <p> I confirm that the application form and the premium payment mandate is fully completed and I hereby authorise the application to be sent to Bancassurance Hub (Head Office) for underwriting.</p>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-8">
-                                <div class="form-group">
-                                <label for="">Name</label>
-                                <input type="hidden" name="champion_id" value="{{ Auth::user()->id }}" id="bancassuranceChampion">
-                                <input type="text" class="form-control" name="champion_fullname" value="{{ Auth::user()->lastname}}, {{ Auth::user()->firstname }}" readonly>
-                                </div>
+
+                            <div class="col-12 pt-4">
+                                <strong for="">1. Bancassurance Champion</strong>
+                                <p> I <strong>{{ Auth::user()->lastname}}, {{ Auth::user()->firstname }}</strong> confirm that the application form and the premium payment mandate is fully completed and I hereby authorise the application to be sent to Bancassurance Hub (Head Office) for underwriting.</p>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                <label for="name">Date</label>
-                                <input type="text" class="form-control" name="champion_date" value="{{ date('Y-m-d') }}" readonly>
-                            </div>
-                        </div>
-                        <div class="row pt-4">
-                            <div class="col-12">
-                                <h1>E-Signature</h1>
-                                <p>Sign in the canvas below and save your signature as an image!</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <canvas class="border border-3" id="champion_signature_canvas" width="1100" height="260">
-                                    Get a better browser, bro.
-                                </canvas>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <a class="btn btn-success" id="champion_signature_generate">Generate Signature</a>
-                                <a class="btn btn-default" id="champion_signature_clear">Clear Signature</a>
-                                <input type="text" name="champion-date" id="champion-date" value="<?=date('Y-m-d');?>" placeholder="Signature Date" class="btn btn-default">
-                                <textarea id="champion_signature" name="champion_signature" hidden="" class="form-control" rows="5">Data URL for your signature will go here!</textarea>
-                                <img id="champion_signature_image" hidden="" src="" alt="Your signature will go here!">
-                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -881,70 +807,76 @@
                             </div>                            
                         </div>
                         <div class="row pt-3">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="">Bank Name</label>
-                                        <select name="bank_name" id="bank_name" class="form-control select2">
-                                            <option value=""></option>
-                                            <option value="FirstNationalBank" selected>First National Bank GH</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="">Bank Branch</label>
-                                        <select name="bank_branch" id="bank_branch" class="form-control select2 select2bs5">
-                                            <option value=""></option>
-                                            <option value="330101">Junction Shopping Centre Branch</option>
-                                            <option value="330102">Accra Branch</option>
-                                            <option value="330106">Accra Mall Branch</option>
-                                            <option value="330108">Achimota Mall Branch</option>
-                                            <option value="330111">WestHils Mall Branch</option>
-                                            <option value="330112">Tema Branch</option>
-                                            <option value="330119">Airport Branch</option>
-                                            <option value="330120">Community 1 Branch Tema</option>
-                                            <option value="330401">Market Circle Branch Takoradi</option>
-                                            <option value="330601">Adum Branch Kumasi</option>
-                                        </select>
-                                        <input type="hidden" name="debit_date" value="{{ date('Y-m-d') }}" readonly>
-                                        <span class="text-danger error-text bank_branch_error"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="mb-3">
-                                        <label class="form-label">Please add a copy of the Cheque leaflet, if</label>
-                                        <div class="form-check">
-                                            <input class="form-check-input cheque_status" type="radio" name="cheque" value="Yes"> 
-                                            <label class="form-check-label">Yes</label>
-                                        </div>     
-                                        <div class="form-check">
-                                            <input class="form-check-input cheque_status" type="radio" name="cheque" value="No">
-                                            <label class="form-check-label">No</label>
-                                        </div>   
-                                        <span class="text-danger error-text cheque_error"></span>                       
-                                    </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="">Bank Name</label>
+                                    <select name="bank_name" id="bank_name" class="form-control select2" onchange="getBranches()">
+                                        <option value=""></option>
+                                        @forelse ($companies as $company) {
+                                            <option value="{{ $company->id }}">{{ $company->company_name }}</option>
+                                        @empty
+                                            <option value="">No Bank Available</option>
+                                        @endforelse
+                                    </select>
                                 </div>
                             </div>
-                            <div class="row pt-3">
-                                <div class="col-12 pt-3 border-start  border-info">
-                                    <blockquote>
-                                        <p><strong>I the undersigned, authorize First National Bank Ghana to withdraw the amount stated below and if selected, increased yearly as per the Automatic Inflation Management rate from my
-                                                account as premium for my policy(ies). This request should be actioned between the 20th of the current month to the15th of the following commencement date stated above, continuing till
-                                                the end of the policy term.
-                                        </strong></p>
-                                        <p><strong>I understand that the withdrawals hereby authorized shall be processed by electronic funds transfer and that details of each withdrawal shall be printed on my bank statement. I also
-                                                understand that if any Direct Debit Instruction is paid which breaches the terms of this authority, Metropolitan Life shall not be liable in any way or manner whatsoever, whether under contract
-                                                tort or negligence, and that our recourse shall be limited to Metropolitan Life Insurance Ghana Ltd
-                                        </strong></p>
-                                        <p><strong>I shall not be entitled to any refund of amounts which may have already been withdrawn while this Authority was in force, if such amounts were legally owed to Metropolitan Life Insurance
-                                                Ghana Ltd.
-                                        </strong></p>
-                                        <strong>This Authority remains in force until I give First National Bank Ghana a written notice of cancellation.</strong></p>
-              
-                                      </blockquote>
-                                  </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="">Bank Branch</label>
+                                    <select name="bank_branch" id="bank_branch" class="form-control select2 select2bs5">
+                                        <option value=""></option>
+                                    </select>
+                                    <input type="hidden" name="debit_date" value="{{ date('Y-m-d') }}" readonly>
+                                    <span class="text-danger error-text bank_branch_error"></span>
+                                </div>
                             </div>
-                            <div class="row pt-4">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Please add a copy of the Cheque leaflet, if</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input cheque_status" type="radio" name="cheque" value="Yes"> 
+                                        <label class="form-check-label">Yes</label>
+                                    </div>     
+                                    <div class="form-check">
+                                        <input class="form-check-input cheque_status" type="radio" name="cheque" value="No">
+                                        <label class="form-check-label">No</label>
+                                    </div>   
+                                    <span class="text-danger error-text cheque_error"></span>                       
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row pt-3">
+                            <div class="col-12 pt-3 border-start  border-info">
+                                <blockquote>
+                                    <p>
+                                        <strong>
+                                            I the undersigned, authorize First National Bank Ghana to withdraw the amount stated below and if selected, increased yearly as per the Automatic Inflation Management rate from my
+                                            account as premium for my policy(ies). This request should be actioned between the 20th of the current month to the15th of the following commencement date stated above, continuing till
+                                            the end of the policy term.
+                                        </strong>
+                                    </p>
+                                    <p>
+                                        <strong>
+                                            I understand that the withdrawals hereby authorized shall be processed by electronic funds transfer and that details of each withdrawal shall be printed on my bank statement. I also
+                                            understand that if any Direct Debit Instruction is paid which breaches the terms of this authority, Metropolitan Life shall not be liable in any way or manner whatsoever, whether under contract
+                                            tort or negligence, and that our recourse shall be limited to Metropolitan Life Insurance Ghana Ltd
+                                        </strong>
+                                    </p>
+                                    <p>
+                                        <strong>
+                                            I shall not be entitled to any refund of amounts which may have already been withdrawn while this Authority was in force, if such amounts were legally owed to Metropolitan Life Insurance
+                                            Ghana Ltd.
+                                        </strong>
+                                    </p>
+                                    <p>
+                                        <strong>
+                                            This Authority remains in force until I give First National Bank Ghana a written notice of cancellation.
+                                        </strong>
+                                    </p>            
+                                </blockquote>
+                            </div>
+                        </div>
+                        <div class="row pt-4">
                                 <div class="col-12">
                                     <h1>E-Signature</h1>
                                     <p>Sign in the canvas below and save your signature as an image!</p>
@@ -1006,7 +938,7 @@
     <script src="{{ asset('assets/js/office_signature.js') }}" type="text/javascript"></script>
     <script src="{{ asset('assets/js/accountholder_signature.js') }}" type="text/javascript"></script>
     <script src="{{ asset('assets/js/premium.js') }}" type="text/javascript"></script>
-
+    
     <script>
         $(function(){
             $('#add-eternity-form').on('submit',function(e){
@@ -1033,5 +965,29 @@
                 })
             })
         })
+
+        function getBranches() {
+            var bank  = $('#bank_name').val();
+            alert(bank);
+            $.ajax({
+                url:
+                    location.protocol +
+                    "//" +
+                    location.hostname +
+                    ":8000/company-branches",
+                type: "POST",
+                data: {
+                    company: bank,
+                },
+                dataType: "json",
+                success: function (data) {
+                    console.log(JSON.stringify(data.details));
+                    // setting the rate value into the rate input field
+                    data.details.forEach(function(e, i){
+                        $('#bank_branch').append($('<option></option>').val(e.id).text(e.branch_name)); 
+                    });
+                }, // /success
+            }); // /ajax function to fetch the product data
+        }
     </script>
 @endpush

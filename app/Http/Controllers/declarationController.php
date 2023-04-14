@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\application;
+use App\Models\Customer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -18,7 +19,6 @@ class declarationController extends Controller
 
     public function update(Request $request)
     {
-
         $validate = Validator::make($request->all(), [
             'declarant_signature' => 'required|string'
         ]);
@@ -36,24 +36,18 @@ class declarationController extends Controller
         $file_path = public_path('uploads/customers/' . $file_name);
         $loc = file_put_contents($file_path, $data);
 
-        $applicationInfo = application::find($request->application_id)->update([
+        $customerUpdate = Customer::find($request->customer_id)->update([
             'customer_signature' => $file_name,
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
 
-        if (!$applicationInfo) {
+        if (!$customerUpdate) {
             return response()->json(['code' => 0, 'msg' => 'failed to sign document']);
         }
 
         return response()->json(['code' => 1, 'msg' => 'Yey, you signed successfully']);
 
-        // $file = APPPATH . md5(microtime().date('Y-m-d')).'.png';
-        // $success = file_put_contents($file, $data);
     }
 
-    // public function getApplicationDetails(Request $request)
-    // {
-    //     $applicationInfo = application::find($request->application);
-    //     return response()->json(['details' => $applicationInfo], 200, ['Content-type' => 'application/json; charset=utf-8']);
-    // }
+
 }

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\application;
+use App\Models\branch;
+use App\Models\company;
 use App\Models\debit_order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -9,9 +12,21 @@ use Illuminate\Support\Facades\Validator;
 class debitController extends Controller
 {
     //
-    public function index()
+    public function index($id)
     {
-        return view('eternity-plus.debits.index');
+        $accountInfo = debit_order::where('application_id', $id)->get();
+        $branch = branch::find($accountInfo[0]->bank_branch);
+        $company = company::find($branch->company_id);
+        return view(
+            'eternity-plus.debits.index',
+            [
+                'companies' => company::all(),
+                'accountInfo' => $accountInfo,
+                'branch' => $branch,
+                'company' => $company
+            ]
+
+        );
     }
 
     // Get premium payer and payment information

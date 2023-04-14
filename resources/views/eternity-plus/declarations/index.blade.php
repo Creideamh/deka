@@ -49,7 +49,7 @@
                 <div class="card-body">
                     <div class="col-12">
                         <ol>
-                            <li> I warrant that the information in this application and in all documents submitted to First National Bank Ghana (herein referred to as the Bank) in connection with it, whether in my
+                            <li> I <strong>{{ $declareInfo->customer->surname }}, {{ $declareInfo->customer->firstname }}</strong> warrant that the information in this application and in all documents submitted to First National Bank Ghana (herein referred to as the Bank) in connection with it, whether in my
                                 handwriting or not, is true, correct and complete and will form the basis of the proposed contract.
                             </li>
                             <li> In order to facilitate the assessment of the risks, I irrevocably authorize Metropolitan Life:
@@ -75,6 +75,7 @@
                     </div>
                     <form action="{{ route('declarant.signature')}}" method="POST" id="edit-signature">
                         <input type="hidden" name="application_id" value="{{ Request::segment(3)}} ">
+                        <input type="hidden" name="customer_id" value="{{ $declareInfo->customer->id}}" >
                         <div class="col-12">
                             <h1>E-Signature</h1>
                             <p>Sign in the canvas below and save your signature as an image!</p>
@@ -88,7 +89,6 @@
                             <a class="btn btn-primary" id="declarant-submit">Genenate</a>
                             <a class="btn btn-danger" id="declarant-clear">Clear</a>
                             <button type="submit" class="btn btn-success" id="signBtn">Sign</button>
-                            <input type="text" name="declarant_date" id="declarant-date" value="2023-03-18" placeholder="Signature Date" class="btn btn-default" readonly="">
                             <textarea id="declarant_signature" name="declarant_signature" hidden="" class="form-control" rows="5">Data URL for your signature will go here!</textarea>
                             <img id="declarant-signature-image" hidden="" src="" alt="Your signature will go here!">
                         </div>
@@ -96,7 +96,7 @@
                     <div class="col-12 mt-5 border border border-secondary bg-light p-2">
                         <h5>Note</h5>
                         <p>
-                            1. On signing this proposal form, you confirm that any statement that is not in your handwriting is accurate and the information provided is complete.
+                            1. On signing this proposal form, you confirm that any statement that is in your handwriting is accurate and the information provided is complete.
                         </p>
                         <p>
                             2. Your policy shall come to effect only after this proposal has been accepted and the full payment of first premium has been received.
@@ -122,7 +122,7 @@
                     ctx.drawImage(img, 0, 0);
                 };
                 // how to secure this route, inorder to prevent users from capturing the customer_signature
-                img.src = "{{ asset('uploads/customers/')}}/{{ $declareInfo->customer_signature }}";
+                img.src = "{{ asset('uploads/customers/')}}/{{ $declareInfo->customer->customer_signature }}";
         $(function(){
 
             $('#edit-signature').on('submit',function(e){

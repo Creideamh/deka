@@ -17,6 +17,8 @@
     ctx.strokeStyle = "#222222";
     ctx.lineWidth = 4;
 
+    var imageData = ctx.getImageData(65, 60, 100, 100);
+
     var drawing = false;
     var mousePos = {
         x: 0,
@@ -150,6 +152,20 @@
     function clearCanvas() {
         canvas.width = canvas.width;
     }
+
+        // create destiantion canvas
+        var canvas1 = document.createElement("canvas");
+        canvas1.width = 100;
+        canvas1.height = 100;
+        var ctx1 = canvas1.getContext("2d");
+        ctx1.rect(0, 0, 100, 100);
+        ctx1.fillStyle = 'white';
+        ctx1.fill();
+        ctx1.putImageData(imageData, 0, 0);
+      
+        // put data to the img element
+            var dstImg = $('#newImg').get(0);
+        dstImg.src = canvas1.toDataURL("image/png");
 
     // Set up the UI
     var sigText = document.getElementById("declarant_signature");

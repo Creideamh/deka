@@ -147,12 +147,6 @@ Route::post('/sign-declaration', [declarationController::class, 'update'])->name
 Route::post('/appliation/details', [declarationController::class, 'getApplicationDetails'])->name('get.application.details');
 
 
-/**
- * Office Only routes
- */
-Route::get('/office_only/edit/{id}', [officeController::class, 'index'])->name('get.office');
-Route::post('/sign-office', [officeController::class, 'update'])->name('office.signature');
-Route::post('/office_only/details', [officeController::class, 'getApplicationDetails'])->name('get.application.details');
 
 
 
@@ -170,3 +164,7 @@ Route::post('/debits/edit', [debitController::class, 'update'])->name('edit.debi
 Route::get('/preview/policy/{id}', [EternityController::class, 'show'])->name('preview.policy');
 Route::get('/export-to-pdf/{id}', [EternityController::class, 'generate'])->name('export.pdf');
 Route::get('edit-policy/{id}/{id2}', [EternityController::class, 'edit'])->name('edit.policy');
+
+
+// Company routes
+Route::post('/company-branches', [\App\Http\Controllers\CompanyController::class, 'getBranches'])->name('company.branches');
