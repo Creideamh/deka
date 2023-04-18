@@ -13,6 +13,7 @@ use App\Http\Controllers\planController;
 use App\Http\Controllers\premiumPaymentController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\UserController;
+use App\Models\family_member;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -168,3 +169,5 @@ Route::get('edit-policy/{id}/{id2}', [EternityController::class, 'edit'])->name(
 
 // Company routes
 Route::post('/company-branches', [\App\Http\Controllers\CompanyController::class, 'getBranches'])->name('company.branches');
+Route::post('/getFamilyData', [planController::class, 'getFamilyData'])->name('family.data');
+Route::post('/getBeneficiariesData', [beneficiaryController::class, 'getBeneficiariesData'])->name('beneficiary.data');

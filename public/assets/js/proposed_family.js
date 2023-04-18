@@ -37,6 +37,7 @@ $(".refusal_checked").click(function () {
 /**
  * This section of code handles the edit-eternity.blade.php file
  */
+
 $(".refusal_edit_checkbox").click(function () {
     if ($('input[name="existing_life_insurance"]:checked').val() === "Yes") {
         $(".refusal_edit").show();
@@ -45,15 +46,18 @@ $(".refusal_edit_checkbox").click(function () {
         $('input[name="existing_life_insurance"]:checked').val() === "No"
     ) {
         $(".refusal_edit").hide();
+        $(".refusal_edit").attr("disabled", true);
+        $(".refusal_edit").removeAttr("required");
     }
 });
-
 $(".if_yes_edit_checked").click(function () {
     if ($('input[name="existing_policy"]:checked').val() === "Yes") {
         $(".if_yes_edit").show();
         $("#if_yes_edit").attr("required", true);
     } else if ($('input[name="existing_policy"]:checked').val() === "No") {
         $(".if_yes_edit").hide();
+        $(".if_yes_edit").attr("disabled", true);
+        $(".if_yes_edit").removeAttr("required");
     }
 });
 
@@ -176,3 +180,4 @@ function deleteHealth(id) {
 function remove_proposed_family_member_row(tr_id) {
     $("#proposed_family_members tbody tr#add_proposed_row_" + tr_id).remove();
 }
+

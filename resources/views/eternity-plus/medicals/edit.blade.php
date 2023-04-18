@@ -63,7 +63,7 @@
                         @if ($medicalInfo[0]->existing_policy == 'Yes')
                             <div class="col-md-4 if_yes_edit float-end">
                                 <label for="">If <span class="text-danger">Yes</span>, please provide policy number:</label>
-                                <input type="text" name="existing_policy_number" id="if_yes_edit" class="form-control">
+                                <input type="text" name="existing_policy_number" id="if_yes_edit" class="form-control" value="{{ $medicalInfo[0]->existing_policy_number }}">
                             </div>
                         @else
                             <div class="col-md-4 if_yes_edit float-end">

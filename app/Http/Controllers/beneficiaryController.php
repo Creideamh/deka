@@ -310,4 +310,10 @@ class beneficiaryController extends Controller
 
         return response()->json(['code' => 1, 'msg' => 'Update successfully']);
     }
+
+    public function getBeneficiariesData(Request $request)
+    {
+        $beneficiaries = beneficiary::where('application_id', '=', $request->app_id)->get();
+        return response()->json(['code' => 1, 'details' => $beneficiaries]);
+    }
 }

@@ -471,7 +471,7 @@
                     ctx.drawImage(img, 0, 0);
                 };
                 // how to secure this route, inorder to prevent users from capturing the customer_signature
-                img.src = "{{ asset('uploads/customers/')}}/{{ $apps->customer_signature }}";
+                img.src = "{{ asset('uploads/customers/')}}/{{ $apps->customer->customer_signature }}";
         })
     </script>
         <script>

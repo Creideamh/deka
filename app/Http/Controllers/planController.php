@@ -198,4 +198,11 @@ class planController extends Controller
             return response()->json(['code' => 1, 'msg' => 'Family member deleted successfully']);
         }
     }
+
+    public function getFamilyData(Request $request)
+    {
+        $members = family_member::where('application_id', $request->app_id)->get();
+
+        return response()->json(['code' => 1, 'details' => $members]);
+    }
 }

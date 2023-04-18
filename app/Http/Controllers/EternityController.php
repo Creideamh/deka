@@ -529,15 +529,14 @@ class EternityController extends Controller
             "marital_status" => "required|string",
             "nationality"   => "required|string",
             "phone_number"  => "required|string",
-            "email"         => "required|email",
             "postal_address" => "required|string",
             "tin_number"    => "required|string|max:15|min:10",
             "form_of_identification"      => "required|string",
-            "id_number" => "required|string",
+            "identity_number" => "required|string",
+            "benefits" => "required",
             'existing_policy' => 'required',
             'existing_policy_number' => 'required|string',
             'medical_health_status' => 'required',
-            "branch"        => "required|string",
             "premium_tin" => "required",
             "premium_email" => "required|email",
             "premium_mobile_number" => "required",
@@ -548,16 +547,25 @@ class EternityController extends Controller
             "account_holder" => "required|string",
             "account_number" => "required|numeric|digits_between:11,11",
             "bank_branch"    => "required",
-            "branch_name"    => "required",
+            'bank_name' => "required",
         ]);
 
+        if (!$validate->passes()) {
+            return response()->json(['code' => 0, 'errors' => $validate->errors()->toArray()]);
+        }
 
-        // appliaction id 
-        $app_id = $request->app_id;
 
-        // Customer update
-        $customer_id = $request->customer_id;
-        
+        $app_id = $request->app_id; // appliaction id 
+
+        $customer_id = $request->customer_id;  // Customer update
+
+        $premium_payer_id = $request->premium_payer_id; // premium payer id
+
+        $payment_id = $request->payment_id; // premium payment id 
+
+        $accountInfo = $request->accountInfo; // account info id
+
+
         $customer = Customer::find($customer_id)->update([
 
             "title" => $request->title,
@@ -581,38 +589,37 @@ class EternityController extends Controller
 
         ]);
 
-
-
-
-        if (!$customer->save()) {
+        if (!$customer) {
             return response()->json(['code' => 0, 'errors' => $validate->errors()->toArray()]);
         }
 
         /**
-         * Store in family members Table
+         * Update data in family members Table
          */
-        $member_id = $request->family_member_id;
-        $family_member = family_member::find($member_id);
+        $family_member = family_member::where('application_id', '=', $app_id)->delete(); // empty the table of the specified application id
 
         for ($i = 0; $i < count($request->fullname); $i++) {
 
+            $memberUpdate = new family_member();
 
             //get firstname and lastname => fullname 
             $names = explode(" ", $request->fullname[$i]);
             $firstname_of_member = $names[0];
             $surname_of_member  = $names[1];
 
-            $family_member->firstname    = $firstname_of_member;
-            $family_member->surname      = $surname_of_member;
-            $family_member->gender       = $request->gender_of_member[$i];
-            $family_member->birthdate    = $request->birthdate_of_member[$i];
-            $family_member->relationship = $request->relationship_of_member[$i];
-            $family_member->standard_premium     = $request->standard_premium[$i];
-            $family_member->optional_premium     = $request->optional_premium[$i];
-            $family_member->optional_benefit = $request->optional_benefits[$i];
-            $family_member->application_id = $app_id;
+            $memberUpdate->firstname    = $firstname_of_member;
+            $memberUpdate->surname      = $surname_of_member;
+            $memberUpdate->gender       = $request->gender_of_member[$i];
+            $memberUpdate->birthdate    = $request->birthdate_of_member[$i];
+            $memberUpdate->relationship = $request->relationship_of_member[$i];
+            $memberUpdate->standard_premium     = $request->standard_premium[$i];
+            $memberUpdate->optional_premium     = $request->optional_premium[$i];
+            $memberUpdate->optional_benefit = $request->optional_benefits[$i];
+            $memberUpdate->proposed_sum = $request->benefits;
+            $memberUpdate->monthly_risk_premium     = $request->standard_premium[$i] + $request->optional_premium[$i];
+            $memberUpdate->application_id = $app_id;
 
-            if (!$family_member->save()) {
+            if (!$memberUpdate->save()) {
                 return response()->json(['code' => 0, 'errors' => $validate->errors()->toArray()]);
             }
         }
@@ -635,12 +642,13 @@ class EternityController extends Controller
         /**
          * Health information
          */
-        $healthID = health_info::where('application_id', $app_id);
+        $healthID = health_info::where('application_id', $app_id)->get();
 
         if (count($healthID) > 0) {
 
-            for ($i = 0; $i < count($request->proposed_family_member); $i++) {
+            health_info::where('application_id', $app_id)->delete(); // empty the table of the specified application id
 
+            for ($i = 0; $i < count($request->proposed_family_member); $i++) {
 
 
                 $names = explode(" ", $request->proposed_family_member[$i]);
@@ -688,6 +696,8 @@ class EternityController extends Controller
         /**
          * Store data in Beneficiaries Table
          */
+        beneficiary::where('application_id', $app_id)->delete(); // empty the table of the specified application id
+
         for ($i = 0; $i < count($request->beneficiary_name); $i++) {
 
             $names = explode(" ", $request->beneficiary_name[$i]);
@@ -705,12 +715,14 @@ class EternityController extends Controller
             $beneficiary->application_id = $app_id;
 
             if (!$beneficiary->save()) {
-                return response()->json(['code' => 0, 'errors' => $validate->errors()->toArray()]);
+                return response()->json(['code' => 0, 'msg' => 'Ensure all benficiary fields are filled']);
             }
         }
 
         /** Trustee */
         if (!empty($request->trustee_name)) {
+
+            trustee::where('application_id', $app_id)->delete(); // empty the table of the specified application id
 
             $trustee = new trustee();
             $names = explode(" ", $request->trustee_name);
@@ -731,8 +743,8 @@ class EternityController extends Controller
         }
 
 
-        $query = application::find($app_id)->update([
-            'signature_date' => $request->declarant_date
+        $query = Customer::find($customer_id)->update([
+            'customer_signature' => $this->getSignature($request->sig_dataUrl),
         ]);
 
 
@@ -740,63 +752,50 @@ class EternityController extends Controller
             return response()->json(['code' => 0, 'msg' => 'failed to update necessary field(s)']);
         }
 
-        /**
-         * Store data in Intermediary Table 
-         */
-
-        $intermediary  = new intermediary();
-
-        $intermediary->user_id = Auth::user()->id;
-        $intermediary->subagent_code = $request->subagent_code;
-        $intermediary->date_to_deduction = $request->subagent_deduction_date;
-        $intermediary->application_id = $app_id;
-
-        if (!$intermediary->save()) {
-            return response()->json(['code' => 0, 'msg' => 'Trace: intermediaries data has error']);
-        }
-
 
         /**
          *  Premium Payer
          */
-        $premium_payer = new premium_payer();
+        $premium_payer = premium_payer::find($premium_payer_id)->update([
+            "premium_title" => $request->premium_title,
+            "premium_firstname" => $request->premium_firstname,
+            "premium_surname"   => $request->premium_surname,
+            "premium_birthdate" => $request->premium_birthdate,
+            "premium_mobile_number" => $request->premium_mobile_number,
+            "premium_tin_number"     => $request->premium_tin,
+            "premium_email"   => $request->premium_email,
+            "application_id" => $app_id,
+            "user_id" => Auth::user()->id
+        ]);
 
-        $premium_payer->premium_title = $request->premium_title;
-        $premium_payer->premium_firstname = $request->premium_firstname;
-        $premium_payer->premium_surname   = $request->premium_surname;
-        $premium_payer->premium_birthdate = $request->premium_birthdate;
-        $premium_payer->premium_mobile_number = $request->premium_mobile_number;
-        $premium_payer->premium_tin_number     = $request->premium_tin;
-        $premium_payer->premium_email   = $request->premium_email;
-        $premium_payer->application_id = $app_id;
-        $premium_payer->user_id = Auth::user()->id;
 
-        if ($premium_payer->save()) {
-            $premium_payer_id =  $premium_payer->id;
-        } else {
+
+        if (!$premium_payer) {
             return response()->json(['code' => 0, 'msg' => 'System error encountered, contact System Admin']);
         }
 
 
-        /**
-         * Premium Payment
-         */
-        $payment = new premium_payment();
+        // Update the data for premium payer
+        $payment = premium_payment::find($payment_id)->update([
 
-        $payment->premium_risk = $request->premium_risk;
-        $payment->premium_savings  = $request->premium_savings;
-        $payment->premium_fee       = $request->premium_fee;
-        $payment->premium_total    = $request->premium_total;
-        $payment->premium_frequency = $request->premium_frequency;
-        $payment->premium_mode      = $request->premium_mode;
-        $payment->premium_increase   = $request->premium_increase;
-        $payment->premium_deduction = $request->premium_deduction;
-        $payment->application_id   = $application_id;
-        $payment->premium_payer_id = $premium_payer_id;
-        $payment->user_id = Auth::user()->id;
+            "premium_risk" => $request->premium_risk,
+            "premium_savings"  => $request->premium_savings,
+            "premium_fee"       => $request->premium_fee,
+            "premium_total"    => $request->premium_total,
+            "premium_frequency" => $request->premium_frequency,
+            "premium_mode"      => $request->premium_mode,
+            "premium_increase"   => $request->premium_increase,
+            "premium_deduction" => $request->premium_deduction,
+            "application_id"   => $app_id,
+            "premium_payer_id" => $premium_payer_id,
+            "user_id" => Auth::user()->id,
+
+        ]);
 
 
-        if (!$payment->save()) {
+
+
+        if (!$payment) {
             return response()->json(['code' => 0, 'msg' => 'System error encountered, please contact system administrator']);
         }
 
@@ -804,20 +803,28 @@ class EternityController extends Controller
         /***
          * Debit Order
          */
-        $debit_order = new debit_order(); // next updates should have debit_deduction name as model name
+
         $names = explode(" ", $request->account_holder);
         $surname = $names[0];
         $firstname = $names[1];
-        $debit_order->debit_order_surname   = $surname;
-        $debit_order->debit_order_firstname = $firstname;
-        $debit_order->bank_name = $request->bank_name;
-        $debit_order->bank_branch = $request->bank_branch;
-        $debit_order->account_number = $request->account_number;
-        $debit_order->account_type   = $request->account_type;
-        $debit_order->application_id = $app_id;
-        $debit_order->user_id = Auth::user()->id;
 
-        if (!$debit_order->save()) {
+        $accountUpdate = debit_order::find($accountInfo)->update([
+
+            "debit_order_surname"   => $surname,
+            "debit_order_firstname" => $firstname,
+            "bank_name" => $request->bank_name,
+            "bank_branch" => $request->bank_branch,
+            "account_number" => $request->account_number,
+            "account_type"   => $request->account_type,
+            "account_signature" => $this->getSignature($request->accountholder_signature),
+            "application_id" => $app_id,
+            "user_id" => Auth::user()->id
+
+        ]); // next updates should have debit_deduction name as model name
+
+
+
+        if (!$accountUpdate) {
             return response()->json(['code' => 0, 'msg' => 'System error encountered, please contact system administrator']);
         }
 

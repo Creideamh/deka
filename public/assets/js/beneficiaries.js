@@ -11,7 +11,6 @@ $(document).ready(function () {
             for (x = 0; x < count_table_tbody_tr; x++) {
                 var tr = $("#beneficiaries tbody tr")[x];
                 var count = $(tr).attr("id");
-                console.log(count);
                 count = count.substring(5);
 
                 totalSubAmount =
